@@ -63,6 +63,8 @@ a { color: inherit; }
 .btn-gold { background: var(--gold); color: var(--black); }
 .btn-gold:hover { background: #E0B53A; }
 .btn-black { background: var(--black); color: var(--on-dark); }
+.btn-wa { background: #1F9D55; color: #FFFFFF; }
+.btn-wa:hover { background: #198A49; }
 .btn-black:hover { background: var(--charcoal); }
 .btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
 .btn-ghost:hover { border-color: var(--charcoal); }
@@ -790,14 +792,14 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
         <div class="field full"><label for="w-city">City</label><input id="w-city" name="city" value="Addis Ababa" autocomplete="address-level2"></div>
         <label class="check-row full" for="w-demo"><input type="checkbox" id="w-demo" name="demo" checked> Call me to arrange a demo when my place comes up</label>
         <div class="form-actions full">
-          <button class="btn btn-black" type="submit" id="wl-submit">Join the waitlist</button>
-          <small id="wl-msg">Name, business and phone are required.</small>
+          <button class="btn btn-wa" type="submit" id="wl-submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg><span id="wl-submit-label">Join via WhatsApp</span></button>
+          <small id="wl-msg">Name, business and phone are required. Your details open in WhatsApp, ready to send to +251 911 251837.</small>
         </div>
         <div class="sent" id="sent" hidden>
-          <b>Your details are ready to send.</b>
-          <span style="color:var(--on-dark-muted);font-size:14px">Registration isn't connected on this copy of the site. Copy the summary and send it to us by email or Telegram.</span>
+          <b>Almost done: press Send in WhatsApp.</b>
+          <span style="color:var(--on-dark-muted);font-size:14px">Your details are filled in a WhatsApp message to Edel. If WhatsApp didn't open, use the button below, or copy the details and send them to +251 911 251837.</span>
           <pre id="sent-text"></pre>
-          <div><button class="btn btn-gold" type="button" id="copy-btn">Copy summary</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-wa" id="wa-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg>Open WhatsApp</a><button class="btn btn-gold" type="button" id="copy-btn">Copy details</button></div>
         </div>
       </form>
     </div>
@@ -1088,21 +1090,26 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
 
   function setMsg(text, isErr) { wlMsg.textContent = text; wlMsg.classList.toggle("err", !!isErr); }
   function showMine() {
-    if (!mine) { wlStatus.hidden = true; wlSubmit.textContent = "Join the waitlist"; return; }
+    if (!mine) { wlStatus.hidden = true; document.getElementById("wl-submit-label").textContent = "Join via WhatsApp"; return; }
     wlStatus.hidden = false;
     wlStatus.innerHTML = `<b>You're on the waitlist</b><span>Joined ${esc(fmtDate(mine.createdAt))} · Status: ${esc(STATUS_LABEL[mine.status] || "Waiting")}. We'll call ${esc(mine.phone)} when your place comes up. You can update your details below.</span>`;
-    wlSubmit.textContent = "Update my details";
+    document.getElementById("wl-submit-label").textContent = "Update via WhatsApp";
   }
   function fillForm(d) {
     FIELDS.forEach(f => { if (d[f] != null && wlForm.elements[f]) wlForm.elements[f].value = d[f]; });
     syncCourseField();
     wlForm.elements.demo.checked = !!d.demo;
   }
-  function showCopyFallback(d) {
-    document.getElementById("sent-text").textContent =
-      `Waitlist registration — Edel (send to +251 911 251837)\nName: ${d.name}\nBusiness: ${d.business}\nPhone: ${d.phone}\nEmail: ${d.email || "-"}\nInterested in: ${d.product}${d.product === "Edel Academy training" ? " (" + d.course + ")" : ""}\nType of business: ${d.sector}\nVAT-registered: ${d.vat}\nBranches: ${d.branches}\nCity: ${d.city || "-"}\nWants a demo: ${d.demo ? "Yes" : "No"}`;
+  function waitlistMessage(d) {
+    return `Hello Edel, I'd like to join the waitlist.\nName: ${d.name}\nBusiness: ${d.business}\nPhone: ${d.phone}\nEmail: ${d.email || "-"}\nInterested in: ${d.product}${d.product === "Edel Academy training" ? " (" + d.course + ")" : ""}\nType of business: ${d.sector}\nVAT-registered: ${d.vat}\nBranches: ${d.branches}\nCity: ${d.city || "-"}\nWants a demo: ${d.demo ? "Yes" : "No"}`;
+  }
+  function sendToWhatsApp(d) {
+    const text = waitlistMessage(d);
+    const url = "https://wa.me/251911251837?text=" + encodeURIComponent(text);
+    document.getElementById("sent-text").textContent = text;
+    document.getElementById("wa-link").href = url;
     document.getElementById("sent").hidden = false;
-    setMsg("Copy the summary below to send it.");
+    window.open(url, "_blank", "noopener");
   }
 
   wlForm.addEventListener("submit", async e => {
@@ -1116,26 +1123,20 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
     if (d.phone.replace(/\D/g, "").length < 9) { setMsg("Check the phone number. It should have at least 9 digits.", true); wlForm.elements.phone.focus(); return; }
     if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { setMsg("Check the email address, or leave it empty.", true); wlForm.elements.email.focus(); return; }
 
-    wlSubmit.disabled = true; setMsg("Saving…");
+    sendToWhatsApp(d);
+    setMsg("WhatsApp opened with your details. Press Send there to finish.");
+    wlSubmit.disabled = true;
     try {
       if (db && uid) {
         const now = new Date().toISOString();
         const rec = { ...d, createdAt: mine?.createdAt || now, updatedAt: now, status: mine?.status || "waiting" };
         await db.doc("waitlist/" + uid).set(rec);
-        const wasNew = !mine;
         mine = rec; showMine();
-        setMsg(wasNew ? "You're on the list. Thank you!" : "Your details are updated.");
       } else if (WAITLIST_ENDPOINT) {
-        const res = await fetch(WAITLIST_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...d, createdAt: new Date().toISOString() }) });
-        if (!res.ok) throw { code: "endpoint", message: res.status };
-        wlForm.reset(); setMsg("You're on the list. We'll be in touch.");
-      } else {
-        showCopyFallback(d);
+        await fetch(WAITLIST_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...d, createdAt: new Date().toISOString() }) });
       }
     } catch (err) {
-      if (err?.code === "quota_exceeded") setMsg("The waitlist is full right now. Please call or email us instead.", true);
-      else if (err?.code === "invalid_argument" || err?.code === "not_granted") { db = null; showCopyFallback(d); }
-      else setMsg("We couldn't save that. Check your connection and try again.", true);
+      if (err?.code === "invalid_argument" || err?.code === "not_granted") db = null;
     } finally { wlSubmit.disabled = false; }
   });
 
