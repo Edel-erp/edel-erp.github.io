@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Edel Trading PLC</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Edel — electronic invoicing and ERP software for Ethiopian businesses, built in Addis Ababa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap">
+<style>
+/* Layout: banded like a ledger book — white pages, black and charcoal bands, gold reserved for actions, highlights and the "registered" state. */
+:root {
+  --gold: #D3A628;
+  --gold-deep: #A67F12;
+  --gold-soft: #F7EFD6;
+  --charcoal: #3F4246;
+  --charcoal-2: #4A4D52;
+  --black: #0E0F10;
+  --ink: #17181A;
+  --muted: #5E6166;
+  --line: #E4E2DC;
+  --paper: #FFFFFF;
+  --paper-2: #F7F6F3;
+  --on-dark: #FFFFFF;
+  --on-dark-muted: #B9BBBF;
+  --display: "Sora", "Noto Sans Ethiopic", "Helvetica Neue", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --radius: 14px;
+  --wrap: 1180px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.025em; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 720px) { .wrap { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+.band { padding-block: clamp(64px, 9vw, 112px); }
+.band.dark { background: var(--black); color: var(--on-dark); }
+.band.charcoal { background: var(--charcoal); color: var(--on-dark); }
+.band.soft { background: var(--paper-2); }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 22px; height: 3px; border-radius: 3px; background: var(--gold); flex: none; }
+.dark .eyebrow, .charcoal .eyebrow { color: var(--on-dark-muted); }
+.section-head { display: grid; gap: 14px; max-width: 680px; margin-bottom: 44px; }
+.section-head h2 { font-size: clamp(30px, 4.2vw, 46px); }
+.section-head p { color: var(--muted); font-size: 18px; }
+.dark .section-head p, .charcoal .section-head p { color: var(--on-dark-muted); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 10px; font: 600 15px/1 var(--body); padding: 15px 22px; border-radius: 999px; border: 2px solid transparent; cursor: pointer; text-decoration: none; transition: transform .15s ease, background .15s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-gold:hover { background: #E0B53A; }
+.btn-black { background: var(--black); color: var(--on-dark); }
+.btn-black:hover { background: var(--charcoal); }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--charcoal); }
+.btn-line-dark { background: transparent; color: var(--on-dark); border-color: #6A6D72; }
+.btn svg { width: 18px; height: 18px; }
+
+/* Header */
+header.site { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(255,255,255,.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 74px; }
+.brand img { height: 46px; width: auto; display: block; }
+.nav-links { display: flex; gap: 28px; font-weight: 500; font-size: 15px; }
+.nav-links a { text-decoration: none; color: var(--charcoal); white-space: nowrap; }
+.nav-links a:hover { color: var(--black); text-decoration: underline; text-decoration-color: var(--gold); text-decoration-thickness: 3px; text-underline-offset: 6px; }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.lang button { font: 600 12px/1 var(--body); border: 0; background: transparent; padding: 7px 10px; border-radius: 999px; cursor: pointer; color: var(--muted); }
+.lang button[aria-pressed="true"] { background: var(--black); color: var(--on-dark); }
+.nav .btn { padding: 11px 18px; font-size: 14px; }
+@media (max-width: 1240px) { .nav-links { gap: 20px; font-size: 14px; } .nav-links a[href="#faq"] { display: none; } }
+@media (max-width: 1120px) { .nav-links a[href="#readiness"] { display: none; } }
+@media (max-width: 1000px) { .nav-links { display: none; } }
+@media (max-width: 520px) { .nav .btn { display: none; } .brand img { height: 38px; } }
+
+/* Hero */
+.hero { padding-block: clamp(48px, 7vw, 88px) clamp(56px, 8vw, 96px); position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; right: -180px; top: -260px; width: 620px; height: 620px; border-radius: 50%; border: 56px solid var(--gold-soft); z-index: 0; pointer-events: none; }
+.hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+.hero h1 { font-size: clamp(38px, 5.4vw, 66px); font-weight: 700; }
+.hero h1 .hl { background: linear-gradient(transparent 62%, var(--gold) 62%, var(--gold) 92%, transparent 92%); padding: 0 .06em; }
+.hero .lede { font-size: clamp(18px, 1.8vw, 21px); color: var(--charcoal); margin-top: 22px; max-width: 36ch; font-weight: 500; }
+.hero .sub { color: var(--muted); margin-top: 14px; max-width: 52ch; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hero-note { margin-top: 16px; font-size: 14px; color: var(--muted); }
+[lang="am"] .hero h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.2; }
+
+/* Invoice mockup */
+.slip-stage { position: relative; display: grid; gap: 14px; justify-items: center; min-width: 0; }
+.slip { width: 100%; max-width: 440px; background: var(--paper); border-radius: 10px; box-shadow: 0 1px 0 var(--line), 0 30px 60px -20px rgba(14,15,16,.28), 0 12px 24px -12px rgba(14,15,16,.16); border: 1px solid var(--line); padding: 26px 26px 20px; font-family: var(--mono); font-size: 12.5px; color: var(--ink); transform: rotate(-1.2deg); transition: transform .3s ease; position: relative; }
+.slip:hover { transform: rotate(0deg); }
+.slip::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; background: var(--gold); border-radius: 10px 10px 0 0; }
+.slip-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 1px dashed #CFCBC0; padding-bottom: 14px; }
+.slip-top b { font-family: var(--body); font-size: 14px; display: block; }
+.slip-top .meta { text-align: right; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.slip-top .who { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.slip h4 { font-family: var(--body); font-size: 15px; margin: 14px 0 2px; letter-spacing: .02em; }
+.slip .am { font-family: "Noto Sans Ethiopic", var(--body); color: var(--muted); font-size: 12px; }
+.slip-to { display: flex; justify-content: space-between; gap: 12px; margin: 12px 0; color: var(--muted); font-size: 11.5px; }
+.slip-to b { color: var(--ink); font-weight: 600; }
+table.lines { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.lines th { text-align: left; font-weight: 600; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); padding: 6px 0; }
+table.lines td { padding: 7px 0; border-bottom: 1px solid #F0EEE8; vertical-align: top; }
+table.lines td.n, table.lines th.n { text-align: right; white-space: nowrap; padding-left: 10px; }
+.totals { margin-top: 10px; display: grid; gap: 4px; font-variant-numeric: tabular-nums; }
+.totals div { display: flex; justify-content: space-between; gap: 10px; }
+.totals .grand { margin-top: 6px; padding: 9px 10px; background: var(--black); color: var(--on-dark); border-radius: 6px; font-weight: 600; font-size: 13.5px; }
+.slip-reg { margin-top: 14px; display: grid; grid-template-columns: 76px 1fr auto; gap: 12px; align-items: center; color: var(--muted); font-size: 10.5px; line-height: 1.5; }
+.slip-reg canvas { width: 76px; height: 76px; display: block; image-rendering: pixelated; }
+.slip-reg b { color: var(--ink); font-weight: 600; }
+.stamp { border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 4px 8px; font-weight: 600; letter-spacing: .1em; transform: rotate(-6deg); font-size: 10px; text-align: center; line-height: 1.35; }
+.slip-tabs { display: inline-flex; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; }
+.slip-tabs button { font: 600 13px/1 var(--body); border: 0; background: transparent; padding: 10px 14px; border-radius: 999px; cursor: pointer; color: var(--charcoal); }
+.slip-tabs button[aria-selected="true"] { background: var(--black); color: var(--on-dark); }
+.example { font-size: 12px; color: var(--muted); }
+@media (max-width: 420px) { .slip { padding: 22px 16px 16px; font-size: 11.5px; } .slip-reg { grid-template-columns: 64px 1fr; } .slip-reg canvas { width: 64px; height: 64px; } .slip-reg .stamp { grid-column: 1 / -1; justify-self: start; } }
+
+/* Trust strip */
+.trust { background: var(--charcoal); color: var(--on-dark); }
+.trust ul { list-style: none; margin: 0; padding: 22px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.trust li { display: flex; gap: 12px; align-items: center; font-weight: 500; font-size: 15px; }
+.trust li svg { flex: none; width: 22px; height: 22px; color: var(--gold); }
+@media (max-width: 900px) { .trust ul { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .trust ul { grid-template-columns: 1fr; } }
+
+/* Flow */
+.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 14px; align-items: stretch; }
+.flow-node { border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: var(--paper); display: grid; gap: 8px; align-content: start; }
+.flow-node .ic { width: 44px; height: 44px; border-radius: 12px; background: var(--paper-2); border: 1px solid var(--line); display: grid; place-items: center; color: var(--charcoal); }
+.flow-node.mid .ic { background: var(--black); color: var(--gold); border-color: var(--black); }
+.flow-node.end .ic { background: var(--gold); color: var(--black); border-color: var(--gold); }
+.flow-node .ic svg { width: 22px; height: 22px; }
+.flow-node h3 { font-size: 19px; }
+.flow-node p { color: var(--muted); font-size: 15px; }
+.flow-arrow { display: grid; place-items: center; color: var(--gold-deep); }
+.flow-arrow svg { width: 28px; height: 28px; }
+@media (max-width: 860px) { .flow { grid-template-columns: 1fr; } .flow-arrow svg { transform: rotate(90deg); } }
+.facts { margin-top: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.facts div { border-top: 3px solid var(--black); padding-top: 14px; color: var(--charcoal); }
+@media (max-width: 860px) { .facts { grid-template-columns: 1fr; } }
+
+/* Quiz */
+.finder { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
+@media (max-width: 900px) { .finder { grid-template-columns: 1fr; } }
+.quiz { background: var(--charcoal-2); border-radius: var(--radius); padding: clamp(22px, 3vw, 32px); min-width: 0; }
+.quiz-progress { display: flex; gap: 6px; margin-bottom: 18px; }
+.quiz-progress span { flex: 1; height: 4px; border-radius: 4px; background: #6A6D72; }
+.quiz-progress span.on { background: var(--gold); }
+.quiz .qnum { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--on-dark-muted); }
+.quiz h3 { font-size: 24px; margin: 8px 0 18px; }
+.opts { display: grid; gap: 10px; }
+.opts button { text-align: left; font: 500 16px/1.3 var(--body); color: var(--on-dark); background: var(--charcoal); border: 1px solid #5C5F64; border-radius: 12px; padding: 15px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.opts button:hover { border-color: var(--gold); }
+.opts button small { color: var(--on-dark-muted); font-size: 13px; }
+.result { display: grid; gap: 14px; }
+.result .pill { justify-self: start; background: var(--gold); color: var(--black); font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 999px; }
+.result p { color: var(--on-dark-muted); }
+.result ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.result .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+
+/* Products */
+.products { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .products { grid-template-columns: 1fr; } }
+.product { border-radius: 18px; padding: clamp(24px, 3vw, 36px); display: grid; gap: 16px; align-content: start; border: 1px solid var(--line); background: var(--paper); }
+.product.feature { background: var(--black); color: var(--on-dark); border-color: var(--black); }
+.product .tag { justify-self: start; font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; background: var(--gold); color: var(--black); }
+.product.plain .tag { background: var(--paper-2); color: var(--charcoal); border: 1px solid var(--line); }
+.product h3 { font-size: clamp(26px, 3vw, 34px); }
+.product > p { color: var(--muted); font-size: 17px; }
+.product.feature > p { color: var(--on-dark-muted); }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.checks li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; }
+.checks li::before { content: ""; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; background: var(--gold) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E0F10' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12l4 4 8-8'/%3E%3C/svg%3E") center / 12px no-repeat; }
+.product .btn { justify-self: start; margin-top: 6px; }
+
+/* Modules */
+.modules { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 1000px) { .modules { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .modules { grid-template-columns: 1fr; } }
+.mod { border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; display: grid; gap: 10px; align-content: start; background: var(--paper); transition: border-color .15s ease, transform .15s ease; }
+.mod:hover { border-color: var(--charcoal); transform: translateY(-2px); }
+.mod .ic { width: 44px; height: 44px; border-radius: 12px; background: var(--gold); display: grid; place-items: center; color: var(--black); }
+.mod .ic svg { width: 22px; height: 22px; }
+.mod h3 { font-size: 19px; }
+.mod p { color: var(--muted); font-size: 15px; }
+
+/* Local details */
+.local-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 64px); align-items: start; }
+@media (max-width: 900px) { .local-grid { grid-template-columns: 1fr; } }
+.local-list { display: grid; gap: 12px; }
+.local-item { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid #2B2D30; border-radius: 12px; background: #17181A; }
+.local-item b { font-family: var(--display); font-size: 18px; }
+.local-item span { color: var(--on-dark-muted); font-size: 15px; }
+.datecard { background: var(--paper); color: var(--ink); border-radius: var(--radius); padding: 26px; display: grid; gap: 18px; min-width: 0; }
+.datecard h3 { font-size: 20px; }
+.dates { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.dates div { border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 4px; }
+.dates small { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.dates b { font-family: var(--display); font-size: 21px; line-height: 1.2; }
+.dates .eth b { font-family: "Noto Sans Ethiopic", var(--display); }
+.dates .eth { background: var(--gold-soft); border-color: #EADBA8; }
+@media (max-width: 420px) { .dates { grid-template-columns: 1fr; } }
+.fy { display: grid; gap: 8px; }
+.fy-bar { height: 10px; border-radius: 10px; background: var(--paper-2); border: 1px solid var(--line); overflow: hidden; }
+.fy-bar span { display: block; height: 100%; background: var(--gold); }
+.fy-row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Steps */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+.step { padding: 28px; border-radius: var(--radius); background: var(--paper); border: 1px solid var(--line); display: grid; gap: 10px; align-content: start; }
+.step .num { width: 40px; height: 40px; border-radius: 50%; background: var(--black); color: var(--gold); font: 700 18px/40px var(--display); text-align: center; }
+.step h3 { font-size: 21px; }
+.step p { color: var(--muted); }
+.step .tag { font-family: var(--mono); font-size: 12px; color: var(--charcoal); background: var(--gold-soft); border-radius: 6px; padding: 4px 8px; justify-self: start; }
+
+/* Sectors */
+.sectors { display: flex; flex-wrap: wrap; gap: 10px; }
+.sectors span { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 10px 16px; font-weight: 500; display: inline-flex; gap: 8px; align-items: center; }
+.sectors span::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+
+/* Demo form */
+.quote-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(28px, 5vw, 64px); }
+@media (max-width: 900px) { .quote-grid { grid-template-columns: 1fr; } }
+.contact-list { display: grid; gap: 18px; margin-top: 28px; }
+.contact-list div { display: grid; gap: 2px; }
+.contact-list small { font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.contact-list b { font-size: 17px; user-select: all; }
+.placeholder-note { font-size: 13px; color: var(--muted); margin-top: 18px; padding: 10px 12px; border-left: 3px solid var(--gold); background: var(--gold-soft); border-radius: 0 8px 8px 0; }
+form.quote { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(20px, 3vw, 32px); display: grid; grid-template-columns: 1fr 1fr; gap: 16px; min-width: 0; }
+form.quote .full { grid-column: 1 / -1; }
+@media (max-width: 560px) { form.quote { grid-template-columns: 1fr; } }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font-weight: 600; font-size: 14px; }
+.field input, .field select, .field textarea { font: 400 16px/1.4 var(--body); color: var(--ink); background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; width: 100%; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--black); box-shadow: 0 0 0 3px var(--gold-soft); }
+.field textarea { min-height: 110px; resize: vertical; }
+.form-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.form-actions small { color: var(--muted); }
+.sent { grid-column: 1 / -1; background: var(--black); color: var(--on-dark); border-radius: 12px; padding: 20px; display: grid; gap: 10px; }
+.sent pre { margin: 0; white-space: pre-wrap; font: 13px/1.6 var(--mono); color: var(--on-dark-muted); background: #1D1E20; padding: 12px; border-radius: 8px; overflow-x: auto; }
+.perks { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 14px; }
+.perks li { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+.perks li span.n { width: 36px; height: 36px; border-radius: 10px; background: var(--black); color: var(--gold); display: grid; place-items: center; font: 700 15px var(--display); }
+.perks b { display: block; }
+.perks small { color: var(--muted); font-size: 14.5px; }
+.check-row { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+.check-row input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--black); flex: none; }
+.status-card { grid-column: 1 / -1; border-radius: 12px; padding: 18px 20px; display: grid; gap: 6px; background: var(--gold-soft); border: 1px solid #EADBA8; }
+.status-card b { font-family: var(--display); font-size: 19px; }
+.status-card span { color: var(--charcoal); font-size: 14.5px; }
+.err { color: #9A3B1E; }
+
+/* Waitlist admin */
+.admin { background: var(--paper); border-top: 1px solid var(--line); }
+.admin-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.admin-bar h2 { font-size: clamp(24px, 3vw, 32px); }
+.admin-badge { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; background: var(--black); color: var(--gold); padding: 5px 10px; border-radius: 6px; }
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+@media (max-width: 760px) { .tiles { grid-template-columns: 1fr 1fr; } }
+.tile { border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 2px; }
+.tile small { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.tile b { font: 700 30px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.admin-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.admin-tools select, .admin-tools input { font: 400 15px var(--body); padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); }
+.admin-tools .btn { padding: 10px 16px; font-size: 14px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table.wl { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 860px; }
+table.wl th { text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.wl td { padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.wl tr:last-child td { border-bottom: 0; }
+table.wl td.num { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+table.wl td small { display: block; color: var(--muted); }
+.st { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 10px; white-space: nowrap; border: 1px solid var(--line); background: var(--paper-2); color: var(--charcoal); cursor: pointer; font-family: var(--body); }
+.st.contacted { background: var(--gold-soft); border-color: #EADBA8; }
+.st.invited { background: var(--gold); border-color: var(--gold); color: var(--black); }
+.st.onboarded { background: var(--black); border-color: var(--black); color: var(--on-dark); }
+.empty { padding: 28px; text-align: center; color: var(--muted); }
+
+/* FAQ */
+.faq { display: grid; gap: 10px; max-width: 820px; }
+.faq details { border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.faq summary { cursor: pointer; padding: 18px 20px; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--display); font-size: 22px; line-height: 1; color: var(--gold-deep); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { padding: 0 20px 18px; color: var(--muted); max-width: 68ch; }
+
+/* Footer */
+footer { background: var(--black); color: var(--on-dark-muted); padding-block: 56px 28px; }
+.foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; }
+@media (max-width: 860px) { .foot-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .foot-grid { grid-template-columns: 1fr; } }
+.foot-logo { background: var(--paper); border-radius: 12px; padding: 12px 16px; display: inline-block; justify-self: start; }
+.foot-logo img { height: 44px; display: block; }
+footer h4 { color: var(--on-dark); font-family: var(--display); font-size: 16px; margin: 0 0 12px; }
+footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 15px; }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--gold); }
+.socials { display: flex; flex-wrap: wrap; gap: 10px; }
+.socials a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font-weight: 600; font-size: 14px; text-decoration: none; transition: border-color .15s ease, background .15s ease; }
+.socials a svg { width: 18px; height: 18px; flex: none; }
+.socials a[href]:hover { border-color: var(--black); background: var(--gold-soft); }
+.socials a:not([href]) { cursor: default; opacity: .7; }
+.socials.on-dark a { background: transparent; border-color: #34363A; color: var(--on-dark); }
+.socials.on-dark a[href]:hover { border-color: var(--gold); color: var(--gold); background: transparent; }
+.socials-label { font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; display: block; }
+/* Top announcement bar */
+.topbar { background: var(--black); color: var(--on-dark); font-size: 14px; }
+.topbar .wrap { display: flex; align-items: center; justify-content: center; gap: 10px 16px; flex-wrap: wrap; padding-block: 10px; text-align: center; }
+.topbar .new { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .12em; background: var(--gold); color: var(--black); border-radius: 4px; padding: 3px 7px; }
+.topbar a { color: var(--gold); font-weight: 600; text-decoration: none; white-space: nowrap; }
+.topbar a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* Academy */
+.academy-top { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; margin-bottom: 48px; }
+@media (max-width: 900px) { .academy-top { grid-template-columns: 1fr; } }
+.academy-top .section-head { margin-bottom: 0; }
+.ac-stats { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 22px; }
+.ac-stats div { display: grid; gap: 2px; }
+.ac-stats b { font: 700 28px/1.1 var(--display); }
+.ac-stats small { color: var(--muted); font-size: 14px; }
+.cert { position: relative; background: var(--paper); border-radius: 6px; padding: 10px; box-shadow: 0 30px 60px -24px rgba(14,15,16,.3), 0 0 0 1px var(--line); transform: rotate(1deg); max-width: 560px; justify-self: center; width: 100%; }
+.cert-in { border: 2px solid var(--gold); outline: 1px solid var(--gold); outline-offset: -8px; padding: clamp(20px, 3.5vw, 34px); display: grid; gap: 10px; justify-items: center; text-align: center; background: radial-gradient(circle at 50% 0%, var(--gold-soft), transparent 70%); }
+.cert-in img { height: 40px; }
+.cert-in .kicker { font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+.cert-in h3 { font-size: clamp(20px, 2.6vw, 26px); }
+.cert-in .am { font-family: "Noto Sans Ethiopic", var(--body); color: var(--muted); font-size: 13px; }
+.cert-in .who { font: 600 clamp(24px, 3.4vw, 34px)/1.15 var(--display); border-bottom: 1.5px solid var(--ink); padding: 4px 18px 6px; margin-top: 4px; }
+.cert-in .cert-course { color: var(--charcoal); font-size: 15px; max-width: 40ch; }
+.cert-foot { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: end; margin-top: 10px; font-size: 11.5px; color: var(--muted); }
+.cert-foot .sig { border-top: 1px solid var(--ink); padding-top: 6px; }
+.cert-foot canvas { width: 62px; height: 62px; image-rendering: pixelated; display: block; margin: 0 auto 4px; }
+.cert-foot .mono { font-family: var(--mono); font-size: 10.5px; }
+.seal { position: absolute; right: 18px; top: 18px; width: 64px; height: 64px; border-radius: 50%; background: var(--gold); color: var(--black); display: grid; place-items: center; font: 700 10px/1.15 var(--mono); letter-spacing: .08em; text-align: center; box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px var(--gold-deep); transform: rotate(-12deg); }
+@media (max-width: 480px) { .seal { width: 52px; height: 52px; font-size: 8.5px; right: 12px; top: 12px; } .cert-foot { grid-template-columns: 1fr 1fr; } .cert-foot .qr { grid-column: 1 / -1; grid-row: 1; } }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chips button { font: 600 14px/1 var(--body); padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper); color: var(--charcoal); cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--black); color: var(--on-dark); border-color: var(--black); }
+.courses { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 1000px) { .courses { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 620px) { .courses { grid-template-columns: 1fr; } }
+.course { border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 12px; grid-template-rows: auto auto 1fr auto auto; background: var(--paper); }
+.course-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.lvl { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 4px 10px; background: var(--paper-2); border: 1px solid var(--line); color: var(--charcoal); }
+.lvl.Intermediate { background: var(--gold-soft); border-color: #EADBA8; }
+.lvl.Advanced { background: var(--black); border-color: var(--black); color: var(--on-dark); }
+.dur { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.course h3 { font-size: 20px; }
+.course p { color: var(--muted); font-size: 15px; }
+.course .meta { display: grid; gap: 6px; font-size: 14px; color: var(--charcoal); padding-top: 12px; border-top: 1px solid var(--line); }
+.course .meta span { display: flex; gap: 8px; align-items: center; }
+.course .meta svg { width: 16px; height: 16px; color: var(--gold-deep); flex: none; }
+.course .btn { justify-self: start; padding: 11px 18px; font-size: 14px; }
+.course .cat { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-deep); }
+.course { grid-template-rows: auto auto auto 1fr auto auto; }
+.cert-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+@media (max-width: 1000px) { .cert-steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .cert-steps { grid-template-columns: 1fr; } }
+.cert-steps > div { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 10px; align-content: start; }
+.cert-steps .num { width: 40px; height: 40px; border-radius: 50%; background: var(--black); color: var(--gold); font: 700 18px/40px var(--display); text-align: center; }
+.cert-steps h3 { font-size: 19px; }
+.cert-steps p { color: var(--muted); font-size: 15px; }
+
+/* Insights (blog) */
+.blog-head { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(24px, 5vw, 72px); align-items: start; margin-bottom: 44px; }
+@media (max-width: 900px) { .blog-head { grid-template-columns: 1fr; } }
+.blog-head h2 { font-size: clamp(30px, 4.2vw, 46px); margin-top: 14px; }
+.blog-head p { color: var(--muted); font-size: 18px; }
+.blog-head .link { display: inline-flex; gap: 6px; align-items: center; margin-top: 18px; font-weight: 600; text-decoration: none; color: var(--ink); border-bottom: 2px solid var(--gold); padding-bottom: 2px; }
+.posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 1000px) { .posts { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 620px) { .posts { grid-template-columns: 1fr; } }
+.post { all: unset; box-sizing: border-box; cursor: pointer; display: grid; border-radius: 16px; overflow: hidden; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 18px 40px -28px rgba(14,15,16,.35); transition: transform .15s ease, box-shadow .15s ease; }
+.post:hover { transform: translateY(-3px); box-shadow: 0 26px 50px -26px rgba(14,15,16,.4); }
+.post:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.cover { aspect-ratio: 16 / 9; max-width: 100%; position: relative; display: grid; align-content: space-between; padding: 18px 20px; overflow: hidden; }
+.cover .lbl { font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; opacity: .75; }
+.cover .ct { font: 700 clamp(17px, 1.8vw, 21px)/1.2 var(--display); max-width: 50%; position: relative; z-index: 1; }
+.cover svg.art { position: absolute; right: 4%; top: 50%; transform: translateY(-50%); width: 44%; height: auto; }
+.cover.c1 { background: var(--black); color: var(--on-dark); }
+.cover.c2 { background: var(--gold); color: var(--black); }
+.cover.c3 { background: var(--charcoal); color: var(--on-dark); }
+.post-body { padding: 20px 22px 22px; display: grid; gap: 12px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags span { font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 6px; background: var(--paper-2); border: 1px solid var(--line); color: var(--charcoal); }
+.post h3 { font-size: 20px; line-height: 1.25; }
+.post time { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
+.post time svg { width: 16px; height: 16px; }
+dialog.reader { border: 0; padding: 0; border-radius: 18px; width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 48px); background: var(--paper); color: var(--ink); box-shadow: 0 40px 80px -20px rgba(0,0,0,.45); }
+dialog.reader::backdrop { background: rgba(14,15,16,.6); }
+.reader-in { padding: clamp(22px, 4vw, 40px); display: grid; gap: 14px; }
+.reader-in h2 { font-size: clamp(24px, 3.2vw, 34px); }
+.reader-in p, .reader-in li { color: var(--charcoal); font-size: 17px; max-width: 64ch; }
+.reader-in ol, .reader-in ul { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.reader-close { justify-self: end; position: sticky; top: 0; }
+/* Chat box */
+.chat-launch { position: fixed; z-index: 40; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); display: inline-flex; align-items: center; gap: 10px; border: 0; cursor: pointer; background: var(--black); color: var(--on-dark); font: 600 15px/1 var(--body); padding: 8px 18px 8px 8px; border-radius: 999px; box-shadow: 0 14px 30px -10px rgba(14,15,16,.55); transition: transform .15s ease; }
+.chat-launch:hover { transform: translateY(-2px); }
+.chat-launch .bubble { width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--black); display: grid; place-items: center; }
+.chat-launch .bubble svg { width: 22px; height: 22px; }
+.chat-launch .dot { position: absolute; top: 4px; left: 36px; width: 12px; height: 12px; border-radius: 50%; background: #2FB463; box-shadow: 0 0 0 2px var(--black); }
+@media (max-width: 520px) { .chat-launch .lbl { display: none; } .chat-launch { padding: 8px; } }
+.chat { position: fixed; z-index: 41; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); width: min(380px, calc(100vw - 32px)); max-height: min(640px, calc(100vh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); display: grid; grid-template-rows: auto 1fr auto; background: var(--paper); border-radius: 20px; overflow: hidden; box-shadow: 0 30px 70px -20px rgba(14,15,16,.5), 0 0 0 1px var(--line); }
+@media (max-width: 520px) { .chat { right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); } }
+.chat-head { background: var(--black); color: var(--on-dark); padding: 14px 14px 14px 18px; display: flex; align-items: center; gap: 12px; }
+.chat-head .av { width: 40px; height: 40px; border-radius: 12px; background: var(--paper); display: grid; place-items: center; flex: none; overflow: hidden; }
+.chat-head .av img { width: 34px; height: auto; }
+.chat-head b { display: block; font-family: var(--display); font-size: 16px; }
+.chat-head small { color: var(--on-dark-muted); font-size: 12.5px; display: flex; align-items: center; gap: 6px; }
+.chat-head small::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #2FB463; }
+.chat-head .tools { margin-left: auto; display: flex; gap: 4px; }
+.chat-head .tools button { width: 36px; height: 36px; border-radius: 10px; border: 0; background: transparent; color: var(--on-dark); cursor: pointer; display: grid; place-items: center; }
+.chat-head .tools button:hover { background: #26282B; }
+.chat-head .tools svg { width: 18px; height: 18px; }
+.chat-log { overflow-y: auto; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; background: var(--paper-2); min-height: 0; }
+.msg { max-width: 88%; padding: 12px 14px; border-radius: 16px; font-size: 15px; line-height: 1.45; }
+.msg.bot { background: var(--paper); border: 1px solid var(--line); border-top-left-radius: 4px; align-self: flex-start; }
+.msg.me { background: var(--black); color: var(--on-dark); border-top-right-radius: 4px; align-self: flex-end; }
+.msg .time { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
+.msg.me .time { color: var(--on-dark-muted); }
+.typing { display: inline-flex; gap: 4px; padding: 14px; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: blink 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+.opts-card { align-self: stretch; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: grid; }
+.opts-card .list { padding: 12px; display: grid; gap: 8px; }
+.opt { display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--charcoal); border-radius: 999px; padding: 10px 14px; cursor: pointer; font-weight: 500; font-size: 15px; color: var(--ink); background: var(--paper); }
+.opt:hover { border-color: var(--gold-deep); }
+.opt input { width: 18px; height: 18px; accent-color: var(--black); margin: 0; flex: none; }
+.opt:has(input:checked) { background: var(--gold-soft); border-color: var(--gold-deep); }
+.opts-card .confirm { border: 0; background: var(--gold); color: var(--black); font: 700 15px var(--body); padding: 14px; cursor: pointer; }
+.opts-card .confirm:disabled { background: var(--line); color: var(--muted); cursor: not-allowed; }
+.actions-col { display: grid; gap: 8px; align-self: stretch; }
+.actions-col a, .actions-col button { display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font: 600 15px var(--body); padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; }
+.actions-col .wa { background: #1F9D55; border-color: #1F9D55; color: #FFFFFF; }
+.actions-col .wa:hover { background: #198A49; }
+.actions-col svg { width: 18px; height: 18px; }
+.msg.bot .txt { white-space: pre-wrap; }
+.msg.bot .txt b { font-weight: 700; }
+.quick { display: flex; flex-wrap: wrap; gap: 8px; align-self: stretch; }
+.quick button { font: 500 14px/1.2 var(--body); padding: 9px 13px; border-radius: 999px; border: 1.5px solid var(--charcoal); background: var(--paper); color: var(--ink); cursor: pointer; }
+.quick button:hover { background: var(--gold-soft); border-color: var(--gold-deep); }
+.quick button.human { border-color: var(--black); background: var(--black); color: var(--on-dark); }
+.handoff-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 12px; border-top: 1px solid var(--line); background: var(--paper); font-size: 13px; color: var(--muted); }
+.handoff-bar button { font: 600 13px var(--body); border: 1.5px solid var(--black); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 12px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; }
+.handoff-bar button:hover { background: var(--gold-soft); }
+.chat { grid-template-rows: auto 1fr auto auto; }
+.chat-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); background: var(--paper); }
+.chat-input input { flex: 1; min-width: 0; font: 400 16px var(--body); padding: 11px 14px; border: 1.5px solid var(--line); border-radius: 999px; color: var(--ink); background: var(--paper); }
+.chat-input input:focus { outline: none; border-color: var(--black); }
+.chat-input input:disabled { background: var(--paper-2); }
+.chat-input button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--black); color: var(--gold); cursor: pointer; display: grid; place-items: center; flex: none; }
+.chat-input button:disabled { background: var(--line); color: var(--muted); cursor: not-allowed; }
+.chat-input svg { width: 18px; height: 18px; }
+.foot-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid #26282B; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; }
+.motto { font-family: "Noto Sans Ethiopic", var(--body); color: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="topbar" role="region" aria-label="Announcement">
+  <div class="wrap">
+    <span class="new">NEW</span>
+    <span data-i18n="topbar">Edel Academy: online courses in ERP, web development, programming and AI, with certificates.</span>
+    <a href="#academy"><span data-i18n="topcta">See courses</span> →</a>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Edel home"><img src="edel-logo-web.png" alt="Edel Trading Private Limited Company"></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#einvoicing" data-i18n="nav1">E-invoicing</a>
+      <a href="#erp" data-i18n="nav2">ERP</a>
+      <a href="#academy" data-i18n="nav5">Academy</a>
+      <a href="#insights" data-i18n="nav6">Insights</a>
+      <a href="#readiness" data-i18n="nav3">Readiness check</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="am" aria-pressed="false">አማ</button>
+      </div>
+      <a class="btn btn-black" href="#waitlist" data-i18n="navcta">Join the waitlist</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow" data-i18n="eyebrow">E-invoicing · ERP · Addis Ababa</span>
+        <h1 style="margin-top:18px" data-i18n-html="h1">Every sale <span class="hl">registered</span>. Every branch in one system.</h1>
+        <p class="lede" data-i18n="lede">Edel issues electronic invoices that meet Ministry of Revenues requirements, and runs your accounts, stock and payroll from the same place.</p>
+        <p class="sub" data-i18n="sub">Use the computer, tablet or phone you already have. Works in English and Amharic, in Birr, with the Ethiopian calendar.</p>
+        <div class="hero-cta">
+          <a class="btn btn-gold" href="#waitlist"><span data-i18n="cta1">Join the waitlist</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" href="#readiness" data-i18n="cta2">Check if you're affected</a>
+        </div>
+        <p class="hero-note" data-i18n="note">Free to join. Early access opens in phases, with launch pricing for the first businesses.</p>
+      </div>
+
+      <div class="slip-stage">
+        <article class="slip" aria-label="Example electronic invoice" id="slip"></article>
+        <div class="slip-tabs" role="tablist" aria-label="Example document">
+          <button type="button" role="tab" aria-selected="true" data-slip="invoice">Tax invoice</button>
+          <button type="button" role="tab" aria-selected="false" data-slip="receipt">Cash receipt</button>
+        </div>
+        <span class="example">Example document. Not a real sale.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust" aria-label="Why businesses choose Edel">
+    <div class="wrap">
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Built for Ethiopian tax rules</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Runs in your browser</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7M7.5 5v1.5c0 3-2 5.5-4 6.5M5 9c1 2 3 3.5 6 4.5"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>English and Amharic</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Support team in Addis Ababa</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="einvoicing">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What's changing</span>
+        <h2>Invoices now go through the Ministry of Revenues.</h2>
+        <p>Ethiopia is moving to electronic invoicing. Each sale is sent to the Ministry's system as it happens, and the invoice comes back with an official number and a QR code anyone can scan to check it.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-node"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l2.4 12h11.2L21 7H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg></div><h3>You make a sale</h3><p>At the till, in the office or on the road. Edel builds the invoice with your TIN, items and VAT.</p></div>
+        <div class="flow-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <div class="flow-node mid"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-6 9 6"/><path d="M5 10v9M19 10v9M9 10v9M15 10v9M3 21h18"/></svg></div><h3>The Ministry registers it</h3><p>Edel sends the invoice securely and receives an official invoice number in seconds.</p></div>
+        <div class="flow-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <div class="flow-node end"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v1M14 20h1M18 18h3v3"/></svg></div><h3>Your customer gets proof</h3><p>Print it, send it by SMS or email. The QR code lets anyone confirm it's genuine.</p></div>
+      </div>
+      <div class="facts">
+        <div>Large and VAT-registered taxpayers are expected to move first. Others follow in phases.</div>
+        <div>Only systems approved by the Ministry can register invoices on your behalf.</div>
+        <div>When the rules change, Edel updates centrally. You don't reinstall anything.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band charcoal" id="readiness">
+    <div class="wrap finder">
+      <div class="section-head" style="margin-bottom:0">
+        <span class="eyebrow">Readiness check</span>
+        <h2>Is your business ready?</h2>
+        <p>Answer three questions. We'll tell you what e-invoicing likely means for you and which Edel setup fits.</p>
+      </div>
+      <div class="quiz" id="quiz" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="band" id="erp">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Products</span>
+        <h2>Start with invoicing. Grow into a full ERP.</h2>
+        <p>Both products share one database, so every registered sale flows straight into your books, stock and reports.</p>
+      </div>
+      <div class="products">
+        <article class="product feature">
+          <span class="tag">Edel E-Invoice</span>
+          <h3>Registered invoices from day one</h3>
+          <p>For shops, restaurants, pharmacies, hotels and wholesalers that need compliant invoicing fast.</p>
+          <ul class="checks">
+            <li>Issue tax invoices, cash receipts, credit and debit notes</li>
+            <li>Automatic registration with the Ministry of Revenues</li>
+            <li>QR code and official number on every document</li>
+            <li>Simple till screen for counter sales</li>
+            <li>Daily sales and VAT summary for every branch</li>
+          </ul>
+          <a class="btn btn-gold" href="#waitlist" data-prefill="Edel E-Invoice">Join the E-Invoice waitlist</a>
+        </article>
+        <article class="product plain">
+          <span class="tag">Edel ERP</span>
+          <h3>Run the whole business in one place</h3>
+          <p>For growing companies that want accounting, stock, purchasing and payroll connected to their invoices.</p>
+          <ul class="checks">
+            <li>All E-Invoice features included</li>
+            <li>Choose only the modules you need, add more later</li>
+            <li>One login for every branch and warehouse</li>
+            <li>Reports in the Ethiopian or Gregorian calendar</li>
+            <li>Data migration and staff training included</li>
+          </ul>
+          <a class="btn btn-black" href="#waitlist" data-prefill="Edel ERP">Join the ERP waitlist</a>
+        </article>
+      </div>
+
+      <div class="section-head" style="margin-top:72px">
+        <span class="eyebrow">ERP modules</span>
+        <h2>Eight modules, one system.</h2>
+      </div>
+      <div class="modules">
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg></div><h3>Finance &amp; Accounting</h3><p>General ledger, bank reconciliation, profit and loss, and balance sheet.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg></div><h3>Sales &amp; Invoicing</h3><p>Quotes, orders and registered invoices, with customer balances.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div><h3>Inventory &amp; Warehouse</h3><p>Stock levels by branch, transfers, reorder alerts and stock counts.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div><h3>Purchasing</h3><p>Purchase requests, approvals, supplier invoices and payments.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.5-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.8c1.6.8 2.7 2.6 3 5.2"/></svg></div><h3>HR &amp; Payroll</h3><p>Employee records, attendance, leave, payroll with income tax and pension.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></div><h3>Fixed Assets</h3><p>Asset register, depreciation schedules, transfers and disposals.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Customers (CRM)</h3><p>Contacts, follow-ups, credit limits and payment reminders.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div><h3>Reports &amp; Dashboards</h3><p>Sales, VAT, stock and cash on one screen, for every branch.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band dark">
+    <div class="wrap local-grid">
+      <div class="section-head" style="margin-bottom:0">
+        <span class="eyebrow">Made for Ethiopia</span>
+        <h2>Local rules are the starting point, not an add-on.</h2>
+        <p>Foreign systems need expensive changes to work here. Edel is designed around how Ethiopian businesses already operate.</p>
+        <div class="local-list" style="margin-top:12px">
+          <div class="local-item"><b>Ethiopian calendar</b><span>Dates, reports and the fiscal year in the Ethiopian calendar, with Gregorian alongside.</span></div>
+          <div class="local-item"><b>Birr first</b><span>Prices, VAT at 15% and reports in ETB. Foreign-currency purchases converted at your bank rate.</span></div>
+          <div class="local-item"><b>Works with weak internet</b><span>Keep selling during an outage. Invoices register as soon as the connection is back.</span></div>
+        </div>
+      </div>
+      <div class="datecard" aria-labelledby="dc-title">
+        <h3 id="dc-title">Today in Edel</h3>
+        <div class="dates">
+          <div class="eth"><small>Ethiopian · ዓ.ም</small><b id="d-eth"></b></div>
+          <div><small>Gregorian</small><b id="d-greg"></b></div>
+        </div>
+        <div class="fy">
+          <div class="fy-row"><b id="fy-name" style="color:var(--ink)"></b><span id="fy-pct"></span></div>
+          <div class="fy-bar"><span id="fy-bar"></span></div>
+          <div class="fy-row"><span>Hamle 1</span><span>Sene 30</span></div>
+        </div>
+        <p class="example">Every screen and report can show both dates. The fiscal year runs from Hamle 1 to Sene 30.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band soft" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2>From waitlist to your first registered invoice.</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><h3>Join the waitlist</h3><p>Tell us about your business. When your place comes up, we call to arrange a demo in Amharic or English.</p><span class="tag">2 minutes</span></div>
+        <div class="step"><div class="num">2</div><h3>We set you up</h3><p>We register your TIN and branches, import your items and customers, and train your staff.</p><span class="tag">Usually within a week</span></div>
+        <div class="step"><div class="num">3</div><h3>Sell as usual</h3><p>Every invoice registers automatically. Your books and stock update in the background.</p><span class="tag">Ongoing local support</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Who it's for</span>
+        <h2>Built for the way Ethiopian businesses sell.</h2>
+      </div>
+      <div class="sectors">
+        <span>Shops &amp; supermarkets</span><span>Restaurants &amp; cafés</span><span>Pharmacies</span><span>Hotels</span><span>Importers &amp; wholesalers</span><span>Manufacturers</span><span>Companies with several branches</span><span>Accountants &amp; audit firms</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="band soft" id="academy">
+    <div class="wrap">
+      <div class="academy-top">
+        <div class="section-head">
+          <span class="eyebrow">Edel Academy</span>
+          <h2>Online courses and certificates for your team and your career.</h2>
+          <p>Learn Edel software, ERP, website development, programming and AI tools at your own pace, with Ethiopian business examples. Pass the online exam and earn a certificate anyone can verify with a QR code.</p>
+          <div class="ac-stats">
+            <div><b id="ac-count">10</b><small>courses</small></div>
+            <div><b>አማ · EN</b><small>taught in both</small></div>
+            <div><b>Self-paced</b><small>online, exam included</small></div>
+          </div>
+        </div>
+        <figure class="cert" style="margin:0" aria-label="Example Edel Academy certificate">
+          <div class="cert-in">
+            <img src="edel-logo-web.png" alt="">
+            <span class="kicker">Edel Academy</span>
+            <h3>Certificate of Completion</h3>
+            <span class="am">የማጠናቀቂያ ሰርተፍኬት</span>
+            <span style="font-size:13px;color:var(--muted)">This certifies that</span>
+            <span class="who">Hana Mekonnen</span>
+            <span class="cert-course">has completed <b>E-Invoicing Essentials</b> and is a Certified E-Invoicing User.</span>
+            <div class="cert-foot">
+              <div class="sig">Head of Training</div>
+              <div class="qr"><canvas id="cert-qr" aria-hidden="true"></canvas><span class="mono">EDA-2019-0042</span></div>
+              <div class="sig" id="cert-date"></div>
+            </div>
+          </div>
+          <span class="seal" aria-hidden="true">EDEL<br>CERTIFIED</span>
+        </figure>
+      </div>
+
+      <div class="chips" role="group" aria-label="Filter courses by topic">
+        <button type="button" aria-pressed="true" data-cat="all">All courses</button>
+        <button type="button" aria-pressed="false" data-cat="Edel software">Edel software</button>
+        <button type="button" aria-pressed="false" data-cat="ERP systems">ERP systems</button>
+        <button type="button" aria-pressed="false" data-cat="Website development">Website development</button>
+        <button type="button" aria-pressed="false" data-cat="Software development">Software development</button>
+        <button type="button" aria-pressed="false" data-cat="AI">AI</button>
+      </div>
+      <div class="courses" id="courses"></div>
+      <div class="section-head" style="margin:64px 0 28px">
+        <span class="eyebrow">How certification works</span>
+        <h2>Four steps to your Edel certificate.</h2>
+      </div>
+      <div class="cert-steps">
+        <div><span class="num">1</span><h3>Register</h3><p>Choose a course and enrol. You get a learning account with every lesson and download for that course.</p></div>
+        <div><span class="num">2</span><h3>Learn at your pace</h3><p>Work through short video lessons and practice tasks from home or work, on a computer or phone.</p></div>
+        <div><span class="num">3</span><h3>Take the online exam</h3><p>When you finish the lessons, sit the exam online. You can retake it if you don't pass the first time.</p></div>
+        <div><span class="num">4</span><h3>Get certified</h3><p>Receive a certificate with your name and a QR code that employers and clients can scan to verify it.</p></div>
+      </div>
+      <p class="placeholder-note">Course titles, lengths and the retake rule are examples. Replace them with your real training programme.</p>
+    </div>
+  </section>
+
+  <section class="band soft" id="waitlist">
+    <div class="wrap quote-grid">
+      <div>
+        <div class="section-head" style="margin-bottom:0">
+          <span class="eyebrow">Early access</span>
+          <h2>Join the Edel waitlist.</h2>
+          <p>We're onboarding businesses in phases so every customer gets proper setup and training. Register now to hold your place.</p>
+        </div>
+        <ul class="perks">
+          <li><span class="n">1</span><div><b>Priority onboarding</b><small>Businesses are invited in the order they join, with VAT-registered taxpayers first.</small></div></li>
+          <li><span class="n">2</span><div><b>Launch pricing</b><small>Early members keep their launch price for the first year.</small></div></li>
+          <li><span class="n">3</span><div><b>Free setup and data import</b><small>We register your branches and bring in your items and customers at no cost.</small></div></li>
+        </ul>
+        <div class="contact-list">
+          <div><small>Phone</small><b><a href="tel:+251911251837" style="text-decoration:none">+251 911 251837</a></b></div>
+          <div><small>Email</small><b>sales@edel.et</b></div>
+          <div><small>Website</small><b><a href="https://www.edel.et" target="_blank" rel="noopener" style="text-decoration:none">www.edel.et</a></b></div>
+        </div>
+        <span class="socials-label" id="contact-social">Follow and message us</span>
+        <div class="socials " aria-label="Edel on social media">
+          <a data-social="instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg><span>Instagram</span></a>
+          <a data-social="tiktok" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.6 2.6 2.4 4.3 5 4.6"/></svg><span>TikTok</span></a>
+          <a data-social="whatsapp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg><span>WhatsApp</span></a>
+          <a data-social="telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6.5 2.5L12 20l3.2-4.3L19.5 19z"/><path d="M9.5 13.5L21 4"/></svg><span>Telegram</span></a>
+        </div>
+        <p class="placeholder-note">The email address, office location, social accounts and perks are still placeholders. Replace them with your real details.</p>
+      </div>
+      <form class="quote" id="wl-form" novalidate>
+        <div class="status-card" id="wl-status" hidden></div>
+        <div class="field"><label for="w-name">Full name</label><input id="w-name" name="name" required autocomplete="name"></div>
+        <div class="field"><label for="w-org">Business name</label><input id="w-org" name="business" required autocomplete="organization"></div>
+        <div class="field"><label for="w-phone">Phone</label><input id="w-phone" name="phone" type="tel" required placeholder="+251 9…" autocomplete="tel"></div>
+        <div class="field"><label for="w-email">Email <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input id="w-email" name="email" type="email" autocomplete="email"></div>
+        <div class="field"><label for="w-product">Interested in</label>
+          <select id="w-product" name="product">
+            <option>Edel E-Invoice</option>
+            <option>Edel ERP</option>
+            <option>Both</option>
+            <option>Edel Academy training</option>
+            <option>Not sure yet</option>
+          </select></div>
+        <div class="field full" id="w-course-field" hidden><label for="w-course">Course</label>
+          <select id="w-course" name="course"></select></div>
+        <div class="field"><label for="w-sector">Type of business</label>
+          <select id="w-sector" name="sector">
+            <option>Shop or supermarket</option><option>Restaurant or café</option><option>Pharmacy</option><option>Hotel</option>
+            <option>Importer or wholesaler</option><option>Manufacturer</option><option>Accountant or audit firm</option><option>Other</option>
+          </select></div>
+        <div class="field"><label for="w-vat">VAT-registered?</label>
+          <select id="w-vat" name="vat"><option>Yes</option><option>No</option><option>Not sure</option></select></div>
+        <div class="field"><label for="w-branches">Branches</label>
+          <select id="w-branches" name="branches"><option>1</option><option>2–5</option><option>6–20</option><option>More than 20</option></select></div>
+        <div class="field full"><label for="w-city">City</label><input id="w-city" name="city" value="Addis Ababa" autocomplete="address-level2"></div>
+        <label class="check-row full" for="w-demo"><input type="checkbox" id="w-demo" name="demo" checked> Call me to arrange a demo when my place comes up</label>
+        <div class="form-actions full">
+          <button class="btn btn-black" type="submit" id="wl-submit">Join the waitlist</button>
+          <small id="wl-msg">Name, business and phone are required.</small>
+        </div>
+        <div class="sent" id="sent" hidden>
+          <b>Your details are ready to send.</b>
+          <span style="color:var(--on-dark-muted);font-size:14px">Registration isn't connected on this copy of the site. Copy the summary and send it to us by email or Telegram.</span>
+          <pre id="sent-text"></pre>
+          <div><button class="btn btn-gold" type="button" id="copy-btn">Copy summary</button></div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="band admin" id="wl-admin" hidden>
+    <div class="wrap">
+      <div class="admin-bar">
+        <div style="display:grid;gap:8px"><span class="admin-badge">Only you and editors see this</span><h2>Waitlist registrations</h2></div>
+      </div>
+      <div class="tiles">
+        <div class="tile"><small>Total</small><b id="t-total">0</b></div>
+        <div class="tile"><small>E-Invoice</small><b id="t-einv">0</b></div>
+        <div class="tile"><small>ERP or both</small><b id="t-erp">0</b></div>
+        <div class="tile"><small>Want a demo</small><b id="t-demo">0</b></div>
+      </div>
+      <div class="admin-tools">
+        <label for="a-filter" class="eyebrow" style="margin-right:4px">Show</label>
+        <select id="a-filter"><option value="all">Everyone</option><option value="waiting">Waiting</option><option value="contacted">Contacted</option><option value="invited">Invited</option><option value="onboarded">Onboarded</option></select>
+        <input id="a-search" type="search" placeholder="Search name, business, phone">
+        <button class="btn btn-black" type="button" id="a-export" hidden>Download CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table class="wl">
+          <thead><tr><th>#</th><th>Joined</th><th>Name</th><th>Business</th><th>Contact</th><th>Product</th><th>VAT · Branches</th><th>Demo</th><th>Status</th></tr></thead>
+          <tbody id="a-rows"><tr><td colspan="9" class="empty">No registrations yet. New sign-ups appear here as soon as they're submitted.</td></tr></tbody>
+        </table>
+      </div>
+      <p class="example" style="margin-top:10px">Click a status to move it along: Waiting → Contacted → Invited → Onboarded.</p>
+    </div>
+  </section>
+
+  <section class="band" id="insights">
+    <div class="wrap">
+      <div class="blog-head">
+        <div>
+          <span class="eyebrow">Insights</span>
+          <h2>Practical guides on e-invoicing, ERP and running a business in Ethiopia.</h2>
+        </div>
+        <div>
+          <p>Our team writes about the new invoicing rules, choosing and using business software, and the everyday questions our customers ask.</p>
+          <a class="link" href="#contact-social">Get new articles on Telegram <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="posts" id="posts"></div>
+    </div>
+    <dialog class="reader" id="reader" aria-labelledby="reader-title">
+      <div class="reader-in">
+        <button class="btn btn-ghost reader-close" type="button" id="reader-close">Close</button>
+        <div class="tags" id="reader-tags"></div>
+        <h2 id="reader-title"></h2>
+        <time id="reader-date" style="color:var(--muted);font-size:14px"></time>
+        <div id="reader-body" style="display:grid;gap:14px"></div>
+        <div><a class="btn btn-gold" href="#waitlist" id="reader-cta">Join the waitlist</a></div>
+      </div>
+    </dialog>
+  </section>
+
+  <section class="band" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">FAQ</span>
+        <h2>Common questions</h2>
+      </div>
+      <div class="faq">
+        <details open><summary>How does the waitlist work?</summary><p>Register once with your business details. We invite businesses in the order they join, with VAT-registered taxpayers first, and call you to arrange setup when your place comes up. Joining is free and you can update your details at any time.</p></details>
+        <details><summary>Do I need to buy a new machine?</summary><p>No. Edel runs in a web browser on the computers, tablets and phones you already have. You can connect your existing receipt printer.</p></details>
+        <details><summary>When does my business have to switch?</summary><p>The Ministry of Revenues is rolling out electronic invoicing in phases, starting with larger and VAT-registered taxpayers. Take the readiness check above and we'll let you know when your phase is announced.</p></details>
+        <details><summary>What happens if the internet goes down?</summary><p>You can keep issuing invoices. Edel stores them safely and registers them with the Ministry as soon as the connection returns.</p></details>
+        <details><summary>Can I move my data from Excel or another system?</summary><p>Yes. We import your items, customers, suppliers and opening balances as part of setup, at no extra cost.</p></details>
+        <details><summary>How is Edel priced?</summary><p>Monthly or yearly plans in Birr, based on the number of branches and modules. Book a demo and we'll send a quote for your business.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div style="display:grid;gap:16px;align-content:start">
+        <span class="foot-logo"><img src="edel-logo-web.png" alt="Edel Trading PLC"></span>
+        <p style="max-width:36ch">Electronic invoicing and ERP software for Ethiopian businesses. Built and supported in Addis Ababa.</p>
+      </div>
+      <div><h4>Products</h4><ul><li><a href="#erp">Edel E-Invoice</a></li><li><a href="#erp">Edel ERP</a></li><li><a href="#erp">ERP modules</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#einvoicing">E-invoicing explained</a></li><li><a href="#readiness">Readiness check</a></li><li><a href="#how">How it works</a></li><li><a href="#academy">Edel Academy</a></li><li><a href="#insights">Insights</a></li><li><a href="#waitlist">Join the waitlist</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://www.edel.et" target="_blank" rel="noopener">www.edel.et</a></li><li>sales@edel.et</li><li>Bole, Addis Ababa</li></ul>
+        <div style="margin-top:16px"><div class="socials on-dark" aria-label="Edel on social media">
+          <a data-social="instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg><span>Instagram</span></a>
+          <a data-social="tiktok" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.6 2.6 2.4 4.3 5 4.6"/></svg><span>TikTok</span></a>
+          <a data-social="whatsapp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg><span>WhatsApp</span></a>
+          <a data-social="telegram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6.5 2.5L12 20l3.2-4.3L19.5 19z"/><path d="M9.5 13.5L21 4"/></svg><span>Telegram</span></a>
+        </div></div></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr"></span> Edel Trading PLC. All rights reserved.</span>
+      <span class="motto">ግብር ይክፈሉ፣ ሀገር ይልማ።</span>
+    </div>
+  </div>
+</footer>
+
+<button class="chat-launch" type="button" id="chat-launch" aria-controls="chat" aria-expanded="false">
+  <span class="bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>
+  <span class="dot" aria-hidden="true"></span>
+  <span class="lbl" data-i18n="chatlbl">Ask Edel</span>
+</button>
+<section class="chat" id="chat" role="dialog" aria-label="Chat with Edel" hidden>
+  <div class="chat-head">
+    <span class="av"><img src="edel-logo-web.png" alt=""></span>
+    <div><b>Edel Assistant</b><small>AI assistant · staff available</small></div>
+    <div class="tools">
+      <button type="button" id="chat-restart" aria-label="Start over" title="Start over"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></svg></button>
+      <button type="button" id="chat-close" aria-label="Close chat" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <div class="chat-log" id="chat-log" aria-live="polite"></div>
+  <div class="handoff-bar"><span>Prefer a person?</span><button type="button" id="chat-human"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Talk to a person</button></div>
+  <form class="chat-input" id="chat-form" autocomplete="off">
+    <label for="chat-text" class="sr-only" style="position:absolute;left:-9999px">Your message</label>
+    <input id="chat-text" placeholder="Ask about e-invoicing, ERP or training…" maxlength="600">
+    <button type="submit" id="chat-send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </form>
+</section>
+
+<script>
+(() => {
+  const fmt = n => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  /* Ethiopian calendar */
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  const ETH_EPOCH = 1723856;
+  function toEthiopian(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588;
+    const r = (jdn - ETH_EPOCH) % 1461;
+    const n = (r % 365) + 365 * Math.floor(r / 1460);
+    return {
+      year: 4 * Math.floor((jdn - ETH_EPOCH) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460),
+      month: Math.floor(n / 30) + 1,
+      day: (n % 30) + 1
+    };
+  }
+  function ethToJdn(y, m, d) { return ETH_EPOCH + 365 + 365 * (y - 1) + Math.floor(y / 4) + 30 * m + d - 31; }
+
+  const today = new Date();
+  const eth = toEthiopian(today);
+  const ethStr = `${ETH_MONTHS[eth.month - 1]} ${eth.day}፣ ${eth.year}`;
+  const gregStr = today.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+  /* Invoice mockup */
+  const docs = {
+    invoice: { title: "TAX INVOICE", am: "የግብር ደረሰኝ", no: "EDL-INV-000418", to: "Meskerem Trading PLC", toTin: "TIN 00XXXXXXXX",
+      lines: [["Teff flour, 25kg bag", 20, 3250], ["Sunflower oil, 5L", 36, 1180], ["Pasta, 500g (carton of 20)", 15, 1340]] },
+    receipt: { title: "CASH RECEIPT", am: "የሽያጭ ደረሰኝ", no: "EDL-RCP-002117", to: "Walk-in customer", toTin: "",
+      lines: [["Coffee beans, 1kg", 1, 1450], ["Jebena, clay", 1, 620], ["Macchiato", 2, 90]] }
+  };
+  const slipEl = document.getElementById("slip");
+  function drawQR(canvas, seedStr) {
+    const N = 25, ctx = canvas.getContext("2d");
+    canvas.width = canvas.height = N;
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, N, N);
+    let s = [...seedStr].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+    const rnd = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
+    ctx.fillStyle = "#0E0F10";
+    const finder = (x, y) => (px, py) => px >= x && px < x + 7 && py >= y && py < y + 7;
+    const inF = [finder(0, 0), finder(N - 7, 0), finder(0, N - 7)];
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      if (inF.some(f => f(x, y)) || (x < 8 && y < 8) || (x > N - 9 && y < 8) || (x < 8 && y > N - 9)) continue;
+      if (rnd() > 0.52) ctx.fillRect(x, y, 1, 1);
+    }
+    [[0, 0], [N - 7, 0], [0, N - 7]].forEach(([x, y]) => {
+      ctx.fillRect(x, y, 7, 7); ctx.fillStyle = "#fff"; ctx.fillRect(x + 1, y + 1, 5, 5);
+      ctx.fillStyle = "#0E0F10"; ctx.fillRect(x + 2, y + 2, 3, 3);
+    });
+  }
+  function renderSlip(key) {
+    const s = docs[key];
+    const sub = s.lines.reduce((t, l) => t + l[1] * l[2], 0);
+    const vat = sub * 0.15;
+    slipEl.innerHTML = `
+      <div class="slip-top"><div class="who"><b>Abyssinia Grocers PLC</b>Bole · Addis Ababa<br>TIN 00XXXXXXXX</div><div class="meta">No ${s.no}<br>${ethStr}<br>${gregStr}</div></div>
+      <h4>${s.title}</h4><div class="am">${s.am}</div>
+      <div class="slip-to"><span>To · ለ<br><b>${s.to}</b>${s.toTin ? "<br>" + s.toTin : ""}</span><span style="text-align:right">Currency<br><b>ETB</b></span></div>
+      <table class="lines"><thead><tr><th>Item</th><th class="n">Qty</th><th class="n">Amount</th></tr></thead>
+      <tbody>${s.lines.map(l => `<tr><td>${l[0]}</td><td class="n">${l[1]}</td><td class="n">${fmt(l[1] * l[2])}</td></tr>`).join("")}</tbody></table>
+      <div class="totals"><div><span>Subtotal · ንዑስ ድምር</span><span>${fmt(sub)}</span></div><div><span>VAT · ተ.እ.ታ 15%</span><span>${fmt(vat)}</span></div>
+      <div class="grand"><span>TOTAL ETB</span><span>${fmt(sub + vat)}</span></div></div>
+      <div class="slip-reg"><canvas aria-label="Example verification QR code"></canvas><span>Official no.<br><b>MOR-XXXX-XXXX-${s.no.slice(-4)}</b><br>Scan to verify · ለማረጋገጥ ይቃኙ</span><span class="stamp">REGISTERED<br>ተመዝግቧል</span></div>`;
+    drawQR(slipEl.querySelector("canvas"), s.no);
+  }
+  document.querySelectorAll("[data-slip]").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("[data-slip]").forEach(x => x.setAttribute("aria-selected", x === b));
+    renderSlip(b.dataset.slip);
+  }));
+  renderSlip("invoice");
+
+  /* Date card and fiscal year (Hamle 1 to Sene 30) */
+  document.getElementById("d-eth").textContent = ethStr;
+  document.getElementById("d-greg").textContent = gregStr;
+  const fyStartYear = eth.month >= 11 ? eth.year : eth.year - 1;
+  const todayJdn = ethToJdn(eth.year, eth.month, eth.day);
+  const fyStart = ethToJdn(fyStartYear, 11, 1), fyEnd = ethToJdn(fyStartYear + 1, 10, 30);
+  const pct = Math.round(((todayJdn - fyStart) / (fyEnd - fyStart)) * 100);
+  document.getElementById("fy-name").textContent = `Fiscal year ${fyStartYear}/${String(fyStartYear + 1).slice(-2)} E.C.`;
+  document.getElementById("fy-pct").textContent = `${pct}% through`;
+  document.getElementById("fy-bar").style.width = pct + "%";
+  document.getElementById("yr").textContent = today.getFullYear();
+
+  /* Readiness check */
+  const Q = [
+    { q: "Is your business VAT-registered?", o: [["Yes", "vat"], ["No, I pay turnover tax", "tot"], ["Not sure", "unsure"]] },
+    { q: "How do you issue invoices today?", o: [["Cash register machine", "crm"], ["Paper receipt books", "paper"], ["Accounting software or Excel", "software"]] },
+    { q: "How many branches do you have?", o: [["One", "1"], ["2 to 5", "few"], ["More than 5", "many"]] }
+  ];
+  const quiz = document.getElementById("quiz");
+  let answers = [];
+  function renderQuiz() {
+    const i = answers.length;
+    const bar = `<div class="quiz-progress">${Q.map((_, k) => `<span class="${k <= i ? "on" : ""}"></span>`).join("")}</div>`;
+    if (i < Q.length) {
+      quiz.innerHTML = `${bar}<div class="qnum">Question ${i + 1} of ${Q.length}</div><h3>${Q[i].q}</h3>
+        <div class="opts">${Q[i].o.map(([t, v]) => `<button type="button" data-v="${v}">${t}<small>→</small></button>`).join("")}</div>`;
+      quiz.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", () => { answers.push(b.dataset.v); renderQuiz(); }));
+      return;
+    }
+    const [tax, now, br] = answers;
+    const timing = tax === "vat" ? "You're likely to be in one of the early phases."
+      : tax === "tot" ? "You'll likely move in a later phase, so there's time to prepare."
+      : "Check your TIN registration. We can help you confirm your tax category.";
+    const erp = br !== "1" || now === "software";
+    const product = erp ? "Edel ERP" : "Edel E-Invoice";
+    const why = erp
+      ? (br === "1" ? "You already keep your books in software, so moving them into Edel avoids entering every sale twice." : "With several branches, one system for invoices, stock and accounts saves the most time.")
+      : "A single branch can start with registered invoicing and add accounting later.";
+    const prep = ["Your TIN certificate and trade licence", br === "1" ? "Your shop or office address" : "A list of branches with addresses", now === "crm" ? "Your cash register machine's last Z-report" : now === "paper" ? "A recent receipt book to copy your item names" : "An export of your items and customers"];
+    quiz.innerHTML = `${bar}<div class="result"><span class="pill">${product}</span><h3>${erp ? "Connect invoicing to your whole business" : "Start with registered invoicing"}</h3>
+      <p>${timing} ${why}</p>
+      <div class="qnum">What to prepare</div><ul>${prep.map(p => `<li>${p}</li>`).join("")}</ul>
+      <div class="row"><a class="btn btn-gold" href="#waitlist" id="quiz-go">Join the waitlist</a><button class="btn btn-line-dark" type="button" id="quiz-reset">Start again</button></div></div>`;
+    document.getElementById("quiz-reset").addEventListener("click", () => { answers = []; renderQuiz(); });
+    document.getElementById("quiz-go").addEventListener("click", () => {
+      document.getElementById("w-product").value = product;
+      document.getElementById("w-vat").value = tax === "vat" ? "Yes" : tax === "tot" ? "No" : "Not sure";
+      document.getElementById("w-branches").value = br === "1" ? "1" : br === "few" ? "2–5" : "6–20";
+    });
+  }
+  renderQuiz();
+
+  document.querySelectorAll("[data-prefill]").forEach(a => a.addEventListener("click", () => {
+    document.getElementById("w-product").value = a.dataset.prefill;
+  }));
+
+  /* Waitlist registration.
+     On the published page, entries are saved to the page's database: each person writes only
+     their own entry (waitlist/<their id>), and only the owner and editors can read the full list.
+     On a self-hosted copy, set WAITLIST_ENDPOINT to a URL that accepts a JSON POST
+     (for example a Google Apps Script web app or a form service); otherwise visitors get a copyable summary. */
+  /* Social accounts: replace these with Edel's real handles and numbers.
+     WhatsApp takes the full number with country code and no "+" or spaces. Leave a value empty to show it without a link. */
+  const SOCIAL = {
+    instagram: "",   // e.g. "edel.et"      → instagram.com/edel.et
+    tiktok: "",      // e.g. "edel.et"      → tiktok.com/@edel.et
+    whatsapp: "251911251837", // → wa.me/251911251837
+    telegram: ""     // e.g. "edel_et"      → t.me/edel_et
+  };
+  const SOCIAL_URL = {
+    instagram: h => "https://www.instagram.com/" + h,
+    tiktok: h => "https://www.tiktok.com/@" + h.replace(/^@/, ""),
+    whatsapp: n => "https://wa.me/" + n.replace(/\D/g, ""),
+    telegram: h => "https://t.me/" + h.replace(/^@/, "")
+  };
+  document.querySelectorAll("[data-social]").forEach(a => {
+    const v = (SOCIAL[a.dataset.social] || "").trim();
+    if (v) { a.href = SOCIAL_URL[a.dataset.social](v); a.setAttribute("aria-label", a.textContent.trim() + " (opens in a new tab)"); }
+    else a.title = "Link not set yet";
+  });
+
+  const WAITLIST_ENDPOINT = "";
+  const FIELDS = ["name", "business", "phone", "email", "product", "course", "sector", "vat", "branches", "city"];
+  const STATUSES = ["waiting", "contacted", "invited", "onboarded"];
+  const STATUS_LABEL = { waiting: "Waiting", contacted: "Contacted", invited: "Invited", onboarded: "Onboarded" };
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmtDate = iso => iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "-";
+
+  const wlForm = document.getElementById("wl-form");
+  const wlMsg = document.getElementById("wl-msg");
+  const wlStatus = document.getElementById("wl-status");
+  const wlSubmit = document.getElementById("wl-submit");
+  let db = null, uid = null, mine = null;
+
+  function setMsg(text, isErr) { wlMsg.textContent = text; wlMsg.classList.toggle("err", !!isErr); }
+  function showMine() {
+    if (!mine) { wlStatus.hidden = true; wlSubmit.textContent = "Join the waitlist"; return; }
+    wlStatus.hidden = false;
+    wlStatus.innerHTML = `<b>You're on the waitlist</b><span>Joined ${esc(fmtDate(mine.createdAt))} · Status: ${esc(STATUS_LABEL[mine.status] || "Waiting")}. We'll call ${esc(mine.phone)} when your place comes up. You can update your details below.</span>`;
+    wlSubmit.textContent = "Update my details";
+  }
+  function fillForm(d) {
+    FIELDS.forEach(f => { if (d[f] != null && wlForm.elements[f]) wlForm.elements[f].value = d[f]; });
+    syncCourseField();
+    wlForm.elements.demo.checked = !!d.demo;
+  }
+  function showCopyFallback(d) {
+    document.getElementById("sent-text").textContent =
+      `Waitlist registration — Edel (send to +251 911 251837)\nName: ${d.name}\nBusiness: ${d.business}\nPhone: ${d.phone}\nEmail: ${d.email || "-"}\nInterested in: ${d.product}${d.product === "Edel Academy training" ? " (" + d.course + ")" : ""}\nType of business: ${d.sector}\nVAT-registered: ${d.vat}\nBranches: ${d.branches}\nCity: ${d.city || "-"}\nWants a demo: ${d.demo ? "Yes" : "No"}`;
+    document.getElementById("sent").hidden = false;
+    setMsg("Copy the summary below to send it.");
+  }
+
+  wlForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const d = {};
+    FIELDS.forEach(f => { d[f] = String(wlForm.elements[f].value || "").trim(); });
+    if (d.product !== "Edel Academy training") d.course = "";
+    d.demo = wlForm.elements.demo.checked;
+    const missing = ["name", "business", "phone"].find(f => !d[f]);
+    if (missing) { setMsg("Add your name, business name and phone number so we can reach you.", true); wlForm.elements[missing].focus(); return; }
+    if (d.phone.replace(/\D/g, "").length < 9) { setMsg("Check the phone number. It should have at least 9 digits.", true); wlForm.elements.phone.focus(); return; }
+    if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { setMsg("Check the email address, or leave it empty.", true); wlForm.elements.email.focus(); return; }
+
+    wlSubmit.disabled = true; setMsg("Saving…");
+    try {
+      if (db && uid) {
+        const now = new Date().toISOString();
+        const rec = { ...d, createdAt: mine?.createdAt || now, updatedAt: now, status: mine?.status || "waiting" };
+        await db.doc("waitlist/" + uid).set(rec);
+        const wasNew = !mine;
+        mine = rec; showMine();
+        setMsg(wasNew ? "You're on the list. Thank you!" : "Your details are updated.");
+      } else if (WAITLIST_ENDPOINT) {
+        const res = await fetch(WAITLIST_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...d, createdAt: new Date().toISOString() }) });
+        if (!res.ok) throw { code: "endpoint", message: res.status };
+        wlForm.reset(); setMsg("You're on the list. We'll be in touch.");
+      } else {
+        showCopyFallback(d);
+      }
+    } catch (err) {
+      if (err?.code === "quota_exceeded") setMsg("The waitlist is full right now. Please call or email us instead.", true);
+      else if (err?.code === "invalid_argument" || err?.code === "not_granted") { db = null; showCopyFallback(d); }
+      else setMsg("We couldn't save that. Check your connection and try again.", true);
+    } finally { wlSubmit.disabled = false; }
+  });
+
+  document.getElementById("copy-btn").addEventListener("click", e => {
+    const text = document.getElementById("sent-text").textContent;
+    const btn = e.currentTarget;
+    navigator.clipboard.writeText(text).then(() => { btn.textContent = "Copied"; }).catch(() => {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById("sent-text"));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected — press Ctrl/⌘+C";
+    });
+  });
+
+  /* Admin list for the owner and editors */
+  function startAdmin(downloads) {
+    const section = document.getElementById("wl-admin");
+    const rowsEl = document.getElementById("a-rows");
+    const filterEl = document.getElementById("a-filter");
+    const searchEl = document.getElementById("a-search");
+    const exportBtn = document.getElementById("a-export");
+    let entries = [];
+    section.hidden = false;
+    exportBtn.hidden = !downloads;
+
+    function render() {
+      const n = s => entries.filter(s).length;
+      document.getElementById("t-total").textContent = entries.length;
+      document.getElementById("t-einv").textContent = n(x => x.product === "Edel E-Invoice");
+      document.getElementById("t-erp").textContent = n(x => x.product === "Edel ERP" || x.product === "Both");
+      document.getElementById("t-demo").textContent = n(x => x.demo);
+      const f = filterEl.value, q = searchEl.value.trim().toLowerCase();
+      const shown = entries.filter(x => (f === "all" || (x.status || "waiting") === f) &&
+        (!q || [x.name, x.business, x.phone, x.email].some(v => String(v || "").toLowerCase().includes(q)))).slice().reverse();
+      if (!entries.length) { rowsEl.innerHTML = `<tr><td colspan="9" class="empty">No registrations yet. New sign-ups appear here as soon as they're submitted.</td></tr>`; return; }
+      if (!shown.length) { rowsEl.innerHTML = `<tr><td colspan="9" class="empty">No one matches this filter.</td></tr>`; return; }
+      rowsEl.innerHTML = shown.map(x => {
+        const st = x.status || "waiting";
+        return `<tr><td class="num">${x.pos}</td><td class="num">${esc(fmtDate(x.createdAt))}</td><td>${esc(x.name)}<small>${esc(x.city)}</small></td>
+          <td>${esc(x.business)}<small>${esc(x.sector)}</small></td><td>${esc(x.phone)}<small>${esc(x.email)}</small></td>
+          <td>${esc(x.product)}${x.product === "Edel Academy training" && x.course ? `<small>${esc(x.course)}</small>` : ""}</td><td>${esc(x.vat)} · ${esc(x.branches)}</td><td>${x.demo ? "Yes" : "No"}</td>
+          <td><button type="button" class="st ${st}" data-id="${esc(x.id)}" title="Change status">${STATUS_LABEL[st]}</button></td></tr>`;
+      }).join("");
+    }
+    db.collection("waitlist").orderBy("createdAt", "asc").onSnapshot(snap => {
+      entries = snap.docs.map((doc, i) => ({ id: doc.id, pos: i + 1, ...doc.data() }));
+      render();
+    }, () => { rowsEl.innerHTML = `<tr><td colspan="9" class="empty">The list couldn't load. Reload the page to try again.</td></tr>`; });
+    filterEl.addEventListener("change", render);
+    searchEl.addEventListener("input", render);
+    rowsEl.addEventListener("click", async e => {
+      const b = e.target.closest(".st"); if (!b) return;
+      const cur = entries.find(x => x.id === b.dataset.id); if (!cur) return;
+      const next = STATUSES[(STATUSES.indexOf(cur.status || "waiting") + 1) % STATUSES.length];
+      b.disabled = true;
+      try { await db.doc("waitlist/" + cur.id).update({ status: next, updatedAt: new Date().toISOString() }); }
+      catch (err) { b.textContent = "Couldn't save"; }
+      finally { b.disabled = false; }
+    });
+    exportBtn.addEventListener("click", async () => {
+      const cols = ["pos", "createdAt", "name", "business", "phone", "email", "product", "course", "sector", "vat", "branches", "city", "demo", "status"];
+      const cell = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const csv = [cols.join(","), ...entries.map(x => cols.map(c => cell(c === "demo" ? (x.demo ? "yes" : "no") : x[c])).join(","))].join("\r\n");
+      try { await downloads.save({ filename: `edel-waitlist-${new Date().toISOString().slice(0, 10)}.csv`, data: "﻿" + csv }); } catch (err) {}
+    });
+  }
+
+  (async () => {
+    if (!window.claude?.use) return;
+    try {
+      const [dbNs, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+      if (!dbNs || !user) return;
+      const id = await user.id();
+      if (!id) return;
+      db = dbNs; uid = id;
+      const snap = await db.doc("waitlist/" + uid).get();
+      if (snap.exists) { mine = snap.data(); fillForm(mine); showMine(); }
+      if (await user.canEdit()) startAdmin(await window.claude.use("downloads"));
+    } catch (err) { /* keep the copy-summary fallback */ }
+  })();
+
+  /* Edel Academy courses */
+  const COURSES = [
+    { t: "E-Invoicing Essentials", cat: "Edel software", lvl: "Beginner", d: "6 hours", who: "Cashiers and shop owners", cert: "Certified E-Invoicing User",
+      p: "Issue, correct and reprint registered invoices and receipts, handle refunds with credit notes, and keep selling during an internet outage." },
+    { t: "Edel ERP for Accountants", cat: "Edel software", lvl: "Intermediate", d: "30 hours", who: "Accountants and finance teams", cert: "Certified ERP Accountant",
+      p: "Chart of accounts, journals, bank reconciliation, VAT returns and month-end close in the Ethiopian fiscal year." },
+    { t: "Edel System Administrator", cat: "Edel software", lvl: "Advanced", d: "24 hours", who: "IT staff and super users", cert: "Certified System Administrator",
+      p: "Users and permissions, branch setup, approval workflows, data imports, backups and connecting other systems." },
+    { t: "ERP Fundamentals for Ethiopian Businesses", cat: "ERP systems", lvl: "Beginner", d: "10 hours", who: "Managers, staff and students", cert: "Certificate in ERP Fundamentals",
+      p: "What an ERP is, how finance, sales, stock, purchasing and HR connect, and what changes with the Ethiopian calendar and VAT." },
+    { t: "ERP Implementation & Customization", cat: "ERP systems", lvl: "Intermediate", d: "28 hours", who: "Implementers and IT teams", cert: "Certified ERP Implementer",
+      p: "Gather requirements, configure modules, migrate data, add custom fields and reports, and plan a safe go-live." },
+    { t: "HR & Payroll Administration", cat: "ERP systems", lvl: "Intermediate", d: "18 hours", who: "HR officers and payroll staff", cert: "Certified Payroll Administrator",
+      p: "Employee records, attendance, leave and monthly payroll with income tax and pension, including Pagume and mid-month starts." },
+    { t: "WordPress for Business Websites", cat: "Website development", lvl: "Beginner", d: "20 hours", who: "Business owners and beginners", cert: "Certificate in WordPress Websites",
+      p: "Plan, build and manage a professional business website with themes, pages, forms, basic SEO and backups." },
+    { t: "Build a CMS with PHP & MySQL", cat: "Website development", lvl: "Intermediate", d: "32 hours", who: "Aspiring web developers", cert: "Certificate in PHP Web Development",
+      p: "Create your own content management system from scratch: logins, pages, a database, an admin panel and secure forms." },
+    { t: "Python Programming Foundations", cat: "Software development", lvl: "Beginner", d: "24 hours", who: "Students and career changers", cert: "Certificate in Python Programming",
+      p: "Variables, logic, functions and files, then small real projects such as a sales report and an invoice calculator." },
+    { t: "AI Tools for Business", cat: "AI", lvl: "Beginner", d: "8 hours", who: "Marketing, sales and office staff", cert: "Certificate in AI for Business",
+      p: "Use AI chat assistants to draft emails and replies, create images for social media, and keep company data safe while you do." }
+  ];
+
+  const coursesEl = document.getElementById("courses");
+  const courseSel = document.getElementById("w-course");
+  const productSel = document.getElementById("w-product");
+  courseSel.innerHTML = COURSES.map(c => `<option>${esc(c.t)}</option>`).join("");
+  function syncCourseField() { document.getElementById("w-course-field").hidden = productSel.value !== "Edel Academy training"; }
+  productSel.addEventListener("change", syncCourseField);
+  const ICON_USER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>';
+  const ICON_CERT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg>';
+  const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+  function renderCourses(cat) {
+    coursesEl.innerHTML = COURSES.filter(c => cat === "all" || c.cat === cat).map(c => `
+      <article class="course">
+        <span class="cat">${esc(c.cat)}</span>
+        <div class="course-top"><span class="lvl ${c.lvl}">${c.lvl}</span><span class="dur">${c.d}</span></div>
+        <h3>${esc(c.t)}</h3>
+        <p>${esc(c.p)}</p>
+        <div class="meta"><span>${ICON_USER}${esc(c.who)}</span><span>${ICON_PIN}Online, self-paced, with exam</span><span>${ICON_CERT}${esc(c.cert)}</span></div>
+        <a class="btn btn-black" href="#waitlist" data-enrol="${esc(c.t)}">Enrol</a>
+      </article>`).join("");
+  }
+  document.querySelectorAll("[data-cat]").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("[data-cat]").forEach(x => x.setAttribute("aria-pressed", x === b));
+    renderCourses(b.dataset.cat);
+  }));
+  document.getElementById("ac-count").textContent = COURSES.length;
+  coursesEl.addEventListener("click", e => {
+    const a = e.target.closest("[data-enrol]"); if (!a) return;
+    productSel.value = "Edel Academy training"; courseSel.value = a.dataset.enrol; syncCourseField();
+  });
+  renderCourses("all");
+  drawQR(document.getElementById("cert-qr"), "EDA-2019-0042");
+  document.getElementById("cert-date").textContent = ethStr;
+
+  /* Insights articles */
+  const ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  const ART = {
+    c1: '<svg class="art" viewBox="0 0 200 120" aria-hidden="true"><rect x="18" y="34" width="44" height="58" rx="6" fill="#FFFFFF"/><path d="M28 50h24M28 60h24M28 70h16" stroke="#0E0F10" stroke-width="4" stroke-linecap="round"/><path d="M70 63h22" stroke="#D3A628" stroke-width="3" stroke-dasharray="5 5"/><circle cx="118" cy="63" r="24" fill="none" stroke="#D3A628" stroke-width="4"/><path d="M118 74V54M110 61l8-8 8 8" stroke="#D3A628" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M146 63h20" stroke="#D3A628" stroke-width="3" stroke-dasharray="5 5"/><rect x="170" y="44" width="38" height="38" rx="8" fill="#D3A628"/><path d="M179 63l6 6 12-12" stroke="#0E0F10" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    c2: '<svg class="art" viewBox="0 0 200 120" aria-hidden="true"><rect x="20" y="20" width="190" height="110" rx="10" fill="#0E0F10"/><rect x="40" y="80" width="16" height="30" rx="3" fill="#D3A628"/><rect x="66" y="64" width="16" height="46" rx="3" fill="#D3A628"/><rect x="92" y="72" width="16" height="38" rx="3" fill="#FFFFFF"/><rect x="118" y="50" width="16" height="60" rx="3" fill="#D3A628"/><rect x="144" y="40" width="16" height="70" rx="3" fill="#D3A628"/><path d="M40 58l30-14 26 8 30-20 30-8" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+    c3: '<svg class="art" viewBox="0 0 200 120" aria-hidden="true"><rect x="30" y="18" width="170" height="112" rx="10" fill="#FFFFFF"/><rect x="30" y="18" width="170" height="24" rx="10" fill="#D3A628"/><g fill="#E4E2DC">' + Array.from({ length: 18 }, (_, i) => `<rect x="${42 + (i % 6) * 26}" y="${52 + Math.floor(i / 6) * 22}" width="18" height="14" rx="3"/>`).join("") + '</g><rect x="146" y="96" width="18" height="14" rx="3" fill="#0E0F10"/><rect x="172" y="96" width="18" height="14" rx="3" fill="#D3A628"/></svg>'
+  };
+  const POSTS = [
+    { id: "till", cover: "c1", ct: "What changes at the till", date: "2026-10-15", tags: ["Articles", "E-Invoicing", "Retail"],
+      title: "E-invoicing in Ethiopia: what actually changes at the till",
+      body: [
+        "<p>For cashiers, electronic invoicing changes one step: each sale is sent to the Ministry of Revenues system before the receipt is handed over. Scanning items, taking cash or a transfer and printing stay the same.</p>",
+        "<p><b>What the customer sees.</b> An official invoice number and a QR code on every receipt. Anyone can scan the code to confirm the sale was registered.</p>",
+        "<p><b>What to prepare.</b> Your TIN and trade licence details, a clean item list with VAT-inclusive prices, and a decision on which device each branch will use.</p>",
+        "<p><b>When the internet drops.</b> A good system keeps issuing invoices and registers them as soon as the connection returns, so the queue keeps moving.</p>",
+        "<p><b>One tip.</b> Train cashiers on refunds and credit notes before go-live. Corrections are where most early mistakes happen.</p>"
+      ] },
+    { id: "erp-questions", cover: "c2", ct: "7 questions before you buy", date: "2026-09-30", tags: ["Articles", "ERP", "Buying guide"],
+      title: "Seven questions to ask before choosing an ERP in Ethiopia",
+      body: [
+        "<p>Most ERP demos look good. These questions show whether a system will actually fit an Ethiopian business.</p>",
+        "<ol><li>Does it use the Ethiopian calendar and fiscal year natively, not as an add-on?</li><li>Can it issue registered e-invoices itself, or do you need a second tool?</li><li>Is it priced in Birr?</li><li>Who supports you locally, in which language, and how fast?</li><li>Can you start with a few modules and add more later?</li><li>Who moves your data from Excel or your current system, and who pays for it?</li><li>When tax rules change, who updates the system and how quickly?</li></ol>",
+        "<p>Ask every vendor to answer these in the demo using your own data, not a prepared example.</p>"
+      ] },
+    { id: "payroll", cover: "c3", ct: "Payroll without spreadsheets", date: "2026-09-12", tags: ["Articles", "HR & Payroll"],
+      title: "Running payroll in the Ethiopian calendar without spreadsheets",
+      body: [
+        "<p>Many companies still run payroll in a spreadsheet copied from month to month. It works until someone edits a formula, an employee starts mid-month, or the auditor asks how a figure was calculated.</p>",
+        "<p><b>Decide the Pagume rule once.</b> Ethiopian months have 30 days, and Pagume has 5 or 6. Set how those days are paid in the system instead of deciding each year.</p>",
+        "<p><b>Keep records with the employee.</b> Contracts, allowances, leave balances and overtime approvals belong on the employee's record, so every payslip can be explained.</p>",
+        "<p><b>Let the system apply the tables.</b> Income tax and pension should come from the current tables, with history kept so past months can be reproduced exactly.</p>",
+        "<p><b>Close each month.</b> Lock the period after approval, so later changes go through an adjustment instead of an edit.</p>"
+      ] }
+  ];
+  const postDate = iso => {
+    const d = new Date(iso + "T00:00:00"), e = toEthiopian(d);
+    return `${d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })} · ${ETH_MONTHS[e.month - 1]} ${e.day}፣ ${e.year}`;
+  };
+  document.getElementById("posts").innerHTML = POSTS.map(p => `
+    <button type="button" class="post" data-post="${p.id}" aria-label="Read: ${esc(p.title)}">
+      <div class="cover ${p.cover}"><span class="lbl">Edel Insights</span><span class="ct">${esc(p.ct)}</span>${ART[p.cover]}</div>
+      <div class="post-body">
+        <div class="tags">${p.tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>
+        <h3>${esc(p.title)}</h3>
+        <time datetime="${p.date}">${ICON_CLOCK}${postDate(p.date)}</time>
+      </div>
+    </button>`).join("");
+  const reader = document.getElementById("reader");
+  function openPost(id) {
+    const p = POSTS.find(x => x.id === id); if (!p) return;
+    document.getElementById("reader-tags").innerHTML = p.tags.map(t => `<span>${esc(t)}</span>`).join("");
+    document.getElementById("reader-title").textContent = p.title;
+    document.getElementById("reader-date").textContent = postDate(p.date);
+    document.getElementById("reader-body").innerHTML = p.body.join("");
+    if (reader.showModal) reader.showModal(); else reader.setAttribute("open", "");
+  }
+  document.getElementById("posts").addEventListener("click", e => { const b = e.target.closest("[data-post]"); if (b) openPost(b.dataset.post); });
+  document.getElementById("reader-close").addEventListener("click", () => reader.close());
+  document.getElementById("reader-cta").addEventListener("click", () => reader.close());
+  reader.addEventListener("click", e => { if (e.target === reader) reader.close(); });
+
+  /* Chat box: an AI assistant answers first; "Talk to a person" opens live chat with staff.
+     AI: on a self-hosted copy, set AI_ENDPOINT to the URL of the edel-chat-worker (see that folder's README).
+         On the claude.ai preview, the assistant runs on the viewer's own Claude account instead.
+     Live chat: set TAWK to your Tawk.to property and widget ids (Tawk.to dashboard → Administration → Chat Widget).
+         Until then, "Talk to a person" hands the visitor to WhatsApp with their question attached. */
+  const AI_ENDPOINT = "";
+  const TAWK = { propertyId: "", widgetId: "" };
+  const STAFF_WA = "251911251837";
+  const KNOWLEDGE = "You are Edel Assistant, the website chat assistant for Edel Trading PLC in Addis Ababa, Ethiopia. You help visitors on www.edel.et.\n\nABOUT EDEL\n- Edel builds electronic invoicing (e-invoicing) and ERP software for Ethiopian businesses, and runs Edel Academy training.\n- Edel E-Invoice: issue tax invoices, cash receipts, credit and debit notes; each invoice is registered with the Ministry of Revenues system and carries an official number and a QR code anyone can scan to verify it; simple till screen for counter sales; daily sales and VAT summary per branch; runs in a web browser on existing computers, tablets and phones; keeps working during internet outages and registers invoices when the connection returns.\n- Edel ERP: includes all E-Invoice features plus modules chosen as needed: Finance & Accounting, Sales & Invoicing, Inventory & Warehouse, Purchasing, HR & Payroll, Fixed Assets, Customers (CRM), Reports & Dashboards. One login for every branch. Ethiopian and Gregorian calendars; fiscal year Hamle 1 to Sene 30. Prices and VAT (15%) in Birr. Data migration from Excel or other systems and staff training are included in setup.\n- Who it's for: shops and supermarkets, restaurants and cafés, pharmacies, hotels, importers and wholesalers, manufacturers, companies with several branches, accountants and audit firms.\n- E-invoicing rollout: the Ministry of Revenues is rolling it out in phases; larger and VAT-registered taxpayers are expected first. Only systems approved by the Ministry can register invoices. Edel does not know a specific business's deadline; the website's readiness check and the waitlist help with that.\n- Edel Academy courses are online and self-paced; after the lessons you take an online exam (retakes allowed) and receive a certificate with a QR code for verification. Courses: Edel software: E-Invoicing Essentials (Beginner, 6 hours), Edel ERP for Accountants (Intermediate, 30 hours), Edel System Administrator (Advanced, 24 hours). ERP systems: ERP Fundamentals for Ethiopian Businesses (Beginner, 10 hours), ERP Implementation & Customization (Intermediate, 28 hours), HR & Payroll Administration (Intermediate, 18 hours). Website development: WordPress for Business Websites (Beginner, 20 hours), Build a CMS with PHP & MySQL (Intermediate, 32 hours). Software development: Python Programming Foundations (Beginner, 24 hours). AI: AI Tools for Business (Beginner, 8 hours). Enrol through the waitlist form on the website by choosing Edel Academy training.\n- Getting started: join the waitlist on the website (free). Businesses are invited in the order they join, VAT-registered first; the team then calls to arrange a demo, sets up the TIN, branches, items and customers, and trains staff.\n- Pricing: monthly or yearly plans in Birr based on branches and modules. There is no public price list; the team sends a quote.\n- Contact: phone and WhatsApp +251 911 251837; website www.edel.et. Hours Monday to Saturday, 8:30 to 17:30.\n\nHOW TO ANSWER\n- Reply in the visitor's language: Amharic if they write in Amharic, otherwise English.\n- Keep answers short and friendly: usually 2 to 5 sentences, or a short list.\n- Only state facts listed above. Never invent prices, discounts, deadlines, tax rates, certifications, approvals, customer names or features. If you don't know, say the team can confirm and offer to connect them.\n- For questions unrelated to Edel, e-invoicing, ERP, business software or the training, politely say you can only help with Edel topics.\n- When the visitor asks for a person, a price quote, a demo, has an account or billing problem, or you cannot answer, end your reply with the exact marker [[HANDOFF]] on its own line. The website turns that marker into buttons to reach the staff.\n- Never ask for passwords, bank details or ID numbers. A name and phone number are fine if the visitor wants a call back.";
+  const CHAT = {
+    en: {
+      hello: "👋 Hi, I'm the **Edel Assistant**. Ask me anything about e-invoicing, Edel ERP or Edel Academy training. You can talk to a person at any time.",
+      quick: ["How does e-invoicing work?", "Which ERP modules do you have?", "What training courses do you offer?", "How much does Edel cost?"],
+      human: "Talk to a person", thinking: "Thinking…",
+      handoff: "Our team can help with that directly. How would you like to reach them?",
+      offline: "I can't answer automatically right now, but our team can. How would you like to reach them?",
+      wa: "Continue on WhatsApp", call: "Call +251 911 251837", live: "Start live chat", wl: "Join the waitlist",
+      err: "Sorry, something went wrong. Please try again, or talk to a person."
+    },
+    am: {
+      hello: "👋 ሰላም፣ እኔ **የኤደል ረዳት** ነኝ። ስለ ኤሌክትሮኒክ ደረሰኝ፣ ኤደል ኢአርፒ ወይም ስለ ኤደል አካዳሚ ስልጠና ይጠይቁኝ። በማንኛውም ጊዜ ሰው ማነጋገር ይችላሉ።",
+      quick: ["ኤሌክትሮኒክ ደረሰኝ እንዴት ይሰራል?", "ምን የኢአርፒ ሞጁሎች አሏችሁ?", "ምን ስልጠናዎች አሏችሁ?", "ዋጋው ስንት ነው?"],
+      human: "ሰው ያነጋግሩ", thinking: "እያሰብኩ ነው…",
+      handoff: "ቡድናችን በቀጥታ ሊረዳዎ ይችላል። እንዴት ማግኘት ይፈልጋሉ?",
+      offline: "አሁን በራሴ መመለስ አልቻልኩም፣ ቡድናችን ግን ይረዳዎታል። እንዴት ማግኘት ይፈልጋሉ?",
+      wa: "በዋትስአፕ ይቀጥሉ", call: "ይደውሉ +251 911 251837", live: "የቀጥታ ውይይት ይጀምሩ", wl: "የጥበቃ ዝርዝሩን ይቀላቀሉ",
+      err: "ይቅርታ፣ ችግር ተፈጥሯል። እንደገና ይሞክሩ ወይም ሰው ያነጋግሩ።"
+    }
+  };
+  const chatEl = document.getElementById("chat"), logEl = document.getElementById("chat-log");
+  const launch = document.getElementById("chat-launch"), chatForm = document.getElementById("chat-form");
+  const chatText = document.getElementById("chat-text"), chatSend = document.getElementById("chat-send");
+  const L = () => CHAT[document.documentElement.lang === "am" ? "am" : "en"];
+  const clock = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const scrollLog = () => { logEl.scrollTop = logEl.scrollHeight; };
+  const fmtChat = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  let turns = [], busy = false, started = false, aiSample = null, aiOff = false, tawkReady = false;
+
+  function addMsg(text, who) {
+    const m = document.createElement("div");
+    m.className = "msg " + who;
+    m.innerHTML = `<span class="txt"></span><span class="time">${clock()}</span>`;
+    m.querySelector(".txt").innerHTML = who === "bot" ? fmtChat(text) : esc(text);
+    logEl.appendChild(m); scrollLog(); return m;
+  }
+  function setBusy(b) { busy = b; chatText.disabled = chatSend.disabled = b; if (!b) chatText.focus({ preventScroll: true }); }
+  function showQuick() {
+    const q = document.createElement("div");
+    q.className = "quick";
+    q.innerHTML = L().quick.map(t => `<button type="button">${esc(t)}</button>`).join("");
+    q.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { q.remove(); ask(b.textContent); } });
+    logEl.appendChild(q); scrollLog();
+  }
+  function showHandoff(intro) {
+    if (intro) addMsg(intro, "bot");
+    const lastQs = turns.filter(t => t.role === "user").slice(-3).map(t => t.content).join(" / ");
+    const waText = `Hello Edel, I was chatting on your website.${lastQs ? " My question: " + lastQs : ""}`;
+    const box = document.createElement("div");
+    box.className = "actions-col";
+    box.innerHTML = `${tawkReady ? `<button type="button" class="wa" data-live>${L().live}</button>` : ""}
+      <a class="wa" href="https://wa.me/${STAFF_WA}?text=${encodeURIComponent(waText.slice(0, 900))}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg>${L().wa}</a>
+      <a href="tel:+${STAFF_WA}">${L().call}</a>
+      <button type="button" data-wl>${L().wl}</button>`;
+    box.querySelector("[data-live]")?.addEventListener("click", openLive);
+    box.querySelector("[data-wl]").addEventListener("click", () => { closeChat(); document.getElementById("waitlist").scrollIntoView({ behavior: "smooth" }); });
+    logEl.appendChild(box); scrollLog();
+  }
+
+  async function aiReply(onText) {
+    const history = turns.slice(-12);
+    if (AI_ENDPOINT) {
+      const res = await fetch(AI_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
+      if (!res.ok) throw { code: "endpoint_" + res.status };
+      const data = await res.json();
+      if (!data.reply) throw { code: "empty" };
+      onText(data.reply);
+      return data.reply;
+    }
+    if (!aiSample && !aiOff && window.claude?.use) aiSample = await window.claude.use("sample");
+    if (!aiSample) throw { code: "no_ai" };
+    const { text } = await aiSample([{ role: "user", content: KNOWLEDGE + "\n\nThe website visitor's messages follow. Reply as Edel Assistant." }, ...history],
+      { modelTier: "quick", cache: false, onText: ({ text }) => onText(text) });
+    return text;
+  }
+  async function ask(q) {
+    if (busy) return;
+    q = q.trim().slice(0, 600); if (!q) return;
+    addMsg(q, "me"); turns.push({ role: "user", content: q });
+    setBusy(true);
+    const m = addMsg(L().thinking, "bot"), txt = m.querySelector(".txt");
+    const show = t => { txt.innerHTML = fmtChat(t.replace(/\[\[HANDOFF\]\]/g, "").trim()); scrollLog(); };
+    try {
+      const reply = await aiReply(show);
+      turns.push({ role: "assistant", content: reply });
+      show(reply);
+      if (reply.includes("[[HANDOFF]]")) showHandoff();
+    } catch (e) {
+      if (["no_ai", "not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e?.code)) {
+        aiOff = true; m.remove(); showHandoff(L().offline);
+      } else { txt.textContent = L().err; showHandoff(); }
+      turns.pop();
+    } finally { setBusy(false); }
+  }
+  function startChat() {
+    logEl.innerHTML = ""; turns = [];
+    addMsg(L().hello, "bot");
+    showQuick();
+  }
+  chatForm.addEventListener("submit", e => { e.preventDefault(); const v = chatText.value; chatText.value = ""; ask(v); });
+  document.getElementById("chat-human").addEventListener("click", () => {
+    if (tawkReady) openLive();
+    else { addMsg(L().human, "me"); showHandoff(L().handoff); }
+  });
+
+  /* Live chat with staff through Tawk.to (self-hosted site only) */
+  function openLive() {
+    if (!tawkReady) return;
+    closeChat(); window.Tawk_API.showWidget(); window.Tawk_API.maximize();
+  }
+  if (TAWK.propertyId && TAWK.widgetId) {
+    window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();
+    window.Tawk_API.onLoad = () => { tawkReady = true; window.Tawk_API.hideWidget(); };
+    window.Tawk_API.onChatMinimized = () => { window.Tawk_API.hideWidget(); launch.hidden = false; };
+    const s = document.createElement("script");
+    s.async = true; s.src = `https://embed.tawk.to/${TAWK.propertyId}/${TAWK.widgetId}`; s.charset = "UTF-8"; s.setAttribute("crossorigin", "*");
+    document.head.appendChild(s);
+  }
+
+  function openChat() {
+    chatEl.hidden = false; launch.hidden = true; launch.setAttribute("aria-expanded", "true");
+    if (!started) { started = true; startChat(); }
+    chatText.focus({ preventScroll: true });
+  }
+  function closeChat() { chatEl.hidden = true; launch.hidden = false; launch.setAttribute("aria-expanded", "false"); }
+  launch.addEventListener("click", openChat);
+  document.getElementById("chat-close").addEventListener("click", closeChat);
+  document.getElementById("chat-restart").addEventListener("click", startChat);
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !chatEl.hidden && !reader.open) closeChat(); });
+
+  /* Language toggle (hero and navigation) */
+  const T = {
+    en: {},
+    am: {
+      topbar: "አዲስ፦ ኤደል አካዳሚ — በኢአርፒ፣ በዌብሳይት ልማት፣ በፕሮግራሚንግ እና በኤአይ የኦንላይን ኮርሶች ከሰርተፍኬት ጋር።", topcta: "ኮርሶችን ይመልከቱ", chatlbl: "ይጠይቁን", nav5: "አካዳሚ", nav6: "ጽሁፎች",
+      nav1: "ኤሌክትሮኒክ ደረሰኝ", nav2: "ኢአርፒ", nav3: "ዝግጁነት ማረጋገጫ", nav4: "እንዴት ይሰራል", navcta: "የጥበቃ ዝርዝሩን ይቀላቀሉ",
+      eyebrow: "ኤሌክትሮኒክ ደረሰኝ · ኢአርፒ · አዲስ አበባ",
+      h1: 'እያንዳንዱ ሽያጭ <span class="hl">ይመዘገባል</span>። ሁሉም ቅርንጫፎች በአንድ ሲስተም።',
+      lede: "ኤደል የገቢዎች ሚኒስቴርን መስፈርት የሚያሟሉ ኤሌክትሮኒክ ደረሰኞችን ያወጣል፤ ሂሳብዎን፣ ክምችትዎን እና ደመወዝዎን ከአንድ ቦታ ያስተዳድራል።",
+      sub: "ያለዎትን ኮምፒውተር፣ ታብሌት ወይም ስልክ ይጠቀሙ። በአማርኛና በእንግሊዝኛ፣ በብር እና በኢትዮጵያ ዘመን አቆጣጠር ይሰራል።",
+      cta1: "የጥበቃ ዝርዝሩን ይቀላቀሉ", cta2: "ይመለከትዎት እንደሆነ ያረጋግጡ",
+      note: "መመዝገብ ነፃ ነው። ቀድመው ለተመዘገቡ የመክፈቻ ዋጋ ይጠበቅላቸዋል።"
+    }
+  };
+  document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach(el => {
+    const k = el.dataset.i18n || el.dataset.i18nHtml;
+    T.en[k] = el.dataset.i18nHtml ? el.innerHTML : el.textContent;
+  });
+  function setLang(l) {
+    document.documentElement.lang = l;
+    document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = T[l][el.dataset.i18n]; });
+    document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = T[l][el.dataset.i18nHtml]; });
+    document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === l));
+    try { localStorage.setItem("edel-lang", l); } catch (e) {}
+  }
+  document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+  try { const saved = localStorage.getItem("edel-lang"); if (saved === "am") setLang("am"); } catch (e) {}
+})();
+</script>
+</body>
+</html>
