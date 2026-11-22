@@ -85,6 +85,7 @@ header.site { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
 .nav .btn { padding: 11px 18px; font-size: 14px; }
 @media (max-width: 1240px) { .nav-links { gap: 20px; font-size: 14px; } .nav-links a[href="#faq"] { display: none; } }
 @media (max-width: 1120px) { .nav-links a[href="#readiness"] { display: none; } }
+@media (max-width: 1180px) { .nav-links a[href="#insights"] { display: none; } }
 @media (max-width: 1000px) { .nav-links { display: none; } }
 @media (max-width: 520px) { .nav .btn { display: none; } .brand img { height: 38px; } }
 
@@ -469,6 +470,61 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
 .chat-input button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--black); color: var(--gold); cursor: pointer; display: grid; place-items: center; flex: none; }
 .chat-input button:disabled { background: var(--line); color: var(--muted); cursor: not-allowed; }
 .chat-input svg { width: 18px; height: 18px; }
+/* Header WhatsApp */
+.nav-wa { width: 40px; height: 40px; border-radius: 50%; background: #1F9D55; color: #FFFFFF; display: grid; place-items: center; flex: none; }
+.nav-wa:hover { background: #198A49; }
+.nav-wa svg { width: 20px; height: 20px; }
+
+/* Audience split */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 820px) { .split { grid-template-columns: 1fr; } }
+.split-card { border-radius: 18px; padding: clamp(26px, 3.5vw, 40px); display: grid; gap: 14px; align-content: start; border: 1px solid var(--line); background: var(--paper); }
+.split-card.dark { background: var(--black); color: var(--on-dark); border-color: var(--black); }
+.split-card .kicker { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-deep); }
+.split-card.dark .kicker { color: var(--gold); }
+.split-card h2 { font-size: clamp(24px, 2.8vw, 32px); }
+.split-card p { color: var(--muted); font-size: 16.5px; max-width: 46ch; }
+.split-card.dark p { color: var(--on-dark-muted); }
+.split-card .btn { justify-self: start; margin-top: 4px; }
+
+/* Services */
+.services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 1000px) { .services { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .services { grid-template-columns: 1fr; } }
+.svc { border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; display: grid; gap: 10px; align-content: start; background: var(--paper); transition: border-color .15s ease, transform .15s ease; }
+.svc:hover { border-color: var(--charcoal); transform: translateY(-2px); }
+.svc .ic { width: 46px; height: 46px; border-radius: 12px; background: var(--black); color: var(--gold); display: grid; place-items: center; }
+.svc .ic svg { width: 22px; height: 22px; }
+.svc h3 { font-size: 20px; }
+.svc p { color: var(--muted); font-size: 15.5px; }
+.svc a { margin-top: 4px; font-weight: 600; font-size: 14.5px; text-decoration: none; display: inline-flex; gap: 6px; align-items: center; border-bottom: 2px solid var(--gold); justify-self: start; padding-bottom: 1px; }
+.svc a svg { width: 15px; height: 15px; }
+.process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 8px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper); }
+@media (max-width: 900px) { .process { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .process { grid-template-columns: 1fr; } }
+.process > div { padding: 24px; display: grid; gap: 8px; align-content: start; border-right: 1px solid var(--line); }
+.process > div:last-child { border-right: 0; }
+@media (max-width: 900px) { .process > div { border-bottom: 1px solid var(--line); } }
+.process .n { font: 700 34px/1 var(--display); color: var(--gold-deep); font-variant-numeric: tabular-nums; }
+.process h3 { font-size: 19px; }
+.process p { color: var(--muted); font-size: 15px; }
+
+/* Why Edel */
+.why { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+@media (max-width: 1000px) { .why { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .why { grid-template-columns: 1fr; } }
+.why > div { display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: 3px solid var(--gold); }
+.why h3 { font-size: 19px; }
+.why p { color: var(--muted); font-size: 15.5px; }
+
+/* Closing call to action */
+.cta-band { background: var(--gold); color: var(--black); }
+.cta-band .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px 40px; flex-wrap: wrap; padding-block: clamp(44px, 6vw, 72px); }
+.cta-band h2 { font-size: clamp(28px, 3.6vw, 42px); max-width: 18ch; }
+.cta-band p { font-size: 17px; margin-top: 10px; max-width: 46ch; color: #2A2B2E; }
+.cta-band .row { display: flex; flex-wrap: wrap; gap: 12px; }
+.cta-band .btn-ghost { border-color: var(--black); color: var(--black); }
+.cta-band .btn-ghost:hover { background: rgba(14,15,16,.08); }
 .foot-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid #26282B; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; }
 .motto { font-family: "Noto Sans Ethiopic", var(--body); color: var(--gold); }
 </style>
@@ -489,6 +545,7 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
     <nav class="nav-links" aria-label="Main">
       <a href="#einvoicing" data-i18n="nav1">E-invoicing</a>
       <a href="#erp" data-i18n="nav2">ERP</a>
+      <a href="#services" data-i18n="nav7">Services</a>
       <a href="#academy" data-i18n="nav5">Academy</a>
       <a href="#insights" data-i18n="nav6">Insights</a>
       <a href="#readiness" data-i18n="nav3">Readiness check</a>
@@ -499,6 +556,7 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="am" aria-pressed="false">አማ</button>
       </div>
+      <a class="nav-wa" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20book%20a%20free%20consultation." target="_blank" rel="noopener" aria-label="Chat with Edel on WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg></a>
       <a class="btn btn-black" href="#waitlist" data-i18n="navcta">Join the waitlist</a>
     </div>
   </div>
@@ -539,6 +597,23 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7M7.5 5v1.5c0 3-2 5.5-4 6.5M5 9c1 2 3 3.5 6 4.5"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>English and Amharic</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Support team in Addis Ababa</li>
       </ul>
+    </div>
+  </section>
+
+  <section class="band" style="padding-block: clamp(48px, 6vw, 80px) 0">
+    <div class="wrap split">
+      <article class="split-card dark">
+        <span class="kicker">For larger companies</span>
+        <h2>Compliance and integration for the systems you already run.</h2>
+        <p>Connect your existing ERP, accounting or point-of-sale system to Ministry of Revenues e-invoicing, link it to banks and other systems, and get a dedicated team to support it.</p>
+        <a class="btn btn-gold" href="#services">Explore services <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </article>
+      <article class="split-card">
+        <span class="kicker">For growing businesses</span>
+        <h2>One ERP with e-invoicing built in.</h2>
+        <p>Accounts, sales, stock, purchasing, HR and payroll in one system, on computer and phone, with registered invoices from day one.</p>
+        <a class="btn btn-black" href="#erp">See Edel ERP <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </article>
     </div>
   </section>
 
@@ -625,6 +700,36 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Customers (CRM)</h3><p>Contacts, follow-ups, credit limits and payment reminders.</p></article>
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div><h3>Reports &amp; Dashboards</h3><p>Sales, VAT, stock and cash on one screen, for every branch.</p></article>
       </div>
+    </div>
+  </section>
+
+  <section class="band soft" id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Services</span>
+        <h2>Software and integration, delivered by one local team.</h2>
+        <p>Beyond our own products, we build, connect and support the systems Ethiopian companies run on.</p>
+      </div>
+      <div class="services">
+        <article class="svc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg></div><h3>E-invoicing integration</h3><p>Connect your current ERP, accounting or point-of-sale system to the Ministry of Revenues, so every invoice registers automatically.</p><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20E-invoicing%20integration." target="_blank" rel="noopener">Ask about this <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>
+        <article class="svc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div><h3>ERP implementation</h3><p>Edel ERP set up for your company: configuration, data migration from Excel or old systems, staff training and go-live.</p><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20ERP%20implementation." target="_blank" rel="noopener">Ask about this <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>
+        <article class="svc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8"/><circle cx="5" cy="12" r="3"/><circle cx="19" cy="12" r="3"/><path d="M12 5v3M12 16v3"/></svg></div><h3>System & API integration</h3><p>Make your systems talk to each other: banks, payment services, SMS, warehouses and branch software, through secure APIs.</p><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20System%20%26%20API%20integration." target="_blank" rel="noopener">Ask about this <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>
+        <article class="svc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div><h3>Custom software & mobile apps</h3><p>Web portals and mobile apps built around how your business works, for staff, customers or agents in the field.</p><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20Custom%20software%20%26%20mobile%20apps." target="_blank" rel="noopener">Ask about this <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>
+        <article class="svc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></div><h3>AI & automation</h3><p>Assistants that answer customer questions, read invoices and documents, and take repetitive work off your team.</p><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20AI%20%26%20automation." target="_blank" rel="noopener">Ask about this <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>
+        <article class="svc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/><path d="M17 4.5l1.5 1.5L21 3.5"/></svg></div><h3>Dedicated developer & support</h3><p>A developer and support team assigned to your company after go-live, for changes, fixes and new reports.</p><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20Dedicated%20developer%20%26%20support." target="_blank" rel="noopener">Ask about this <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>
+      </div>
+
+      <div class="section-head" style="margin:72px 0 28px">
+        <span class="eyebrow">How we work</span>
+        <h2>From first call to long-term support.</h2>
+      </div>
+      <div class="process">
+        <div><span class="n">01</span><h3>Discover</h3><p>We visit or call, learn how your business works today, and agree what success looks like.</p></div>
+        <div><span class="n">02</span><h3>Build</h3><p>We configure Edel or develop what you need, with a demo at each stage so there are no surprises.</p></div>
+        <div><span class="n">03</span><h3>Integrate</h3><p>We connect it to your existing systems and the Ministry of Revenues, migrate data and test with your team.</p></div>
+        <div><span class="n">04</span><h3>Support</h3><p>After go-live we train staff, make changes and keep everything running, in Amharic or English.</p></div>
+      </div>
+      <p class="placeholder-note">Services and process are written as examples. Confirm which services Edel offers before promoting them.</p>
     </div>
   </section>
 
@@ -858,6 +963,21 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
     </dialog>
   </section>
 
+  <section class="band" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Why Edel</span>
+        <h2>One partner from the first idea to long-term support.</h2>
+      </div>
+      <div class="why">
+        <div><h3>Based in Addis Ababa</h3><p>Our team works in your time zone and your working hours, and visits your office when needed.</p></div>
+        <div><h3>Built for Ethiopian rules</h3><p>Ministry of Revenues e-invoicing, VAT in Birr and the Ethiopian calendar are designed in from the start.</p></div>
+        <div><h3>Software and integration together</h3><p>We supply the system and connect it to the ones you already have, so you deal with one company.</p></div>
+        <div><h3>Support after go-live</h3><p>Training through Edel Academy, quick fixes and ongoing changes, in Amharic or English.</p></div>
+      </div>
+    </div>
+  </section>
+
   <section class="band" id="faq">
     <div class="wrap">
       <div class="section-head">
@@ -876,6 +996,19 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
   </section>
 </main>
 
+<section class="cta-band" aria-labelledby="cta-title">
+  <div class="wrap">
+    <div>
+      <h2 id="cta-title">Let's talk about your business.</h2>
+      <p>Book a free consultation, ask for an Edel ERP demo, or join the waitlist for e-invoicing.</p>
+    </div>
+    <div class="row">
+      <a class="btn btn-black" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20book%20a%20free%20consultation." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg>Book a free consultation</a>
+      <a class="btn btn-ghost" href="#waitlist">Join the waitlist</a>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <div class="foot-grid">
@@ -884,7 +1017,7 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
         <p style="max-width:36ch">Electronic invoicing and ERP software for Ethiopian businesses. Built and supported in Addis Ababa.</p>
       </div>
       <div><h4>Products</h4><ul><li><a href="#erp">Edel E-Invoice</a></li><li><a href="#erp">Edel ERP</a></li><li><a href="#erp">ERP modules</a></li></ul></div>
-      <div><h4>Company</h4><ul><li><a href="#einvoicing">E-invoicing explained</a></li><li><a href="#readiness">Readiness check</a></li><li><a href="#how">How it works</a></li><li><a href="#academy">Edel Academy</a></li><li><a href="#insights">Insights</a></li><li><a href="#waitlist">Join the waitlist</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#einvoicing">E-invoicing explained</a></li><li><a href="#readiness">Readiness check</a></li><li><a href="#services">Services</a></li><li><a href="#why">Why Edel</a></li><li><a href="#how">How it works</a></li><li><a href="#academy">Edel Academy</a></li><li><a href="#insights">Insights</a></li><li><a href="#waitlist">Join the waitlist</a></li><li><a href="#faq">FAQ</a></li></ul></div>
       <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://www.edel.et" target="_blank" rel="noopener">www.edel.et</a></li><li>sales@edel.et</li><li>Bole, Addis Ababa</li></ul>
         <div style="margin-top:16px"><div class="socials on-dark" aria-label="Edel on social media">
           <a data-social="instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg><span>Instagram</span></a>
@@ -1343,7 +1476,7 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
   const TAWK = { propertyId: "", widgetId: "" };
   const STAFF_WA = "251960369445";
   const STAFF_PHONE = "251911251837";
-  const KNOWLEDGE = "You are Edel Assistant, the website chat assistant for Edel Trading PLC in Addis Ababa, Ethiopia. You help visitors on www.edel.et.\n\nABOUT EDEL\n- Edel builds electronic invoicing (e-invoicing) and ERP software for Ethiopian businesses, and runs Edel Academy training.\n- Edel E-Invoice: issue tax invoices, cash receipts, credit and debit notes; each invoice is registered with the Ministry of Revenues system and carries an official number and a QR code anyone can scan to verify it; simple till screen for counter sales; daily sales and VAT summary per branch; runs in a web browser on existing computers, tablets and phones; keeps working during internet outages and registers invoices when the connection returns.\n- Edel ERP: includes all E-Invoice features plus modules chosen as needed: Finance & Accounting, Sales & Invoicing, Inventory & Warehouse, Purchasing, HR & Payroll, Fixed Assets, Customers (CRM), Reports & Dashboards. One login for every branch. Ethiopian and Gregorian calendars; fiscal year Hamle 1 to Sene 30. Prices and VAT (15%) in Birr. Data migration from Excel or other systems and staff training are included in setup.\n- Who it's for: shops and supermarkets, restaurants and cafés, pharmacies, hotels, importers and wholesalers, manufacturers, companies with several branches, accountants and audit firms.\n- E-invoicing rollout: the Ministry of Revenues is rolling it out in phases; larger and VAT-registered taxpayers are expected first. Only systems approved by the Ministry can register invoices. Edel does not know a specific business's deadline; the website's readiness check and the waitlist help with that.\n- Edel Academy courses are online and self-paced; after the lessons you take an online exam (retakes allowed) and receive a certificate with a QR code for verification. Courses: Edel software: E-Invoicing Essentials (Beginner, 6 hours), Edel ERP for Accountants (Intermediate, 30 hours), Edel System Administrator (Advanced, 24 hours). ERP systems: ERP Fundamentals for Ethiopian Businesses (Beginner, 10 hours), ERP Implementation & Customization (Intermediate, 28 hours), HR & Payroll Administration (Intermediate, 18 hours). Website development: WordPress for Business Websites (Beginner, 20 hours), Build a CMS with PHP & MySQL (Intermediate, 32 hours). Software development: Python Programming Foundations (Beginner, 24 hours). AI: AI Tools for Business (Beginner, 8 hours). Enrol through the waitlist form on the website by choosing Edel Academy training.\n- Getting started: join the waitlist on the website (free). Businesses are invited in the order they join, VAT-registered first; the team then calls to arrange a demo, sets up the TIN, branches, items and customers, and trains staff.\n- Pricing: monthly or yearly plans in Birr based on branches and modules. There is no public price list; the team sends a quote.\n- Contact: phone +251 911 251837; WhatsApp +251 960369445; website www.edel.et. Hours Monday to Saturday, 8:30 to 17:30.\n\nHOW TO ANSWER\n- Reply in the visitor's language: Amharic if they write in Amharic, otherwise English.\n- Keep answers short and friendly: usually 2 to 5 sentences, or a short list.\n- Only state facts listed above. Never invent prices, discounts, deadlines, tax rates, certifications, approvals, customer names or features. If you don't know, say the team can confirm and offer to connect them.\n- For questions unrelated to Edel, e-invoicing, ERP, business software or the training, politely say you can only help with Edel topics.\n- When the visitor asks for a person, a price quote, a demo, has an account or billing problem, or you cannot answer, end your reply with the exact marker [[HANDOFF]] on its own line. The website turns that marker into buttons to reach the staff.\n- Never ask for passwords, bank details or ID numbers. A name and phone number are fine if the visitor wants a call back.";
+  const KNOWLEDGE = "You are Edel Assistant, the website chat assistant for Edel Trading PLC in Addis Ababa, Ethiopia. You help visitors on www.edel.et.\n\nABOUT EDEL\n- Edel builds electronic invoicing (e-invoicing) and ERP software for Ethiopian businesses, and runs Edel Academy training.\n- Edel E-Invoice: issue tax invoices, cash receipts, credit and debit notes; each invoice is registered with the Ministry of Revenues system and carries an official number and a QR code anyone can scan to verify it; simple till screen for counter sales; daily sales and VAT summary per branch; runs in a web browser on existing computers, tablets and phones; keeps working during internet outages and registers invoices when the connection returns.\n- Edel ERP: includes all E-Invoice features plus modules chosen as needed: Finance & Accounting, Sales & Invoicing, Inventory & Warehouse, Purchasing, HR & Payroll, Fixed Assets, Customers (CRM), Reports & Dashboards. One login for every branch. Ethiopian and Gregorian calendars; fiscal year Hamle 1 to Sene 30. Prices and VAT (15%) in Birr. Data migration from Excel or other systems and staff training are included in setup.\n- Services for larger companies (the team confirms scope and price per project): e-invoicing integration for an existing ERP, accounting or point-of-sale system; Edel ERP implementation; system and API integration with banks, payment services, SMS and branch software; custom web and mobile apps; AI assistants and document automation; a dedicated developer and support team after go-live. Free consultations are booked on WhatsApp +251 960369445.\n- Who it's for: shops and supermarkets, restaurants and cafés, pharmacies, hotels, importers and wholesalers, manufacturers, companies with several branches, accountants and audit firms.\n- E-invoicing rollout: the Ministry of Revenues is rolling it out in phases; larger and VAT-registered taxpayers are expected first. Only systems approved by the Ministry can register invoices. Edel does not know a specific business's deadline; the website's readiness check and the waitlist help with that.\n- Edel Academy courses are online and self-paced; after the lessons you take an online exam (retakes allowed) and receive a certificate with a QR code for verification. Courses: Edel software: E-Invoicing Essentials (Beginner, 6 hours), Edel ERP for Accountants (Intermediate, 30 hours), Edel System Administrator (Advanced, 24 hours). ERP systems: ERP Fundamentals for Ethiopian Businesses (Beginner, 10 hours), ERP Implementation & Customization (Intermediate, 28 hours), HR & Payroll Administration (Intermediate, 18 hours). Website development: WordPress for Business Websites (Beginner, 20 hours), Build a CMS with PHP & MySQL (Intermediate, 32 hours). Software development: Python Programming Foundations (Beginner, 24 hours). AI: AI Tools for Business (Beginner, 8 hours). Enrol through the waitlist form on the website by choosing Edel Academy training.\n- Getting started: join the waitlist on the website (free). Businesses are invited in the order they join, VAT-registered first; the team then calls to arrange a demo, sets up the TIN, branches, items and customers, and trains staff.\n- Pricing: monthly or yearly plans in Birr based on branches and modules. There is no public price list; the team sends a quote.\n- Contact: phone +251 911 251837; WhatsApp +251 960369445; website www.edel.et. Hours Monday to Saturday, 8:30 to 17:30.\n\nHOW TO ANSWER\n- Reply in the visitor's language: Amharic if they write in Amharic, otherwise English.\n- Keep answers short and friendly: usually 2 to 5 sentences, or a short list.\n- Only state facts listed above. Never invent prices, discounts, deadlines, tax rates, certifications, approvals, customer names or features. If you don't know, say the team can confirm and offer to connect them.\n- For questions unrelated to Edel, e-invoicing, ERP, business software or the training, politely say you can only help with Edel topics.\n- When the visitor asks for a person, a price quote, a demo, has an account or billing problem, or you cannot answer, end your reply with the exact marker [[HANDOFF]] on its own line. The website turns that marker into buttons to reach the staff.\n- Never ask for passwords, bank details or ID numbers. A name and phone number are fine if the visitor wants a call back.";
   const CHAT = {
     en: {
       hello: "👋 Hi, I'm the **Edel Assistant**. Ask me anything about e-invoicing, Edel ERP or Edel Academy training. You can talk to a person at any time.",
@@ -1478,7 +1611,7 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
   const T = {
     en: {},
     am: {
-      topbar: "አዲስ፦ ኤደል አካዳሚ — በኢአርፒ፣ በዌብሳይት ልማት፣ በፕሮግራሚንግ እና በኤአይ የኦንላይን ኮርሶች ከሰርተፍኬት ጋር።", topcta: "ኮርሶችን ይመልከቱ", chatlbl: "ይጠይቁን", nav5: "አካዳሚ", nav6: "ጽሁፎች",
+      topbar: "አዲስ፦ ኤደል አካዳሚ — በኢአርፒ፣ በዌብሳይት ልማት፣ በፕሮግራሚንግ እና በኤአይ የኦንላይን ኮርሶች ከሰርተፍኬት ጋር።", topcta: "ኮርሶችን ይመልከቱ", chatlbl: "ይጠይቁን", nav5: "አካዳሚ", nav7: "አገልግሎቶች", nav6: "ጽሁፎች",
       nav1: "ኤሌክትሮኒክ ደረሰኝ", nav2: "ኢአርፒ", nav3: "ዝግጁነት ማረጋገጫ", nav4: "እንዴት ይሰራል", navcta: "የጥበቃ ዝርዝሩን ይቀላቀሉ",
       eyebrow: "ኤሌክትሮኒክ ደረሰኝ · ኢአርፒ · አዲስ አበባ",
       h1: 'እያንዳንዱ ሽያጭ <span class="hl">ይመዘገባል</span>። ሁሉም ቅርንጫፎች በአንድ ሲስተም።',
