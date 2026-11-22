@@ -525,6 +525,67 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
 .cta-band .row { display: flex; flex-wrap: wrap; gap: 12px; }
 .cta-band .btn-ghost { border-color: var(--black); color: var(--black); }
 .cta-band .btn-ghost:hover { background: rgba(14,15,16,.08); }
+/* ERP extras */
+@media (min-width: 1180px) { .modules.ten { grid-template-columns: repeat(5, 1fr); } }
+.extras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px 32px; }
+@media (max-width: 900px) { .extras { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .extras { grid-template-columns: 1fr; } }
+.extras > div { display: grid; grid-template-columns: 44px 1fr; gap: 4px 14px; align-items: start; }
+.extras .ic { grid-row: span 2; width: 44px; height: 44px; border-radius: 12px; background: var(--gold-soft); color: var(--gold-deep); display: grid; place-items: center; border: 1px solid #EADBA8; }
+.extras .ic svg { width: 22px; height: 22px; }
+.extras h3 { font-size: 18px; align-self: center; }
+.extras p { color: var(--muted); font-size: 15px; grid-column: 2; }
+.erp-cta { margin-top: 56px; border-radius: 18px; background: var(--black); color: var(--on-dark); padding: clamp(24px, 4vw, 40px); display: flex; justify-content: space-between; align-items: center; gap: 20px 32px; flex-wrap: wrap; }
+.erp-cta h3 { font-size: clamp(22px, 2.6vw, 30px); }
+.erp-cta p { color: var(--on-dark-muted); margin-top: 6px; }
+.erp-cta .row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ERP screens */
+.screens { display: grid; grid-template-columns: 280px 1fr; gap: clamp(20px, 3vw, 36px); align-items: start; }
+@media (max-width: 900px) { .screens { grid-template-columns: 1fr; } }
+.screen-tabs { display: grid; gap: 8px; }
+@media (max-width: 900px) { .screen-tabs { grid-template-columns: 1fr 1fr; } }
+.screen-tabs button { text-align: left; border: 1px solid #55585D; background: transparent; color: var(--on-dark); border-radius: 12px; padding: 14px 16px; cursor: pointer; font: 600 15px/1.3 var(--body); display: grid; gap: 3px; }
+.screen-tabs button small { font-weight: 400; color: var(--on-dark-muted); font-size: 13px; }
+.screen-tabs button[aria-selected="true"] { background: var(--gold); border-color: var(--gold); color: var(--black); }
+.screen-tabs button[aria-selected="true"] small { color: #3A3B3E; }
+.app-win { background: var(--paper); color: var(--ink); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 60px -24px rgba(0,0,0,.6); min-width: 0; }
+.app-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--paper-2); border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.app-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); display: inline-block; }
+.app-bar b { margin-left: 8px; color: var(--ink); font-weight: 600; }
+.app-body { padding: clamp(16px, 2.4vw, 24px); display: grid; gap: 18px; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 520px) { .kpis { grid-template-columns: 1fr; } }
+.kpi { border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 4px; }
+.kpi small { font-size: 12.5px; color: var(--muted); }
+.kpi b { font: 700 22px/1.15 var(--display); font-variant-numeric: tabular-nums; }
+.kpi em { font-style: normal; font-size: 12px; color: var(--gold-deep); font-weight: 600; }
+.app-cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; }
+@media (max-width: 700px) { .app-cols { grid-template-columns: 1fr; } }
+.chart h4, .mini h4 { margin: 0 0 10px; font: 600 14px var(--body); }
+.bars { display: flex; align-items: flex-end; gap: 10px; height: 150px; border-bottom: 1px solid var(--line); padding-top: 18px; }
+.bars div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; height: 100%; text-align: center; min-width: 0; }
+.bars span.v { font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bars span.b { background: var(--charcoal); border-radius: 6px 6px 0 0; display: block; }
+.bars div:last-child span.b { background: var(--gold); }
+.bar-labels { display: flex; gap: 10px; margin-top: 6px; }
+.bar-labels span { flex: 1; text-align: center; font-size: 11.5px; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mini table { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.mini th { text-align: left; font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 6px 0; border-bottom: 1px solid var(--line); }
+.mini td { padding: 8px 0; border-bottom: 1px solid #F0EEE8; }
+.mini td.n, .mini th.n { text-align: right; }
+.tag-ok { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--gold-soft); color: var(--gold-deep); }
+.tag-warn { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--black); color: var(--on-dark); }
+
+/* Industries */
+.industries { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 1000px) { .industries { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .industries { grid-template-columns: 1fr; } }
+.ind { border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 10px; align-content: start; background: var(--paper); }
+.ind .ic { width: 44px; height: 44px; border-radius: 12px; background: var(--gold); color: var(--black); display: grid; place-items: center; }
+.ind .ic svg { width: 22px; height: 22px; }
+.ind h3 { font-size: 19px; }
+.ind p { color: var(--muted); font-size: 15px; }
 .foot-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid #26282B; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; }
 .motto { font-family: "Noto Sans Ethiopic", var(--body); color: var(--gold); }
 </style>
@@ -688,9 +749,10 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
 
       <div class="section-head" style="margin-top:72px">
         <span class="eyebrow">ERP modules</span>
-        <h2>Eight modules, one system.</h2>
+        <h2>Ten modules, one system.</h2>
+        <p>Start with the modules you need and add more as you grow. They all share one set of data.</p>
       </div>
-      <div class="modules">
+      <div class="modules ten">
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg></div><h3>Finance &amp; Accounting</h3><p>General ledger, bank reconciliation, profit and loss, and balance sheet.</p></article>
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg></div><h3>Sales &amp; Invoicing</h3><p>Quotes, orders and registered invoices, with customer balances.</p></article>
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div><h3>Inventory &amp; Warehouse</h3><p>Stock levels by branch, transfers, reorder alerts and stock counts.</p></article>
@@ -699,7 +761,51 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></div><h3>Fixed Assets</h3><p>Asset register, depreciation schedules, transfers and disposals.</p></article>
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Customers (CRM)</h3><p>Contacts, follow-ups, credit limits and payment reminders.</p></article>
         <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div><h3>Reports &amp; Dashboards</h3><p>Sales, VAT, stock and cash on one screen, for every branch.</p></article>
+              <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 13h3M8 16h6"/></svg></div><h3>Projects</h3><p>Projects, tasks, milestones, budgets and timesheets.</p></article>
+        <article class="mod"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></div><h3>Fleet &amp; Maintenance</h3><p>Vehicles, fuel, service schedules and maintenance requests.</p></article>
       </div>
+
+      <div class="section-head" style="margin:72px 0 32px">
+        <span class="eyebrow">More than office screens</span>
+        <h2>Edel ERP goes where your team works.</h2>
+      </div>
+      <div class="extras">
+        <div><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span><h3>Mobile apps</h3><p>For sales reps, storekeepers and managers, working on the same data as the office.</p></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><circle cx="7" cy="6.5" r=".5"/></svg></span><h3>Portals</h3><p>Self-service for customers, suppliers and staff: invoices, statements, orders and payslips.</p></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 13l2 2 4-4"/></svg></span><h3>E-invoicing built in</h3><p>Every sales invoice is registered with the Ministry of Revenues, with no separate tool.</p></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7M7.5 5v1.5c0 3-2 5.5-4 6.5M5 9c1 2 3 3.5 6 4.5"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg></span><h3>English and Amharic</h3><p>Every screen in both languages, switchable per user.</p></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg></span><h3>Dashboards and reports</h3><p>A dashboard for each module, and one place for every report, in Ethiopian or Gregorian dates.</p></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span><h3>Set up for you</h3><p>We configure it, move your data in, train your team and support you after go-live.</p></div>
+      </div>
+
+      <div class="erp-cta">
+        <div><h3>See Edel ERP with your own processes.</h3><p>Book a demo and we'll show you the modules that fit your business.</p></div>
+        <div class="row"><a class="btn btn-gold" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20request%20an%20Edel%20ERP%20demo." target="_blank" rel="noopener">Request a demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn btn-line-dark" href="#screens">See the screens</a></div>
+      </div>
+      <p class="placeholder-note">Projects, Fleet &amp; Maintenance, mobile apps and portals are listed as examples. Confirm they are available before promoting them.</p>
+    </div>
+  </section>
+
+  <section class="band charcoal" id="screens">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">See the ERP</span>
+        <h2>What your team sees every day.</h2>
+        <p>Sample screens with demo data. Pick a dashboard to look inside.</p>
+      </div>
+      <div class="screens">
+        <div class="screen-tabs" role="tablist" aria-label="ERP dashboards">
+          <button type="button" role="tab" aria-selected="true" data-screen="sales">Sales &amp; VAT<small>Sales, VAT and branches</small></button>
+          <button type="button" role="tab" aria-selected="false" data-screen="einv">E-invoicing<small>Registration status</small></button>
+          <button type="button" role="tab" aria-selected="false" data-screen="stock">Inventory<small>Stock and reorders</small></button>
+          <button type="button" role="tab" aria-selected="false" data-screen="payroll">Payroll<small>Staff and monthly pay</small></button>
+        </div>
+        <div class="app-win" role="tabpanel" aria-live="polite">
+          <div class="app-bar"><i></i><i></i><i></i><b id="scr-title"></b><span style="margin-left:auto" id="scr-date"></span></div>
+          <div class="app-body" id="scr-body"></div>
+        </div>
+      </div>
+      <p class="example" style="margin-top:14px;color:var(--on-dark-muted)">Illustration with demo data. Not a real company.</p>
     </div>
   </section>
 
@@ -778,12 +884,19 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
   <section class="band">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Who it's for</span>
-        <h2>Built for the way Ethiopian businesses sell.</h2>
+        <span class="eyebrow">Industries</span>
+        <h2>Built for the way Ethiopian businesses work.</h2>
+        <p>Edel adapts to your sector, with screens and reports set up around how you sell and buy.</p>
       </div>
-      <div class="sectors">
-        <span>Shops &amp; supermarkets</span><span>Restaurants &amp; cafés</span><span>Pharmacies</span><span>Hotels</span><span>Importers &amp; wholesalers</span><span>Manufacturers</span><span>Companies with several branches</span><span>Accountants &amp; audit firms</span>
+      <div class="industries">
+        <article class="ind"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20h20"/><path d="M4 20V9l5 3V9l5 3V6l6 4v10"/></svg></div><h3>Trading &amp; import</h3><p>Purchases, letters of credit, landed cost with freight and customs, stock, sales and accounts in one flow.</p></article>
+        <article class="ind"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l2.4 12h11.2L21 7H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg></div><h3>Retail &amp; supermarkets</h3><p>A fast till with barcodes, stock per branch, daily VAT reports and registered receipts.</p></article>
+        <article class="ind"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V10l6 3V10l6 3V7l6 4v10z"/><path d="M7 17h2M12 17h2M17 17h2"/></svg></div><h3>Manufacturing</h3><p>Bills of materials, production orders, raw material stock and accurate cost per unit.</p></article>
+        <article class="ind"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5M9 10h.01M15 10h.01"/></svg></div><h3>Hotels &amp; restaurants</h3><p>Front desk and restaurant billing, store issues to the kitchen, staff shifts and VAT invoices.</p></article>
+        <article class="ind"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M12 11v5M9.5 13.5h5"/></svg></div><h3>Pharmacies &amp; health</h3><p>Batch and expiry tracking, supplier orders, price lists and registered receipts.</p></article>
+        <article class="ind"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M6 21V5h8v16M14 9h4v12"/><path d="M9 9h2M9 13h2M9 17h2"/></svg></div><h3>Real estate &amp; rentals</h3><p>Units, lease contracts, rent schedules, tenant invoices and payment follow-up.</p></article>
       </div>
+      <p class="example" style="margin-top:16px">Also used by accountants and audit firms, NGOs, schools and companies with several branches.</p>
     </div>
   </section>
 
@@ -1016,7 +1129,7 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
         <span class="foot-logo"><img src="edel-logo-dark.png" alt="Edel Trading PLC"></span>
         <p style="max-width:36ch">Electronic invoicing and ERP software for Ethiopian businesses. Built and supported in Addis Ababa.</p>
       </div>
-      <div><h4>Products</h4><ul><li><a href="#erp">Edel E-Invoice</a></li><li><a href="#erp">Edel ERP</a></li><li><a href="#erp">ERP modules</a></li></ul></div>
+      <div><h4>Products</h4><ul><li><a href="#erp">Edel E-Invoice</a></li><li><a href="#erp">Edel ERP</a></li><li><a href="#erp">ERP modules</a></li><li><a href="#screens">See the ERP</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="#einvoicing">E-invoicing explained</a></li><li><a href="#readiness">Readiness check</a></li><li><a href="#services">Services</a></li><li><a href="#why">Why Edel</a></li><li><a href="#how">How it works</a></li><li><a href="#academy">Edel Academy</a></li><li><a href="#insights">Insights</a></li><li><a href="#waitlist">Join the waitlist</a></li><li><a href="#faq">FAQ</a></li></ul></div>
       <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://www.edel.et" target="_blank" rel="noopener">www.edel.et</a></li><li>sales@edel.et</li><li>Bole, Addis Ababa</li></ul>
         <div style="margin-top:16px"><div class="socials on-dark" aria-label="Edel on social media">
@@ -1349,6 +1462,48 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
     } catch (err) { /* keep the copy-summary fallback */ }
   })();
 
+  /* ERP sample screens */
+  const fmtB = n => "ETB " + n.toLocaleString("en-US");
+  const SCREENS = {
+    sales: { title: "Sales & VAT · All branches",
+      kpis: [["Sales this month", fmtB(1284600), "+12% on last month"], ["VAT collected", fmtB(192690), "15% of taxable sales"], ["Invoices registered", "1,482", "All with QR codes"]],
+      chart: ["Sales by month (ETB thousands)", [["Hamle", 860], ["Nehase", 910], ["Meskerem", 1020], ["Tikimt", 1146], ["Hidar", 1285]]],
+      table: ["Top branches", ["Branch", "Sales"], [["Bole", fmtB(486200)], ["Piassa", fmtB(341900)], ["Merkato", fmtB(298300)], ["Adama", fmtB(158200)]]] },
+    einv: { title: "E-invoicing · Ministry of Revenues",
+      kpis: [["Registered today", "214", "Average 2 seconds each"], ["Waiting to register", "3", "Saved offline, sending"], ["Rejected", "0", "Nothing to fix"]],
+      chart: ["Invoices registered this week", [["Mon", 188], ["Tue", 203], ["Wed", 176], ["Thu", 221], ["Fri", 240], ["Sat", 214]]],
+      table: ["Latest invoices", ["Invoice", "Status"], [["INV-004812 · " + fmtB(12650), '<span class="tag-ok">Registered</span>'], ["INV-004811 · " + fmtB(3480), '<span class="tag-ok">Registered</span>'], ["INV-004810 · " + fmtB(920), '<span class="tag-warn">Sending</span>'], ["INV-004809 · " + fmtB(47100), '<span class="tag-ok">Registered</span>']]] },
+    stock: { title: "Inventory · 3 warehouses",
+      kpis: [["Stock value", fmtB(3920000), "At average cost"], ["Below reorder level", "14 items", "Purchase requests drafted"], ["Transfers this week", "27", "Between branches"]],
+      chart: ["Stock value by warehouse (ETB thousands)", [["Main store", 2140], ["Bole", 980], ["Adama", 800]]],
+      table: ["Low stock", ["Item", "On hand / reorder"], [["Sunflower oil, 5L", "18 / 40"], ["Teff flour, 25kg", "9 / 25"], ["Pasta, carton", "22 / 30"], ["Sugar, 50kg", "6 / 15"]]] },
+    payroll: { title: "Payroll · Hidar",
+      kpis: [["Employees paid", "86", "4 joined this month"], ["Gross pay", fmtB(1046300), "Before tax and pension"], ["Net pay", fmtB(807900), "Bank file ready"]],
+      chart: ["Gross pay by department (ETB thousands)", [["Sales", 312], ["Stores", 214], ["Finance", 176], ["Drivers", 158], ["Admin", 186]]],
+      table: ["Departments", ["Department", "Staff"], [["Sales", "28"], ["Stores", "21"], ["Finance", "9"], ["Drivers", "16"]]] }
+  };
+  const scrBody = document.getElementById("scr-body");
+  document.getElementById("scr-date").textContent = ethStr;
+  function renderScreen(key) {
+    const s = SCREENS[key];
+    const max = Math.max(...s.chart[1].map(x => x[1]));
+    document.getElementById("scr-title").textContent = s.title;
+    scrBody.innerHTML = `
+      <div class="kpis">${s.kpis.map(([l, v, n]) => `<div class="kpi"><small>${l}</small><b>${v}</b><em>${n}</em></div>`).join("")}</div>
+      <div class="app-cols">
+        <div class="chart"><h4>${s.chart[0]}</h4>
+          <div class="bars">${s.chart[1].map(([l, v]) => `<div><span class="v">${v.toLocaleString("en-US")}</span><span class="b" style="height:${Math.round(v / max * 100)}%"></span></div>`).join("")}</div>
+          <div class="bar-labels">${s.chart[1].map(([l]) => `<span>${l}</span>`).join("")}</div></div>
+        <div class="mini"><h4>${s.table[0]}</h4><table><thead><tr><th>${s.table[1][0]}</th><th class="n">${s.table[1][1]}</th></tr></thead>
+          <tbody>${s.table[2].map(([a, b]) => `<tr><td>${a}</td><td class="n">${b}</td></tr>`).join("")}</tbody></table></div>
+      </div>`;
+  }
+  document.querySelectorAll("[data-screen]").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("[data-screen]").forEach(x => x.setAttribute("aria-selected", x === b));
+    renderScreen(b.dataset.screen);
+  }));
+  renderScreen("sales");
+
   /* Edel Academy courses */
   const COURSES = [
     { t: "E-Invoicing Essentials", cat: "Edel software", lvl: "Beginner", d: "6 hours", who: "Cashiers and shop owners", cert: "Certified E-Invoicing User",
@@ -1476,7 +1631,7 @@ dialog.reader::backdrop { background: rgba(14,15,16,.6); }
   const TAWK = { propertyId: "", widgetId: "" };
   const STAFF_WA = "251960369445";
   const STAFF_PHONE = "251911251837";
-  const KNOWLEDGE = "You are Edel Assistant, the website chat assistant for Edel Trading PLC in Addis Ababa, Ethiopia. You help visitors on www.edel.et.\n\nABOUT EDEL\n- Edel builds electronic invoicing (e-invoicing) and ERP software for Ethiopian businesses, and runs Edel Academy training.\n- Edel E-Invoice: issue tax invoices, cash receipts, credit and debit notes; each invoice is registered with the Ministry of Revenues system and carries an official number and a QR code anyone can scan to verify it; simple till screen for counter sales; daily sales and VAT summary per branch; runs in a web browser on existing computers, tablets and phones; keeps working during internet outages and registers invoices when the connection returns.\n- Edel ERP: includes all E-Invoice features plus modules chosen as needed: Finance & Accounting, Sales & Invoicing, Inventory & Warehouse, Purchasing, HR & Payroll, Fixed Assets, Customers (CRM), Reports & Dashboards. One login for every branch. Ethiopian and Gregorian calendars; fiscal year Hamle 1 to Sene 30. Prices and VAT (15%) in Birr. Data migration from Excel or other systems and staff training are included in setup.\n- Services for larger companies (the team confirms scope and price per project): e-invoicing integration for an existing ERP, accounting or point-of-sale system; Edel ERP implementation; system and API integration with banks, payment services, SMS and branch software; custom web and mobile apps; AI assistants and document automation; a dedicated developer and support team after go-live. Free consultations are booked on WhatsApp +251 960369445.\n- Who it's for: shops and supermarkets, restaurants and cafés, pharmacies, hotels, importers and wholesalers, manufacturers, companies with several branches, accountants and audit firms.\n- E-invoicing rollout: the Ministry of Revenues is rolling it out in phases; larger and VAT-registered taxpayers are expected first. Only systems approved by the Ministry can register invoices. Edel does not know a specific business's deadline; the website's readiness check and the waitlist help with that.\n- Edel Academy courses are online and self-paced; after the lessons you take an online exam (retakes allowed) and receive a certificate with a QR code for verification. Courses: Edel software: E-Invoicing Essentials (Beginner, 6 hours), Edel ERP for Accountants (Intermediate, 30 hours), Edel System Administrator (Advanced, 24 hours). ERP systems: ERP Fundamentals for Ethiopian Businesses (Beginner, 10 hours), ERP Implementation & Customization (Intermediate, 28 hours), HR & Payroll Administration (Intermediate, 18 hours). Website development: WordPress for Business Websites (Beginner, 20 hours), Build a CMS with PHP & MySQL (Intermediate, 32 hours). Software development: Python Programming Foundations (Beginner, 24 hours). AI: AI Tools for Business (Beginner, 8 hours). Enrol through the waitlist form on the website by choosing Edel Academy training.\n- Getting started: join the waitlist on the website (free). Businesses are invited in the order they join, VAT-registered first; the team then calls to arrange a demo, sets up the TIN, branches, items and customers, and trains staff.\n- Pricing: monthly or yearly plans in Birr based on branches and modules. There is no public price list; the team sends a quote.\n- Contact: phone +251 911 251837; WhatsApp +251 960369445; website www.edel.et. Hours Monday to Saturday, 8:30 to 17:30.\n\nHOW TO ANSWER\n- Reply in the visitor's language: Amharic if they write in Amharic, otherwise English.\n- Keep answers short and friendly: usually 2 to 5 sentences, or a short list.\n- Only state facts listed above. Never invent prices, discounts, deadlines, tax rates, certifications, approvals, customer names or features. If you don't know, say the team can confirm and offer to connect them.\n- For questions unrelated to Edel, e-invoicing, ERP, business software or the training, politely say you can only help with Edel topics.\n- When the visitor asks for a person, a price quote, a demo, has an account or billing problem, or you cannot answer, end your reply with the exact marker [[HANDOFF]] on its own line. The website turns that marker into buttons to reach the staff.\n- Never ask for passwords, bank details or ID numbers. A name and phone number are fine if the visitor wants a call back.";
+  const KNOWLEDGE = "You are Edel Assistant, the website chat assistant for Edel Trading PLC in Addis Ababa, Ethiopia. You help visitors on www.edel.et.\n\nABOUT EDEL\n- Edel builds electronic invoicing (e-invoicing) and ERP software for Ethiopian businesses, and runs Edel Academy training.\n- Edel E-Invoice: issue tax invoices, cash receipts, credit and debit notes; each invoice is registered with the Ministry of Revenues system and carries an official number and a QR code anyone can scan to verify it; simple till screen for counter sales; daily sales and VAT summary per branch; runs in a web browser on existing computers, tablets and phones; keeps working during internet outages and registers invoices when the connection returns.\n- Edel ERP: includes all E-Invoice features plus modules chosen as needed: Finance & Accounting, Sales & Invoicing, Inventory & Warehouse, Purchasing, HR & Payroll, Fixed Assets, Customers (CRM), Reports & Dashboards, Projects, Fleet & Maintenance (ten modules; start with some and add more later, all sharing one set of data). Mobile apps for sales reps, storekeepers and managers; self-service portals for customers, suppliers and staff; every screen in English and Amharic. One login for every branch. Ethiopian and Gregorian calendars; fiscal year Hamle 1 to Sene 30. Prices and VAT (15%) in Birr. Data migration from Excel or other systems and staff training are included in setup.\n- Services for larger companies (the team confirms scope and price per project): e-invoicing integration for an existing ERP, accounting or point-of-sale system; Edel ERP implementation; system and API integration with banks, payment services, SMS and branch software; custom web and mobile apps; AI assistants and document automation; a dedicated developer and support team after go-live. Free consultations are booked on WhatsApp +251 960369445.\n- Industries: trading and import (letters of credit, landed cost), retail and supermarkets, manufacturing (bills of materials, cost per unit), hotels and restaurants, pharmacies (batch and expiry tracking), real estate and rentals (leases, rent schedules); also accountants, audit firms, NGOs, schools and multi-branch companies. A demo can be requested on WhatsApp +251 960369445.\n- E-invoicing rollout: the Ministry of Revenues is rolling it out in phases; larger and VAT-registered taxpayers are expected first. Only systems approved by the Ministry can register invoices. Edel does not know a specific business's deadline; the website's readiness check and the waitlist help with that.\n- Edel Academy courses are online and self-paced; after the lessons you take an online exam (retakes allowed) and receive a certificate with a QR code for verification. Courses: Edel software: E-Invoicing Essentials (Beginner, 6 hours), Edel ERP for Accountants (Intermediate, 30 hours), Edel System Administrator (Advanced, 24 hours). ERP systems: ERP Fundamentals for Ethiopian Businesses (Beginner, 10 hours), ERP Implementation & Customization (Intermediate, 28 hours), HR & Payroll Administration (Intermediate, 18 hours). Website development: WordPress for Business Websites (Beginner, 20 hours), Build a CMS with PHP & MySQL (Intermediate, 32 hours). Software development: Python Programming Foundations (Beginner, 24 hours). AI: AI Tools for Business (Beginner, 8 hours). Enrol through the waitlist form on the website by choosing Edel Academy training.\n- Getting started: join the waitlist on the website (free). Businesses are invited in the order they join, VAT-registered first; the team then calls to arrange a demo, sets up the TIN, branches, items and customers, and trains staff.\n- Pricing: monthly or yearly plans in Birr based on branches and modules. There is no public price list; the team sends a quote.\n- Contact: phone +251 911 251837; WhatsApp +251 960369445; website www.edel.et. Hours Monday to Saturday, 8:30 to 17:30.\n\nHOW TO ANSWER\n- Reply in the visitor's language: Amharic if they write in Amharic, otherwise English.\n- Keep answers short and friendly: usually 2 to 5 sentences, or a short list.\n- Only state facts listed above. Never invent prices, discounts, deadlines, tax rates, certifications, approvals, customer names or features. If you don't know, say the team can confirm and offer to connect them.\n- For questions unrelated to Edel, e-invoicing, ERP, business software or the training, politely say you can only help with Edel topics.\n- When the visitor asks for a person, a price quote, a demo, has an account or billing problem, or you cannot answer, end your reply with the exact marker [[HANDOFF]] on its own line. The website turns that marker into buttons to reach the staff.\n- Never ask for passwords, bank details or ID numbers. A name and phone number are fine if the visitor wants a call back.";
   const CHAT = {
     en: {
       hello: "👋 Hi, I'm the **Edel Assistant**. Ask me anything about e-invoicing, Edel ERP or Edel Academy training. You can talk to a person at any time.",
