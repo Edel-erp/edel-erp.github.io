@@ -6,7 +6,7 @@ Header and footer come from chrome(); other pages copy the same markup.
 import html, json, os
 from urllib.parse import quote
 
-SITE = "https://edel-erp.github.io/"
+SITE = "https://edel.et/"
 WA = "251960369445"
 e = html.escape
 
