@@ -60,7 +60,7 @@ header { border-bottom: 1px solid var(--line); background: var(--paper); positio
 .nav nav { display: flex; gap: 24px; font-weight: 500; }
 .nav nav a { text-decoration: none; color: var(--muted); }
 .nav nav a:hover { color: var(--ink); }
-@media (max-width: 760px) { .nav nav { display: none; } .nav .btn { padding: 11px 16px; font-size: 15px; } }
+@media (max-width: 760px) { .nav .btn { padding: 11px 16px; font-size: 15px; } }
 
 .hero { padding: 64px 0 72px; }
 .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; }
@@ -264,6 +264,25 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
 .foot-cols a:hover { color: var(--gold); }
 footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
 @media (max-width: 760px) { .foot-cols { grid-template-columns: 1fr 1fr; } }
+
+
+@media (max-width: 520px) { .nav { gap: 10px; } .nav img { height: 40px; } .nav .btn { white-space: nowrap; padding: 10px 14px; font-size: 14px; } }
+/* phone menu */
+.menu-btn { display: none; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); flex-direction: column; justify-content: center; align-items: center; gap: 4px; cursor: pointer; flex: none; }
+.menu-btn span { display: block; width: 18px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; }
+.menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.nav-call { display: none; }
+@media (max-width: 760px) {
+  .menu-btn { display: flex; }
+  .nav { position: relative; }
+  .nav nav#main-nav { display: none; position: absolute; top: 100%; left: -20px; right: -20px; background: var(--paper); border-bottom: 1px solid var(--line); box-shadow: 0 18px 30px -20px rgba(14,15,16,.35); flex-direction: column; gap: 0; padding: 6px 20px 14px; z-index: 30; }
+  .nav nav#main-nav.open { display: flex; }
+  .nav nav#main-nav a { padding: 12px 0; border-top: 1px solid #F0EEE8; color: var(--ink); font-weight: 600; }
+  .nav nav#main-nav a:first-child { border-top: 0; }
+  .nav-call { display: block; color: var(--gold-deep) !important; }
+}
 </style>
 </head>
 <body>
@@ -271,14 +290,16 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
 <header>
   <div class="wrap nav">
     <a href="#top" aria-label="Edel home"><img src="edel-logo-web.png" alt="Edel: e-invoicing software for Ethiopia"></a>
-    <nav aria-label="Main">
+    <nav aria-label="Main" id="main-nav">
       <a href="e-invoicing-ethiopia/">E-invoicing guide</a>
       <a href="#erp">ERP</a>
       <a href="#anywhere">Dashboards</a>
       <a href="#about">About</a>
       <a href="#request">Contact</a>
+      <a class="nav-call" href="tel:+251911251837">Call +251 911 251837</a>
     </nav>
     <a class="btn btn-dark" href="#request">Request e-invoice</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -292,7 +313,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         <p class="lede">Every invoice you issue with Edel is registered with the Ministry of Revenues and carries an official number and a QR code.</p>
         <div class="cta">
           <a class="btn btn-gold" href="#request">Request e-invoice</a>
-          <a class="btn btn-line" href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp us</a>
+          <a class="btn btn-line" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp us</a>
         </div>
         <ul class="trust">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>Ministry approved</li>
@@ -543,24 +564,24 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         <p class="intro">Send us your details and our team will contact you.</p>
         <div class="contact">
           <div><small>Phone</small><a href="tel:+251911251837">+251 911 251837</a></div>
-          <div><small>WhatsApp</small><a href="https://wa.me/251960369445" target="_blank" rel="noopener">+251 960 369445</a></div>
+          <div><small>WhatsApp</small><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">+251 960 369445</a></div>
           <div><small>Office</small><b>Addis Ababa, Ethiopia</b></div>
         </div>
       </div>
-      <form id="req" novalidate>
-        <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" required autocomplete="name"></div>
-        <div class="field"><label for="f-biz">Business name</label><input id="f-biz" name="business" required autocomplete="organization"></div>
-        <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" required placeholder="+251 9…" autocomplete="tel"></div>
-        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+      <form id="req" novalidate action="#request">
+        <div class="field"><label for="f-name">Full name</label><input id="f-name" required autocomplete="name"></div>
+        <div class="field"><label for="f-biz">Business name</label><input id="f-biz" required autocomplete="organization"></div>
+        <div class="field"><label for="f-phone">Phone</label><input id="f-phone" type="tel" required placeholder="+251 9…" autocomplete="tel"></div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email"></div>
         <div class="field full"><label for="f-type">Business type</label>
-          <select id="f-type" name="type">
+          <select id="f-type">
             <option>Hotel</option><option>Beer distribution</option><option>Import &amp; export</option>
             <option>Manufacturing</option><option>Farm</option><option>Tours &amp; travel</option>
             <option>Shop or supermarket</option><option>Restaurant or café</option><option>Other</option>
           </select></div>
         <div class="actions">
           <button class="btn btn-gold" type="submit">Send request on WhatsApp</button>
-          <small id="msg">Your details open in WhatsApp, ready to send to +251 960 369445.</small>
+          <small id="msg" role="status" aria-live="polite">Your details open in WhatsApp, ready to send to +251 960 369445.</small>
         </div>
       </form>
     </div>
@@ -573,7 +594,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
       <div><img src="edel-logo-dark.png" alt="Edel Trading PLC"><p>E-invoicing and ERP for Ethiopian businesses · <span lang="am">ኤሌክትሮኒክ ደረሰኝ</span></p></div>
       <div><h4>Industries</h4><ul><li><a href="hotel-software-ethiopia/">Hotels</a></li><li><a href="beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="farm-management-software-ethiopia/">Farms</a></li></ul></div>
       <div><h4>Free tools and guides</h4><ul><li><a href="e-invoicing-ethiopia/">E-invoicing guide</a></li><li><a href="e-invoicing-checker/">Does e-invoicing apply to me?</a></li><li><a href="vat-calculator-ethiopia/">VAT calculator (15%)</a></li><li><a href="invoice-template-ethiopia/">Free invoice template</a></li></ul></div>
-      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li></ul></div>
     </div>
     <div class="foot">
       <span>© <span id="yr"></span> Edel Trading PLC</span><span lang="am">ግብር ይክፈሉ፣ ሀገር ይልማ።</span>
@@ -581,7 +602,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   </div>
 </footer>
 
-<a class="wa-float" href="https://wa.me/251960369445" target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp">
+<a class="wa-float" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg>
 </a>
 
@@ -696,20 +717,35 @@ document.documentElement.classList.add("js");
     const sel = document.getElementById("f-type"); if (typeMap[a.dataset.type]) sel.value = typeMap[a.dataset.type];
   }));
 
-  // Request form: opens WhatsApp with the details filled in
+  // Request form: opens WhatsApp with the details filled in.
+  // Fields have no name attribute, so a submit without JavaScript sends nothing anywhere.
   const f = document.getElementById("req"), msg = document.getElementById("msg");
+  const F = { name: "f-name", business: "f-biz", phone: "f-phone", email: "f-email", type: "f-type" };
+  const field = k => document.getElementById(F[k]);
+  // Carry the industry from a demo or industry page: ?type=Hotel#request
+  try { const t = new URLSearchParams(location.search).get("type"); if (t && [...field("type").options].some(o => o.value === t || o.text === t)) field("type").value = t; } catch (err) {}
   f.addEventListener("submit", e => {
     e.preventDefault();
-    const d = Object.fromEntries(["name", "business", "phone", "email", "type"].map(k => [k, f.elements[k].value.trim()]));
+    const d = Object.fromEntries(Object.keys(F).map(k => [k, field(k).value.trim()]));
     const missing = ["name", "business", "phone"].find(k => !d[k]);
-    const say = (t, err) => { msg.textContent = t; msg.classList.toggle("err", !!err); };
-    if (missing) { say("Please add your name, business name and phone.", true); f.elements[missing].focus(); return; }
-    if (d.phone.replace(/\D/g, "").length < 9) { say("Please check the phone number.", true); f.elements.phone.focus(); return; }
-    if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { say("Please check the email address.", true); f.elements.email.focus(); return; }
+    const say = (t, err) => { msg.innerHTML = t; msg.classList.toggle("err", !!err); };
+    if (missing) { say("Please add your name, business name and phone.", true); field(missing).focus(); return; }
+    if (d.phone.replace(/\D/g, "").length < 9) { say("Please check the phone number.", true); field("phone").focus(); return; }
+    if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { say("Please check the email address.", true); field("email").focus(); return; }
     const text = `Hello Edel, I'd like to request e-invoice.\nName: ${d.name}\nBusiness: ${d.business}\nPhone: ${d.phone}\nEmail: ${d.email || "-"}\nBusiness type: ${d.type}`;
-    window.open("https://wa.me/251960369445?text=" + encodeURIComponent(text), "_blank", "noopener");
-    say("WhatsApp opened with your details. Press Send there to finish.");
+    const url = "https://wa.me/251960369445?text=" + encodeURIComponent(text);
+    const w = window.open(url, "_blank");
+    if (w) { try { w.opener = null; } catch (err) {} say("WhatsApp opened with your details. Press Send there to finish."); }
+    else say('Your browser blocked WhatsApp from opening. <a href="' + url + '" target="_blank" rel="noopener">Tap here to open WhatsApp</a> and press Send.', true);
   });
+})();
+(function () {
+  var b = document.querySelector(".menu-btn"), n = document.getElementById("main-nav");
+  if (!b || !n) return;
+  function set(open) { n.classList.toggle("open", open); b.setAttribute("aria-expanded", open); b.setAttribute("aria-label", open ? "Close menu" : "Open menu"); }
+  b.addEventListener("click", function () { set(!n.classList.contains("open")); });
+  n.addEventListener("click", function (e) { if (e.target.closest("a")) set(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") set(false); });
 })();
 </script>
 </body>

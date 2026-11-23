@@ -103,7 +103,7 @@ body = f'''<style>main [id] {{ scroll-margin-top: 96px; }} html {{ scroll-behavi
 
       <h2 id="who">Who has to switch, and when</h2>
       <p>The Ministry of Revenues is rolling out electronic invoicing in phases, starting with larger and VAT-registered taxpayers.</p>
-      <p>Not sure where your business stands? <a href="../e-invoicing-checker/">Answer three questions</a> and we'll tell you what e-invoicing likely means for you.</p>
+      <p>Not sure where your business stands? <a href="../e-invoicing-checker/">Answer four questions</a> and we'll tell you what e-invoicing likely means for you.</p>
 
       <h2 id="prepare">What you need to prepare</h2>
       <p>Getting ready is mostly about having your details in order. Before you start, gather:</p>
@@ -157,7 +157,7 @@ body = f'''<style>main [id] {{ scroll-margin-top: 96px; }} html {{ scroll-behavi
         <div class="related">
           <a href="../vat-calculator-ethiopia/">VAT calculator (15%)<small>Add or remove VAT in seconds</small></a>
           <a href="../invoice-template-ethiopia/">Free invoice template<small>Fill in, print or save as PDF</small></a>
-          <a href="../e-invoicing-checker/">Does e-invoicing apply to me?<small>Three questions, one answer</small></a>
+          <a href="../e-invoicing-checker/">Does e-invoicing apply to me?<small>Four questions, one answer</small></a>
         </div>
       </div>
       <div class="cta-band">

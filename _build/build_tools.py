@@ -26,9 +26,16 @@ ETH_JS = r'''
 COMMON_JS = r'''
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function birr(n, dec) { dec = dec == null ? 2 : dec; return "ETB " + (isFinite(n) ? n : 0).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
-  function num(v) { var x = parseFloat(String(v).replace(/,/g, "")); return isFinite(x) ? x : 0; }
+  function num(v) { var t = String(v).replace(/[,\s]/g, ""); if (t === "") return 0; var x = Number(t); return isFinite(x) && x >= 0 ? x : NaN; }
+  function ok(x) { return isFinite(x) ? x : 0; }
+  document.addEventListener("input", function (ev) {
+    var el = ev.target; if (!el.matches || !el.matches('input[inputmode="decimal"]')) return;
+    var bad = isNaN(num(el.value)); el.classList.toggle("bad", bad); el.setAttribute("aria-invalid", bad ? "true" : "false");
+  });
 '''
 
+
+BAD_CSS = "input.bad { border-color: #B3261E; background: #FBE7E5; } input.bad:focus { outline-color: #B3261E; }"
 
 def ld_for(path, name, desc, faq):
     url = SITE + path + "/"
@@ -48,6 +55,7 @@ def ld_for(path, name, desc, faq):
 
 
 def page(path, crumb, title, desc, h1, am, lede, style, body, script, faq):
+    style = style + BAD_CSS
     faq_html = "\n".join(f'        <details{" open" if i == 0 else ""}><summary>{e(q)}</summary><p>{e(a)}</p></details>'
                          for i, (q, a) in enumerate(faq))
     others = "".join(f'<a href="../{p}/">{e(n)}<small>{e(s)}</small></a>' for p, n, s in TOOLS if p != path)
@@ -81,7 +89,7 @@ def page(path, crumb, title, desc, h1, am, lede, style, body, script, faq):
       <div class="cta-band" style="margin-top:40px">
         <h2>Need registered e-invoices?</h2>
         <p>Edel issues e-invoices approved by the Ministry of Revenues, with an official number and QR code on every sale. We set it up and train your staff.</p>
-        <div class="btns"><a class="btn btn-gold" href="../#request">Request e-invoice</a><a class="btn btn-line" style="color:#fff;border-color:#55575C" href="https://wa.me/{WA}" target="_blank" rel="noopener">WhatsApp us</a></div>
+        <div class="btns"><a class="btn btn-gold" href="../#request">Request e-invoice</a><a class="btn btn-line" style="color:#fff;border-color:#55575C" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp us</a></div>
       </div>
     </div>
   </section>
@@ -164,7 +172,7 @@ VAT_JS = COMMON_JS + r'''
   var VAT = 0.15, mode = "add", amt = document.getElementById("amt");
   function round2(x) { return Math.round(x * 100) / 100; }
   function calc() {
-    var v = num(amt.value), net, vat, gross;
+    var v = ok(num(amt.value)), net, vat, gross;
     if (mode === "add") { net = v; vat = round2(v * VAT); gross = round2(net + vat); }
     else { gross = v; net = round2(v / (1 + VAT)); vat = round2(gross - net); }
     document.getElementById("r-net").textContent = birr(net);
@@ -202,7 +210,7 @@ VAT_JS = COMMON_JS + r'''
   function sum() {
     var net = 0;
     rows.querySelectorAll("tr").forEach(function (tr) {
-      var ins = tr.querySelectorAll("input"), a = round2(num(ins[1].value) * num(ins[2].value));
+      var ins = tr.querySelectorAll("input"), a = round2(ok(num(ins[1].value)) * ok(num(ins[2].value)));
       tr.querySelector("[data-amt]").textContent = birr(a); net += a;
     });
     net = round2(net); var vat = round2(net * VAT);
@@ -304,7 +312,7 @@ INV_JS = COMMON_JS + ETH_JS + r'''
   function render() {
     var lines = [], net = 0;
     items.querySelectorAll(".irow").forEach(function (r) {
-      var i = r.querySelectorAll("input"), q = num(i[1].value), p = num(i[2].value), a = Math.round(q * p * 100) / 100;
+      var i = r.querySelectorAll("input"), q = ok(num(i[1].value)), p = ok(num(i[2].value)), a = Math.round(q * p * 100) / 100;
       if (i[0].value.trim() || a) { lines.push({ d: i[0].value, q: q, p: p, a: a }); net += a; }
     });
     net = Math.round(net * 100) / 100;

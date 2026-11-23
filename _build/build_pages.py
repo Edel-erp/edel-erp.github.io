@@ -24,6 +24,7 @@ FREE_LINKS = [
     ("vat-calculator-ethiopia", "VAT calculator (15%)"),
     ("invoice-template-ethiopia", "Free invoice template"),
 ]
+WA_LINK = "https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business."
 WA_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg>'
 
 
@@ -62,13 +63,15 @@ def chrome_top(current=""):
     return f'''<header class="site">
   <div class="wrap nav">
     <a href="../"><img src="../edel-logo-web.png" alt="Edel: e-invoicing software for Ethiopia"></a>
-    <nav aria-label="Main">
+    <nav aria-label="Main" id="main-nav">
       <a href="../e-invoicing-ethiopia/"{cur("e-invoicing-ethiopia")}>E-invoicing guide</a>
       <a href="../#erp">Industries</a>
       <a href="../e-invoicing-checker/"{cur("tools")}>Free tools</a>
       <a href="../#request">Contact</a>
+      <a class="nav-call" href="tel:+251911251837">Call +251 911 251837</a>
     </nav>
     <a class="btn btn-dark" href="../#request">Request e-invoice</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 '''
@@ -83,17 +86,27 @@ def chrome_bottom():
       <div><img src="../edel-logo-dark.png" alt="Edel Trading PLC"><p>E-invoicing and ERP for Ethiopian businesses, approved by the Ministry of Revenues. Built and supported in Addis Ababa.</p><p lang="am" style="font-family:'Noto Sans Ethiopic',var(--body);margin-top:8px">ኤሌክትሮኒክ ደረሰኝ እና ኢአርፒ ለኢትዮጵያ ንግዶች</p></div>
       <div><h4>Industries</h4><ul>{ind}</ul></div>
       <div><h4>Free tools and guides</h4><ul>{free}</ul></div>
-      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/{WA}" target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li><li><a href="../#request">Request e-invoice</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="{WA_LINK}" target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li><li><a href="../#request">Request e-invoice</a></li></ul></div>
     </div>
     <div class="foot-bottom"><span>© <span class="yr">2026</span> Edel Trading PLC</span><span lang="am">ግብር ይክፈሉ፣ ሀገር ይልማ።</span></div>
   </div>
 </footer>
-<a class="wa-float" href="https://wa.me/{WA}" target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp">{WA_SVG}</a>
-<script>document.querySelectorAll(".yr").forEach(function (el) {{ el.textContent = new Date().getFullYear(); }});</script>
+<a class="wa-float" href="{WA_LINK}" target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp">{WA_SVG}</a>
+<script>document.querySelectorAll(".yr").forEach(function (el) {{ el.textContent = new Date().getFullYear(); }});
+(function () {{
+  var b = document.querySelector(".menu-btn"), n = document.getElementById("main-nav");
+  if (!b || !n) return;
+  function set(open) {{ n.classList.toggle("open", open); b.setAttribute("aria-expanded", open); b.setAttribute("aria-label", open ? "Close menu" : "Open menu"); }}
+  b.addEventListener("click", function () {{ set(!n.classList.contains("open")); }});
+  n.addEventListener("click", function (e) {{ if (e.target.closest("a")) set(false); }});
+  document.addEventListener("keydown", function (e) {{ if (e.key === "Escape") set(false); }});
+}})();</script>
 '''
 
 
 # ------------------------------------------------------------------ industries
+TYPES = {'hotel': 'Hotel', 'beer': 'Beer distribution', 'tours': 'Tours & travel', 'import': 'Import & export', 'manufacturing': 'Manufacturing', 'farms': 'Farm'}
+
 PAGES = [
  dict(path="hotel-software-ethiopia", demo="hotel", name="Hotels", live=True,
   title="Hotel Management Software in Ethiopia | Edel ERP",
@@ -297,7 +310,7 @@ def industry_page(p):
       <div class="cta-band" style="margin-top:40px">
         <h2>Get Edel for your business</h2>
         <p>Send us your details and our team will call you to arrange a demo, in Amharic or English.</p>
-        <div class="btns"><a class="btn btn-gold" href="../#request">Request e-invoice</a><a class="btn btn-line" style="color:#fff;border-color:#55575C" href="https://wa.me/{WA}" target="_blank" rel="noopener">WhatsApp us</a></div>
+        <div class="btns"><a class="btn btn-gold" href="../?type={quote(TYPES[p["demo"]])}#request">Request e-invoice</a><a class="btn btn-line" style="color:#fff;border-color:#55575C" href="https://wa.me/{WA}?text={quote(wa_text)}" target="_blank" rel="noopener">WhatsApp us</a></div>
       </div>
     </div>
   </section>
