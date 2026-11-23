@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manufacturing Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's manufacturing system with example data: production orders, recipes and cost per unit, raw material stock, quality checks, downtime and registered e-invoices.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/manufacturing.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9;
+  --blue: #2B6CB0; --blue-soft: #E4EEF9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 14px; }
+.top img { height: 34px; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 560px) { .top .cta { display: none; } .top .app small { display: none; } }
+
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; min-width: 0; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); text-align: right; }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.row:first-of-type { border-top: 0; }
+.row > span:first-child { min-width: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; }
+.dayhead .when b { font-family: var(--display); font-size: 20px; display: block; }
+.dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+
+.money { background: var(--black); color: #fff; border: 0; }
+.money .profit small { color: #9C9EA2; font-size: 13px; }
+.money .profit b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .profit.loss b { color: #FF8A80; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; }
+.money .parts b { font-size: 15px; }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+@media (max-width: 420px) { .money .parts b { font-size: 13.5px; } .money .parts div { padding: 9px; } }
+.target { margin-top: 14px; }
+.target .bar { height: 10px; border-radius: 999px; background: #2A2C30; overflow: hidden; margin: 6px 0; }
+.target .bar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
+.target .lbl { display: flex; justify-content: space-between; font-size: 13px; color: #D9DADC; gap: 10px; }
+
+.big { font-family: var(--display); font-size: 28px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.stats div { background: var(--bg); border-radius: 10px; padding: 8px 4px; text-align: center; }
+.stats b { display: block; font-family: var(--display); font-size: 17px; }
+.stats small { color: var(--muted); font-size: 11.5px; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--gold); transition: width .4s ease; }
+.meter.g i { background: var(--green); }
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--bg); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 8px; }
+.seg button { border: 0; background: none; padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+
+select, input[type=number] { font: inherit; padding: 9px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 4px; }
+.btn { border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-dark { background: var(--black); color: #fff; }
+.btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.wide { width: 100%; }
+.sbtn { border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; padding: 6px 11px; font-size: 12.5px; font-weight: 700; }
+.sbtn.gold { background: var(--gold); border-color: var(--gold); }
+.sbtn.dark { background: var(--black); border-color: var(--black); color: #fff; }
+.sbtn.red { background: var(--red-soft); border-color: var(--red-soft); color: var(--red); }
+.sbtn.green { background: var(--green); border-color: var(--green); color: #fff; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); white-space: nowrap; }
+.tag.run { background: var(--blue-soft); color: var(--blue); }
+.tag.wait { background: var(--bg); color: var(--muted); }
+.tag.mat, .tag.low, .tag.hold { background: var(--amber-soft); color: var(--amber); }
+.tag.fail { background: var(--red-soft); color: var(--red); }
+
+.mo { padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.mo:first-child { border-top: 0; }
+.mo .h { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.mo .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+table.t th { text-align: left; font-size: 11.5px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+table.t td { padding: 8px 4px; border-bottom: 1px solid #F0EEE8; vertical-align: middle; }
+table.t .r { text-align: right; white-space: nowrap; }
+table.t tfoot td { font-weight: 700; border-bottom: 0; }
+table.t tr.tot td { border-top: 2px solid var(--ink); }
+.tw { overflow-x: auto; }
+.mat { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 10px 0; border-top: 1px solid #F0EEE8; }
+.mat:first-child { border-top: 0; }
+
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.err { color: var(--red); font-size: 13px; margin-top: 8px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; box-shadow: 0 14px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; }
+.toast b { color: var(--gold); }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(211,166,40,.0); } 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } 100% { box-shadow: 0 0 0 0 rgba(211,166,40,0); } }
+
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; height: 100%; padding: 0; min-width: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease, background .2s; min-height: 6px; }
+.week button:hover .b { background: #D9CBA0; }
+.week button.today .b { background: var(--gold); }
+.week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d { font-size: 11.5px; color: var(--muted); text-align: center; }
+.week .v { font-size: 10.5px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.feed { display: grid; gap: 2px; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } to { opacity: 1; transform: none; background: transparent; } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; }
+.ev b.num { font-size: 13.5px; white-space: nowrap; }
+.click { cursor: pointer; }
+.click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.ap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ap .ok-b { background: var(--green); color: #fff; }
+.ap .no-b { background: var(--red-soft); color: var(--red); }
+.ap.gone { opacity: 0; transform: translateX(20px); transition: all .3s ease; }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../#request">Get this for your factory →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel home"></a>
+    <div class="app">Demo Factory<small>Bottled water and juice · 3 lines</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Simulated lines, staff and customers keep working"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="summary">Day Summary</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="prod">Production</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="stock">Stock &amp; recipes</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+  </div>
+</nav>
+
+<main>
+  <!-- DAY SUMMARY -->
+  <section class="screen" id="s-summary">
+    <div class="dayhead">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+      <button type="button" id="next" aria-label="Next day">›</button>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="profit" id="profit"><small>Profit so far (before tax)</small><b class="num" id="v-profit"></b></div>
+        <div class="parts">
+          <div class="click" id="k-sales" role="button" tabindex="0"><small>Sales ›</small><b class="num" id="v-sales"></b></div>
+          <div class="click" id="k-cogs" role="button" tabindex="0"><small>Cost of goods ›</small><b class="num" id="v-cogs"></b></div>
+          <div class="click" id="k-waste" role="button" tabindex="0"><small>Waste + expenses ›</small><b class="num" id="v-wexp"></b></div>
+        </div>
+        <div class="target">
+          <div class="lbl"><span id="t-left"></span><span id="t-pct"></span></div>
+          <div class="bar"><i id="t-bar"></i></div>
+          <div class="lbl"><span>Packs produced against today's plan</span></div>
+        </div>
+        <p class="note">Profit = sales − cost of goods sold (materials, labour, power, overhead) − waste − approved expenses. Before tax. Tap a number for detail.</p>
+      </div>
+      <div class="card" id="c-output">
+        <h3>Output today <small id="v-outpct"></small></h3>
+        <div class="big num" id="v-out"></div>
+        <div id="v-outlines"></div>
+        <div class="stats">
+          <div><b class="num" id="v-scrap"></b><small>packs scrapped</small></div>
+          <div><b class="num" id="v-wpct"></b><small>waste</small></div>
+          <div><b class="num" id="v-wval"></b><small>waste value</small></div>
+          <div><b class="num" id="v-down"></b><small>downtime</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-week">
+        <h3>Last 7 days <small>Packs produced · tap a day</small></h3>
+        <div class="week" id="week"></div>
+      </div>
+      <div class="card" id="c-feed">
+        <h3>Happening now <small id="feed-state"></small></h3>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card" id="c-cpu"><h3>Cost per pack <small>from the recipe</small></h3><div id="v-cpu"></div></div>
+      <div class="card" id="c-downtime"><h3>Machine downtime <small id="v-down-total"></small></h3><div id="v-downlist"></div></div>
+      <div class="card" id="c-low"><h3>Raw materials to reorder <small id="v-low-n"></small></h3><div id="v-low"></div></div>
+      <div class="card" id="c-mos"><h3>Production orders</h3><div id="v-mos"></div></div>
+      <div class="card" id="c-sales"><h3>Sales by customer <small id="v-sales-total"></small></h3><div id="v-salelist"></div></div>
+      <div class="card" id="c-expenses"><h3>Expenses approved <small id="v-exp-total"></small></h3><div id="v-explist"></div></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTION -->
+  <section class="screen" id="s-prod" hidden>
+    <p class="hint">Start a run, record what the line made, log power cuts and breakdowns, then pass or fail each batch. Materials come off stock from the recipe automatically.</p>
+    <div class="grid g2">
+      <div class="card" id="c-orders">
+        <h3>Production orders <button type="button" class="sbtn dark" id="new-mo">+ New order</button></h3>
+        <div id="orders"></div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="card" id="c-qc"><h3>Quality checks <small id="v-qc-n"></small></h3><div id="qc"></div></div>
+        <div class="card"><h3>Downtime today <small id="v-down2"></small></h3><div id="downlog"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STOCK & RECIPES -->
+  <section class="screen" id="s-stock" hidden>
+    <p class="hint">Raw materials below their reorder level are flagged. <b>Order more</b> sends a purchase to Approvals. Sell finished goods that passed quality checks: each sale gets a registered e-invoice.</p>
+    <div class="grid g2">
+      <div class="card" id="c-mats"><h3>Raw materials <small id="v-matval"></small></h3><div id="mats"></div></div>
+      <div class="grid" style="align-content:start">
+        <div class="card" id="c-fg"><h3>Finished goods <small>packs</small></h3><div id="fg"></div></div>
+        <div class="card" id="c-recipe">
+          <h3>Recipe and cost per pack</h3>
+          <div class="seg" role="group" aria-label="Product" id="rec-seg"></div>
+          <div class="tw" id="recipe"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your team asks, you decide, from anywhere. Approved raw material purchases go into stock. Approved spare parts, overtime and fuel come off today's profit.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const etb2 = n => "ETB " + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtQ = (n, u) => (u === "kg" ? (Math.round(n * 10) / 10).toLocaleString("en-US") : Math.round(n).toLocaleString("en-US")) + " " + u;
+  const r3 = n => Math.round(n * 1000) / 1000;
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const VAT = 0.15;
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+  const between = (r, lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
+
+  /* ---------- example factory ---------- */
+  const MATS = [
+    { id: "pf05", n: "PET preform 0.5 L", u: "pcs", cost: 2.40, reorder: 15000, start: 28400 },
+    { id: "pf1", n: "PET preform 1 L", u: "pcs", cost: 3.60, reorder: 6000, start: 9200 },
+    { id: "pf330", n: "PET preform 330 ml", u: "pcs", cost: 2.10, reorder: 6000, start: 7300 },
+    { id: "cap", n: "Bottle caps", u: "pcs", cost: 0.55, reorder: 25000, start: 41000 },
+    { id: "label", n: "Labels", u: "pcs", cost: 0.35, reorder: 25000, start: 19800 },
+    { id: "film", n: "Shrink film", u: "kg", cost: 210, reorder: 80, start: 126 },
+    { id: "pulp", n: "Mango pulp", u: "kg", cost: 120, reorder: 500, start: 410 },
+    { id: "sugar", n: "Sugar", u: "kg", cost: 95, reorder: 150, start: 260 }
+  ];
+  const MT = Object.fromEntries(MATS.map(m => [m.id, m]));
+  // Recipes are per pack. Conversion = labour + power + overhead per pack.
+  const PRODUCTS = [
+    { id: "w05", n: "Water 0.5 L × 12", line: "Line 1", price: 165, conv: { labour: 7, power: 6, overhead: 5 },
+      bom: [["pf05", 12], ["cap", 12], ["label", 12], ["film", 0.03]] },
+    { id: "w1", n: "Water 1 L × 6", line: "Line 2", price: 120, conv: { labour: 5, power: 5, overhead: 4 },
+      bom: [["pf1", 6], ["cap", 6], ["label", 6], ["film", 0.025]] },
+    { id: "mj", n: "Mango juice 330 ml × 12", line: "Line 3", price: 420, conv: { labour: 22, power: 18, overhead: 15 },
+      bom: [["pf330", 12], ["cap", 12], ["label", 12], ["pulp", 0.96], ["sugar", 0.3], ["film", 0.03]] }
+  ];
+  const P = Object.fromEntries(PRODUCTS.map(p => [p.id, p]));
+  const matCost = pid => P[pid].bom.reduce((t, [m, q]) => t + MT[m].cost * q, 0);
+  const convCost = pid => { const c = P[pid].conv; return c.labour + c.power + c.overhead; };
+  const unitCost = pid => matCost(pid) + convCost(pid);
+  const CUSTOMERS = ["Supermarket chain", "Wholesaler, Merkato", "Hotel account", "Distributor, Adama", "Mini market, Bole"];
+  const METHODS = ["Cash", "CBE Birr", "telebirr", "Bank transfer", "Credit"];
+  const LINES = ["Line 1", "Line 2", "Line 3"];
+
+  /* ---------- past days (deterministic) ---------- */
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  function makeDay(date) {
+    const r = rng(dayKey(date) * 3 + 11);
+    const day = { produced: {}, plan: {}, scrap: {}, sales: [], downtime: [], expenses: [] };
+    const base = { w05: [1500, 2200], w1: [700, 1000], mj: [280, 460] };
+    PRODUCTS.forEach(p => {
+      const plan = Math.round(between(r, base[p.id][0], base[p.id][1]) / 50) * 50;
+      const made = Math.round(plan * (0.82 + r() * 0.2));
+      day.plan[p.id] = plan; day.produced[p.id] = made;
+      day.scrap[p.id] = Math.round(made * (0.008 + r() * 0.02));
+      let left = Math.round(made * (0.85 + r() * 0.25));
+      while (left > 0) { const q = Math.min(left, between(r, 80, 400)); day.sales.push({ pid: p.id, q, cust: pick(r, CUSTOMERS), method: pick(r, METHODS) }); left -= q; }
+    });
+    const nd = between(r, 0, 3);
+    for (let i = 0; i < nd; i++) day.downtime.push({ line: pick(r, LINES), kind: r() < 0.6 ? "Power cut" : "Breakdown", min: between(r, 15, 90) });
+    const EX = [["Generator fuel", 6000, 14000], ["Spare part: conveyor belt", 3500, 9000], ["Overtime, night shift", 4000, 8000], ["Lab test reagents", 1500, 3000]];
+    for (let i = 0; i < between(r, 1, 2); i++) { const [n, lo, hi] = pick(r, EX); day.expenses.push({ n, amount: Math.round((lo + r() * (hi - lo)) / 50) * 50 }); }
+    return day;
+  }
+
+  /* ---------- state ---------- */
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const STORE = "edel-demo-manufacturing-v1";
+  let S, invSeq = 2000;
+  function freshState() {
+    const mats = Object.fromEntries(MATS.map(m => [m.id, m.start]));
+    const orders = [
+      { no: "MO-0412", pid: "w05", line: "Line 1", planned: 1200, produced: 640, scrap: 14, st: "Running" },
+      { no: "MO-0413", pid: "w1", line: "Line 2", planned: 800, produced: 800, scrap: 9, st: "Done" },
+      { no: "MO-0414", pid: "mj", line: "Line 3", planned: 400, produced: 0, scrap: 0, st: "Waiting" },
+      { no: "MO-0415", pid: "w05", line: "Line 1", planned: 600, produced: 0, scrap: 0, st: "Waiting" }
+    ];
+    const batches = [
+      { no: "B-1101", pid: "w05", q: 320, st: "Passed", mo: "MO-0412" },
+      { no: "B-1102", pid: "w05", q: 320, st: "Pending", mo: "MO-0412" },
+      { no: "B-1103", pid: "w1", q: 400, st: "Passed", mo: "MO-0413" },
+      { no: "B-1104", pid: "w1", q: 400, st: "Pending", mo: "MO-0413" }
+    ];
+    // Finished goods: opening stock from earlier days plus today's passed batches; today's pending are on hold.
+    const fg = { w05: { avail: 1500 + 320, hold: 320, blocked: 0 }, w1: { avail: 900 + 400, hold: 400, blocked: 0 }, mj: { avail: 380, hold: 0, blocked: 0 } };
+    const sales = [
+      { pid: "w05", q: 400, cust: "Supermarket chain", method: "Bank transfer", no: "EDL-INV-001991" },
+      { pid: "w1", q: 300, cust: "Wholesaler, Merkato", method: "Cash", no: "EDL-INV-001992" },
+      { pid: "mj", q: 120, cust: "Hotel account", method: "Credit", no: "EDL-INV-001993" }
+    ];
+    sales.forEach(s => fg[s.pid].avail -= s.q);
+    return {
+      mats, orders, batches, fg, sales,
+      downtime: [{ line: "Line 2", kind: "Power cut", min: 35 }],
+      expenses: [{ n: "Generator fuel", amount: 8400 }],
+      pending: [
+        { id: 1, k: "Purchase", who: "Store keeper", what: "Labels, 30,000 pcs", amount: 10500, mat: "label", qty: 30000 },
+        { id: 2, k: "Expense", who: "Maintenance", what: "Spare part: filler valve for Line 1", amount: 12800 }
+      ],
+      decided: [], feed: [], apSeq: 2, batchSeq: 1104, moSeq: 415, invSeq
+    };
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify({ ...S, savedDay: dayKey(TODAY), invSeq })); } catch (e) {} }
+  function load() {
+    try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.savedDay === dayKey(TODAY) && s.mats && s.orders) { invSeq = s.invSeq || invSeq; return s; } } catch (e) {}
+    return null;
+  }
+  S = load() || freshState();
+
+  /* ---------- feed + live pop-ups ---------- */
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  function logEvent(icon, text, amount, pop) {
+    S.feed.unshift({ icon, text, amount: amount || 0, t: hhmm() });
+    S.feed = S.feed.slice(0, 30);
+    if (pop) liveToast(`${icon} ${esc(text)}${amount ? " · <b>" + etb(amount) + "</b>" : ""}`);
+  }
+  function liveToast(html) {
+    const d = document.createElement("div"); d.innerHTML = html; $("lt").prepend(d);
+    setTimeout(() => d.remove(), 4200);
+    while ($("lt").children.length > 3) $("lt").lastChild.remove();
+  }
+
+  /* ---------- one shape for today and past days ---------- */
+  function todayDay() {
+    const day = { produced: {}, plan: {}, scrap: {}, sales: S.sales, downtime: S.downtime, expenses: S.expenses };
+    PRODUCTS.forEach(p => { day.produced[p.id] = 0; day.plan[p.id] = 0; day.scrap[p.id] = 0; });
+    S.orders.forEach(o => { day.produced[o.pid] += o.produced; day.plan[o.pid] += o.planned; day.scrap[o.pid] += o.scrap; });
+    return day;
+  }
+  function summarize(day) {
+    const sales = day.sales.reduce((t, s) => t + s.q * P[s.pid].price, 0);
+    const cg = { materials: 0, labour: 0, power: 0, overhead: 0 };
+    day.sales.forEach(s => { cg.materials += s.q * matCost(s.pid); ["labour", "power", "overhead"].forEach(k => cg[k] += s.q * P[s.pid].conv[k]); });
+    const cogs = cg.materials + cg.labour + cg.power + cg.overhead;
+    const produced = PRODUCTS.reduce((t, p) => t + day.produced[p.id], 0);
+    const plan = PRODUCTS.reduce((t, p) => t + day.plan[p.id], 0);
+    const scrap = PRODUCTS.reduce((t, p) => t + day.scrap[p.id], 0);
+    const waste = PRODUCTS.reduce((t, p) => t + day.scrap[p.id] * matCost(p.id), 0);
+    const exp = day.expenses.reduce((t, e) => t + e.amount, 0);
+    const down = day.downtime.reduce((t, d) => t + d.min, 0);
+    return { sales, cg, cogs, produced, plan, scrap, waste, exp, down, profit: sales - cogs - waste - exp };
+  }
+
+  /* ---------- screens ---------- */
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    ["summary", "prod", "stock", "approvals"].forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "summary") { viewOffset = 0; renderSummary(true); }
+    if (name === "prod") renderProd();
+    if (name === "stock") renderStock();
+    if (name === "approvals") renderApprovals();
+    window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- day summary ---------- */
+  let viewOffset = 0, lastFlash = null;
+  const dayFor = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return d; };
+  const curDay = () => viewOffset === 0 ? todayDay() : makeDay(dayFor(viewOffset));
+  function list(el, rows, emptyText) { el.innerHTML = rows.length ? rows.join("") : `<div class="empty">${emptyText}</div>`; }
+  function renderSummary(flash) {
+    const date = dayFor(viewOffset), isToday = viewOffset === 0, day = curDay(), sm = summarize(day);
+    $("d-title").textContent = isToday ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(date).split(",")[0];
+    $("d-date").textContent = `${ethStr(date)} · ${gregStr(date)}`;
+    $("next").disabled = isToday;
+    $("v-profit").textContent = etb(sm.profit);
+    $("profit").classList.toggle("loss", sm.profit < 0);
+    $("profit").querySelector("small").textContent = isToday ? "Profit so far (before tax)" : "Profit (before tax)";
+    $("v-sales").textContent = etb(sm.sales);
+    $("v-cogs").textContent = etb(sm.cogs);
+    $("v-wexp").textContent = etb(sm.waste + sm.exp);
+    const pct = sm.plan ? Math.round(sm.produced / sm.plan * 100) : 0;
+    $("t-bar").style.width = Math.min(100, pct) + "%";
+    $("t-pct").textContent = pct + "% of plan";
+    $("t-left").textContent = sm.produced >= sm.plan ? "Plan reached" : (sm.plan - sm.produced).toLocaleString("en-US") + " packs to go";
+
+    // output
+    $("v-out").textContent = `${sm.produced.toLocaleString("en-US")} of ${sm.plan.toLocaleString("en-US")} packs`;
+    $("v-outpct").textContent = pct + "% of plan";
+    $("v-outlines").innerHTML = PRODUCTS.map(p => `<div class="row" style="padding-bottom:0"><span>${p.n}</span><span class="num">${day.produced[p.id].toLocaleString("en-US")} / ${day.plan[p.id].toLocaleString("en-US")}</span></div>
+      <div class="meter g"><i style="width:${day.plan[p.id] ? Math.min(100, day.produced[p.id] / day.plan[p.id] * 100) : 0}%"></i></div>`).join("");
+    const made = sm.produced + sm.scrap;
+    $("v-scrap").textContent = sm.scrap.toLocaleString("en-US");
+    $("v-wpct").textContent = (made ? (sm.scrap / made * 100) : 0).toFixed(1) + "%";
+    $("v-wval").textContent = Math.round(sm.waste / 100) / 10 + "k";
+    $("v-down").textContent = sm.down + " min";
+
+    // cost per pack
+    $("v-cpu").innerHTML = PRODUCTS.map(p => { const c = unitCost(p.id), m = (p.price - c) / p.price * 100;
+      return `<div class="row"><span>${p.n}<br><span class="muted small">sells ${etb(p.price)} · margin ${m.toFixed(0)}%</span></span><b class="num">${etb2(c)}</b></div>`; }).join("") +
+      `<p class="muted small" style="margin-top:6px">Tap <b>Stock &amp; recipes</b> to see how each cost adds up.</p>`;
+
+    // downtime
+    $("v-down-total").textContent = sm.down + " min";
+    const pc = day.downtime.filter(d => d.kind === "Power cut").reduce((t, d) => t + d.min, 0), bd = sm.down - pc;
+    $("v-downlist").innerHTML = `<div class="row"><span>⚡ Power cuts</span><b class="num">${pc} min</b></div><div class="row"><span>🔧 Breakdowns</span><b class="num">${bd} min</b></div>` +
+      LINES.map(l => { const m = day.downtime.filter(d => d.line === l).reduce((t, d) => t + d.min, 0); return `<div class="row"><span class="muted">${l}</span><span class="num muted">${m} min</span></div>`; }).join("");
+
+    // raw materials low (today's stock)
+    const low = MATS.filter(m => S.mats[m.id] < m.reorder);
+    $("v-low-n").textContent = isToday ? (low.length ? low.length + " low" : "all fine") : "today";
+    list($("v-low"), low.map(m => `<div class="row"><span>${m.n}<br><span class="muted small">reorder at ${fmtQ(m.reorder, m.u)}</span></span><b class="num" style="color:var(--amber)">${fmtQ(S.mats[m.id], m.u)}</b></div>`), "Every raw material is above its reorder level.");
+
+    // production orders
+    if (isToday) {
+      const by = {}; S.orders.forEach(o => by[o.st] = (by[o.st] || 0) + 1);
+      list($("v-mos"), ["Running", "Waiting", "Waiting for material", "Done"].filter(s => by[s]).map(s => `<div class="row"><span><span class="tag ${tagCls(s)}">${s}</span></span><b class="num">${by[s]}</b></div>`), "No orders today.");
+    } else $("v-mos").innerHTML = `<div class="empty">Orders show for today. Output for this day is in the cards above.</div>`;
+
+    // sales by customer
+    $("v-sales-total").textContent = etb(sm.sales);
+    const bc = {}; day.sales.forEach(s => bc[s.cust] = (bc[s.cust] || 0) + s.q * P[s.pid].price);
+    list($("v-salelist"), Object.entries(bc).sort((a, b) => b[1] - a[1]).map(([c, v]) => `<div class="row"><span>${esc(c)}</span><b class="num">${etb(v)}</b></div>`), "No sales yet.");
+
+    // expenses
+    $("v-exp-total").textContent = etb(sm.exp);
+    list($("v-explist"), day.expenses.map(e => `<div class="row"><span>${esc(e.n)}</span><b class="num">${etb(e.amount)}</b></div>`), "No approved expense this day.");
+
+    renderWeek(); renderFeed(); renderBadge();
+    if (flash && lastFlash) { lastFlash.forEach(id => { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); lastFlash = null; }
+  }
+  const tagCls = s => ({ Running: "run", Waiting: "wait", "Waiting for material": "mat", Done: "", Passed: "", Pending: "hold", Failed: "fail" }[s]);
+  function renderWeek() {
+    const vals = []; for (let off = -6; off <= 0; off++) { const d = dayFor(off); vals.push({ off, d, v: summarize(off === 0 ? todayDay() : makeDay(d)).produced }); }
+    const max = Math.max(...vals.map(x => x.v), 1);
+    $("week").innerHTML = vals.map(x => `<button type="button" data-off="${x.off}" class="${x.off === 0 ? "today" : ""} ${x.off === viewOffset ? "sel" : ""}" aria-label="${gregStr(x.d)}: ${x.v} packs">
+      <span class="v">${(x.v / 1000).toFixed(1)}k</span><span class="track"><span class="b" style="height:${Math.max(4, x.v / max * 100)}%"></span></span><span class="d">${x.off === 0 ? "Today" : x.d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`).join("");
+  }
+  $("week").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; viewOffset = Number(b.dataset.off); renderSummary(); });
+  function renderFeed() {
+    const isToday = viewOffset === 0;
+    $("feed-state").textContent = isToday ? (liveOn ? "● live" : "paused") : "";
+    $("feed").innerHTML = !isToday ? `<div class="empty">Live activity shows for today. Tap <b>Today</b> in the chart.</div>`
+      : S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount ? etb(e.amount) : ""}</b></div>`).join("")
+      : `<div class="empty">Waiting for the next event… (turn on <b>Live</b> at the top, or record output yourself)</div>`;
+  }
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  $("prev").addEventListener("click", () => { viewOffset--; renderSummary(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderSummary(); } });
+
+  /* ---------- drill-downs ---------- */
+  const drill = (id, fn) => { const el = $(id); el.addEventListener("click", fn); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  drill("k-sales", () => { const d = curDay(), sm = summarize(d), by = {};
+    d.sales.forEach(s => { by[s.pid] = by[s.pid] || { q: 0, v: 0 }; by[s.pid].q += s.q; by[s.pid].v += s.q * P[s.pid].price; });
+    openSheet(`<h2>Sales ${etb(sm.sales)}</h2><p class="muted">Before tax · ${gregStr(dayFor(viewOffset))}</p><div style="margin-top:12px">${Object.entries(by).map(([pid, v]) =>
+      `<div class="row"><span>${P[pid].n} <span class="muted small">· ${v.q.toLocaleString("en-US")} packs</span></span><b class="num">${etb(v.v)}</b></div><div class="meter"><i style="width:${v.v / sm.sales * 100}%"></i></div>`).join("") || '<div class="empty">No sales.</div>'}</div>
+      <div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-cogs", () => { const sm = summarize(curDay());
+    openSheet(`<h2>Cost of goods ${etb(sm.cogs)}</h2><p class="muted">What the packs sold this day cost to make, from each product's recipe.</p><div style="margin-top:12px">
+      ${[["Materials", sm.cg.materials], ["Labour", sm.cg.labour], ["Power", sm.cg.power], ["Overhead", sm.cg.overhead]].map(([k, v]) => `<div class="row"><span>${k}</span><b class="num">${etb(v)}</b></div><div class="meter"><i style="width:${sm.cogs ? v / sm.cogs * 100 : 0}%"></i></div>`).join("")}
+      </div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-waste", () => { const d = curDay(), sm = summarize(d);
+    openSheet(`<h2>Waste + expenses ${etb(sm.waste + sm.exp)}</h2><p class="muted">Waste is the material in scrapped packs. Expenses are the ones you approved.</p><div style="margin-top:12px">
+      ${PRODUCTS.map(p => `<div class="row"><span>Waste · ${p.n} <span class="muted small">· ${d.scrap[p.id]} packs</span></span><b class="num">${etb(d.scrap[p.id] * matCost(p.id))}</b></div>`).join("")}
+      ${d.expenses.map(e => `<div class="row"><span>${esc(e.n)}</span><b class="num">${etb(e.amount)}</b></div>`).join("")}</div>
+      ${viewOffset === 0 && S.pending.length ? `<div class="actions"><button class="btn btn-gold" id="go-ap">${S.pending.length} waiting for your approval →</button></div>` : ""}
+      <div class="actions"><button class="btn btn-line" data-close>Close</button></div>`, () => { const g = $("go-ap"); g && g.addEventListener("click", () => { closeSheet(); show("approvals"); }); }); });
+
+  /* ---------- sheet + toast ---------- */
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("input,select,button"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3200); }
+  function refreshAll() { save(); renderBadge(); if (!$("s-prod").hidden) renderProd(); if (!$("s-stock").hidden) renderStock(); if (!$("s-approvals").hidden) renderApprovals(); if (!$("s-summary").hidden && viewOffset === 0) renderSummary(true); }
+
+  /* ---------- production logic ---------- */
+  const need = (pid, packs) => P[pid].bom.map(([m, q]) => [m, r3(q * packs)]);
+  const shortOf = (pid, packs) => need(pid, packs).filter(([m, q]) => S.mats[m] < q).map(([m]) => MT[m].n);
+  const maxPacks = pid => Math.floor(Math.min(...P[pid].bom.map(([m, q]) => S.mats[m] / q)));
+  function consume(pid, packs) {
+    const before = MATS.filter(m => S.mats[m.id] >= m.reorder).map(m => m.id);
+    need(pid, packs).forEach(([m, q]) => S.mats[m] = r3(S.mats[m] - q));
+    before.filter(id => S.mats[id] < MT[id].reorder).forEach(id => logEvent("📉", `${MT[id].n} is below its reorder level`, 0, true));
+  }
+  function recordOutput(o, good, scrap, live) {
+    consume(o.pid, good + scrap);
+    o.produced += good; o.scrap += scrap;
+    if (o.produced >= o.planned) { o.st = "Done"; }
+    const b = { no: "B-" + (++S.batchSeq), pid: o.pid, q: good, st: "Pending", mo: o.no };
+    S.batches.push(b); S.fg[o.pid].hold += good;
+    logEvent("🏭", `${o.line}: ${good} packs of ${P[o.pid].n}${scrap ? `, ${scrap} scrapped` : ""} · batch ${b.no}`, 0, live);
+    if (o.st === "Done") logEvent("✅", `${o.no} finished: ${o.produced} packs`, 0, live);
+    lastFlash = ["c-output", "c-money", "c-low"];
+    return b;
+  }
+  function startRun(o) {
+    if (S.orders.some(x => x !== o && x.line === o.line && x.st === "Running")) return `${o.line} is already running another order.`;
+    const short = shortOf(o.pid, Math.min(50, o.planned - o.produced));
+    if (short.length) { o.st = "Waiting for material"; logEvent("⛔", `${o.no} is waiting for material: ${short.join(", ")}`, 0, false); return `Not enough ${short.join(", ")} to start. Order more from Stock & recipes.`; }
+    o.st = "Running"; logEvent("▶️", `${o.no} started on ${o.line}: ${P[o.pid].n}`, 0, false); return "";
+  }
+  function qc(b, pass, live) {
+    S.fg[b.pid].hold -= b.q;
+    if (pass) { b.st = "Passed"; S.fg[b.pid].avail += b.q; logEvent("🧪", `Batch ${b.no} passed quality check · ${b.q} packs ready to sell`, 0, live); }
+    else { b.st = "Failed"; S.fg[b.pid].blocked += b.q; logEvent("🚫", `Batch ${b.no} FAILED quality check · ${b.q} packs blocked from sale`, 0, true); }
+  }
+  function addDowntime(line, kind, min, live) {
+    S.downtime.push({ line, kind, min });
+    logEvent(kind === "Power cut" ? "⚡" : "🔧", `${kind} on ${line}: ${min} min lost`, 0, live);
+    lastFlash = ["c-output", "c-downtime"];
+  }
+
+  /* ---------- production screen ---------- */
+  function renderProd() {
+    $("orders").innerHTML = S.orders.map((o, i) => {
+      const pct = Math.min(100, o.produced / o.planned * 100);
+      const acts = o.st === "Waiting" || o.st === "Waiting for material" ? `<button type="button" class="sbtn gold" data-act="start" data-i="${i}">${o.st === "Waiting" ? "▶ Start run" : "↻ Try again"}</button>`
+        : o.st === "Running" ? `<button type="button" class="sbtn gold" data-act="out" data-i="${i}">Record output</button><button type="button" class="sbtn" data-act="power" data-i="${i}">⚡ Power cut</button><button type="button" class="sbtn" data-act="break" data-i="${i}">🔧 Breakdown</button>` : "";
+      return `<div class="mo"><div class="h"><span><b>${o.no}</b> · ${P[o.pid].n}<br><span class="muted small">${o.line} · ${o.produced.toLocaleString("en-US")} of ${o.planned.toLocaleString("en-US")} packs${o.scrap ? ` · ${o.scrap} scrapped` : ""}</span></span><span class="tag ${tagCls(o.st)}">${o.st}</span></div>
+        <div class="meter g"><i style="width:${pct}%"></i></div>${acts ? `<div class="acts">${acts}</div>` : ""}</div>`;
+    }).join("");
+    const pend = S.batches.filter(b => b.st === "Pending"), done = S.batches.filter(b => b.st !== "Pending").slice(-4).reverse();
+    $("v-qc-n").textContent = pend.length ? pend.length + " waiting" : "";
+    $("qc").innerHTML = (pend.length ? pend.map(b => `<div class="ap"><div><b>${b.no}</b> · ${P[b.pid].n}<br><span class="muted small">${b.q} packs · from ${b.mo} · on hold until checked</span></div>
+      <div class="btns"><button type="button" class="ok-b" data-qc="${b.no}" data-pass="1">Pass</button><button type="button" class="no-b" data-qc="${b.no}" data-pass="0">Fail</button></div></div>`).join("") : `<div class="empty">No batch waiting for a check.</div>`) +
+      done.map(b => `<div class="row"><span class="muted small">${b.no} · ${P[b.pid].n} · ${b.q} packs</span><span class="tag ${tagCls(b.st)}">${b.st}</span></div>`).join("");
+    $("v-down2").textContent = S.downtime.reduce((t, d) => t + d.min, 0) + " min";
+    $("downlog").innerHTML = S.downtime.length ? S.downtime.slice().reverse().map(d => `<div class="row"><span>${d.kind === "Power cut" ? "⚡" : "🔧"} ${d.kind} · ${d.line}</span><b class="num">${d.min} min</b></div>`).join("") : `<div class="empty">No downtime today.</div>`;
+  }
+  $("orders").addEventListener("click", e => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    const o = S.orders[b.dataset.i];
+    if (b.dataset.act === "start") { const msg = startRun(o); refreshAll(); renderProd(); toast(msg ? esc(msg) : `${o.no} is running on ${o.line}`); }
+    else if (b.dataset.act === "out") {
+      const left = o.planned - o.produced, sugg = Math.min(left, 200), cap = maxPacks(o.pid);
+      openSheet(`<h2>Record output · ${o.no}</h2><p class="muted">${P[o.pid].n} · ${o.line} · ${left.toLocaleString("en-US")} packs left on this order</p>
+        <label class="f" for="o-good">Good packs</label><input id="o-good" type="number" min="0" max="${left}" value="${sugg}">
+        <label class="f" for="o-scrap">Scrapped packs</label><input id="o-scrap" type="number" min="0" value="${Math.max(1, Math.round(sugg * 0.015))}">
+        <div class="receipt" id="o-use" style="font-family:var(--body)"></div><div class="err" id="o-err"></div>
+        <div class="actions"><button class="btn btn-gold" id="o-save">Save output</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+        const upd = () => { const g = Math.max(0, Math.floor(+$("o-good").value || 0)), s = Math.max(0, Math.floor(+$("o-scrap").value || 0)), n = need(o.pid, g + s);
+          $("o-use").innerHTML = `<b>Materials taken from stock (recipe × ${g + s} packs)</b>` + n.map(([m, q]) => `<div class="row"><span>${MT[m].n}</span><span class="num" style="color:${S.mats[m] < q ? "var(--red)" : "inherit"}">${fmtQ(q, MT[m].u)} <span class="muted">of ${fmtQ(S.mats[m], MT[m].u)}</span></span></div>`).join("") +
+            `<div class="row"><span>Material cost</span><b class="num">${etb((g + s) * matCost(o.pid))}</b></div>`; };
+        $("o-good").addEventListener("input", upd); $("o-scrap").addEventListener("input", upd); upd();
+        $("o-save").addEventListener("click", () => {
+          const g = Math.floor(+$("o-good").value || 0), s = Math.floor(+$("o-scrap").value || 0);
+          if (g < 0 || s < 0 || g + s === 0) { $("o-err").textContent = "Enter the packs made."; return; }
+          if (g > left) { $("o-err").textContent = `This order only has ${left} packs left.`; return; }
+          const short = shortOf(o.pid, g + s); if (short.length) { $("o-err").textContent = `Not enough ${short.join(", ")} in stock (max ${maxPacks(o.pid)} packs).`; return; }
+          const bt = recordOutput(o, g, s, false); closeSheet(); refreshAll(); renderProd();
+          toast(`Saved. Batch <b>${bt.no}</b> is on hold until its quality check.`);
+        });
+      });
+    } else {
+      const kind = b.dataset.act === "power" ? "Power cut" : "Breakdown";
+      openSheet(`<h2>${kind === "Power cut" ? "⚡" : "🔧"} ${kind} · ${o.line}</h2><p class="muted">How many minutes did ${o.line} stop?</p>
+        <label class="f" for="d-min">Minutes</label><input id="d-min" type="number" min="1" max="600" value="${kind === "Power cut" ? 45 : 30}">
+        <div class="actions"><button class="btn btn-gold" id="d-save">Log downtime</button><button class="btn btn-line" data-close>Cancel</button></div>`, () =>
+        $("d-save").addEventListener("click", () => { const m = Math.min(600, Math.max(1, Math.floor(+$("d-min").value || 0))); addDowntime(o.line, kind, m, false); closeSheet(); refreshAll(); renderProd(); toast(`${kind} logged: ${m} min on ${o.line}`); }));
+    }
+  });
+  $("qc").addEventListener("click", e => {
+    const b = e.target.closest("[data-qc]"); if (!b) return;
+    const bt = S.batches.find(x => x.no === b.dataset.qc); if (!bt || bt.st !== "Pending") return;
+    qc(bt, b.dataset.pass === "1", false); lastFlash = ["c-output"]; refreshAll(); renderProd();
+    toast(bt.st === "Passed" ? `Batch ${bt.no} passed: ${bt.q} packs can be sold` : `Batch ${bt.no} failed: ${bt.q} packs are blocked from sale`);
+  });
+  $("new-mo").addEventListener("click", () => openSheet(`<h2>New production order</h2>
+    <label class="f" for="n-p">Product</label><select id="n-p">${PRODUCTS.map(p => `<option value="${p.id}">${p.n} · ${p.line}</option>`).join("")}</select>
+    <label class="f" for="n-q">Packs to make</label><input id="n-q" type="number" min="10" max="5000" value="500">
+    <p class="muted small" id="n-info" style="margin-top:8px"></p>
+    <div class="actions"><button class="btn btn-gold" id="n-save">Create order</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+    const upd = () => { const pid = $("n-p").value, q = Math.floor(+$("n-q").value || 0); $("n-info").textContent = `Needs ${etb(q * matCost(pid))} of materials · stock allows ${maxPacks(pid).toLocaleString("en-US")} packs`; };
+    $("n-p").addEventListener("change", upd); $("n-q").addEventListener("input", upd); upd();
+    $("n-save").addEventListener("click", () => { const pid = $("n-p").value, q = Math.min(5000, Math.max(10, Math.floor(+$("n-q").value || 0)));
+      const o = { no: "MO-0" + (++S.moSeq), pid, line: P[pid].line, planned: q, produced: 0, scrap: 0, st: "Waiting" };
+      S.orders.push(o); logEvent("📋", `New order ${o.no}: ${q} packs of ${P[pid].n}`, 0, false); closeSheet(); refreshAll(); renderProd(); toast(`${o.no} created. Press <b>Start run</b> when the line is free.`); });
+  }));
+
+  /* ---------- stock & recipes ---------- */
+  let recPid = "w05";
+  function renderStock() {
+    const val = MATS.reduce((t, m) => t + S.mats[m.id] * m.cost, 0);
+    $("v-matval").textContent = "worth " + etb(val);
+    $("mats").innerHTML = MATS.map(m => { const low = S.mats[m.id] < m.reorder, asked = S.pending.some(p => p.mat === m.id);
+      return `<div class="mat"><div><b>${m.n}</b> ${low ? '<span class="tag low">Low</span>' : ""}<br><span class="muted small num">${fmtQ(S.mats[m.id], m.u)} on hand · reorder at ${fmtQ(m.reorder, m.u)} · ${etb2(m.cost)}/${m.u === "kg" ? "kg" : "pc"}</span>
+        <div class="meter ${low ? "" : "g"}"><i style="width:${Math.min(100, S.mats[m.id] / (m.reorder * 2) * 100)}%"></i></div></div>
+        <div>${asked ? '<span class="tag hold">Asked</span>' : `<button type="button" class="sbtn ${low ? "gold" : ""}" data-order="${m.id}">Order more</button>`}</div></div>`; }).join("");
+    $("fg").innerHTML = PRODUCTS.map(p => { const f = S.fg[p.id];
+      return `<div class="mat"><div><b>${p.n}</b><br><span class="muted small num">${f.avail.toLocaleString("en-US")} ready · ${f.hold.toLocaleString("en-US")} on hold (QC)${f.blocked ? ` · <span style="color:var(--red)">${f.blocked} blocked</span>` : ""}</span></div>
+        <div><button type="button" class="sbtn dark" data-sell="${p.id}" ${f.avail > 0 ? "" : "disabled"}>Sell</button></div></div>`; }).join("");
+    $("rec-seg").innerHTML = PRODUCTS.map(p => `<button type="button" aria-pressed="${p.id === recPid}" data-rec="${p.id}">${p.n.split(" ×")[0]}</button>`).join("");
+    const p = P[recPid], mc = matCost(recPid), c = p.conv;
+    $("recipe").innerHTML = `<table class="t"><thead><tr><th>Per pack</th><th class="r">Qty</th><th class="r">Unit cost</th><th class="r">Cost</th></tr></thead><tbody>
+      ${p.bom.map(([m, q]) => `<tr><td>${MT[m].n}</td><td class="r">${q} ${MT[m].u}</td><td class="r">${MT[m].cost.toFixed(2)}</td><td class="r">${(q * MT[m].cost).toFixed(2)}</td></tr>`).join("")}
+      <tr><td colspan="3"><b>Materials</b></td><td class="r"><b>${mc.toFixed(2)}</b></td></tr>
+      <tr><td colspan="3">Labour</td><td class="r">${c.labour.toFixed(2)}</td></tr><tr><td colspan="3">Power</td><td class="r">${c.power.toFixed(2)}</td></tr><tr><td colspan="3">Overhead</td><td class="r">${c.overhead.toFixed(2)}</td></tr>
+      <tr class="tot"><td colspan="3"><b>Cost per pack</b></td><td class="r"><b>${etb2(unitCost(recPid))}</b></td></tr>
+      <tr><td colspan="3">Selling price (before VAT)</td><td class="r">${etb2(p.price)}</td></tr>
+      <tr><td colspan="3">Margin per pack</td><td class="r" style="color:var(--green)"><b>${etb2(p.price - unitCost(recPid))}</b></td></tr></tbody></table>`;
+  }
+  $("rec-seg").addEventListener("click", e => { const b = e.target.closest("[data-rec]"); if (!b) return; recPid = b.dataset.rec; renderStock(); });
+  $("mats").addEventListener("click", e => {
+    const b = e.target.closest("[data-order]"); if (!b) return;
+    const m = MT[b.dataset.order], qty = m.u === "kg" ? Math.max(50, Math.round((m.reorder * 2 - S.mats[m.id]) / 10) * 10) : Math.max(1000, Math.round((m.reorder * 2 - S.mats[m.id]) / 1000) * 1000);
+    S.pending.push({ id: ++S.apSeq, k: "Purchase", who: "You (Stock screen)", what: `${m.n}, ${fmtQ(qty, m.u)}`, amount: Math.round(qty * m.cost), mat: m.id, qty });
+    logEvent("📝", `Purchase request: ${m.n}, ${fmtQ(qty, m.u)}`, qty * m.cost, false);
+    refreshAll(); renderStock(); toast(`Purchase request sent to <b>Approvals</b>: ${esc(m.n)}`);
+  });
+  $("fg").addEventListener("click", e => {
+    const b = e.target.closest("[data-sell]"); if (!b) return;
+    const p = P[b.dataset.sell], f = S.fg[p.id];
+    openSheet(`<h2>Sell · ${p.n}</h2><p class="muted">${f.avail.toLocaleString("en-US")} packs passed quality and are ready · ${etb(p.price)} per pack before VAT</p>
+      <label class="f" for="s-c">Customer</label><select id="s-c">${CUSTOMERS.map(c => `<option>${c}</option>`).join("")}</select>
+      <label class="f" for="s-q">Packs</label><input id="s-q" type="number" min="1" max="${f.avail}" value="${Math.min(f.avail, 150)}">
+      <label class="f" for="s-m">Payment</label><select id="s-m">${METHODS.map(m => `<option>${m}</option>`).join("")}</select>
+      <p style="margin-top:10px;font-weight:700" id="s-tot"></p><div class="err" id="s-err"></div>
+      <div class="actions"><button class="btn btn-gold" id="s-go">Sell and issue invoice</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      const upd = () => { const q = Math.floor(+$("s-q").value || 0); $("s-tot").textContent = `Total ${etb(q * p.price * (1 + VAT))} with VAT`; };
+      $("s-q").addEventListener("input", upd); upd();
+      $("s-go").addEventListener("click", () => {
+        const q = Math.floor(+$("s-q").value || 0);
+        if (q < 1 || q > f.avail) { $("s-err").textContent = `Choose between 1 and ${f.avail} packs. Packs on hold or blocked cannot be sold.`; return; }
+        const s = sell(p.id, q, $("s-c").value, $("s-m").value, false);
+        refreshAll(); renderStock();
+        openSheet(`<h2>Sold ✓</h2><p class="muted">${esc(s.cust)} · ${esc(s.method)}</p><div class="receipt"><b>TAX INVOICE</b><br>${esc(p.n)} × ${q}<span style="float:right">${etb(q * p.price)}</span><br>VAT 15%<span style="float:right">${etb(q * p.price * VAT)}</span><br>------------------------------<br>TOTAL ETB<span style="float:right">${Math.round(q * p.price * (1 + VAT)).toLocaleString("en-US")}</span><br>No ${s.no}<br><span class="stamp">REGISTERED · ተመዝግቧል</span></div>
+          <p class="muted small" style="margin-top:8px">In the real system this invoice is registered with the Ministry of Revenues as the sale happens.</p>
+          <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Day Summary</button><button class="btn btn-line" data-close>Back to stock</button></div>`, () =>
+          $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+      });
+    });
+  });
+  function sell(pid, q, cust, method, live) {
+    const s = { pid, q, cust, method, no: "EDL-INV-" + String(++invSeq).padStart(6, "0") };
+    S.sales.push(s); S.fg[pid].avail -= q;
+    logEvent("🧾", `${cust} bought ${q} × ${P[pid].n} · ${method} · ${s.no}`, q * P[pid].price * (1 + VAT), live);
+    lastFlash = ["c-money", "c-sales"];
+    return s;
+  }
+
+  /* ---------- approvals ---------- */
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? etb(S.pending.reduce((t, p) => t + p.amount, 0)) : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap" data-ap="${p.id}"><div><span class="k">${p.k}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)} · ${etb(p.amount)}</span></div>
+      <div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("")
+      : `<div class="empty">All done. New requests appear here${liveOn ? " while Live is on" : ""}.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${p.k} · ${p.ok ? "approved" : "rejected"} ${p.t}</span></span><b class="num" style="color:${p.ok ? "var(--green)" : "var(--red)"}">${etb(p.amount)}</b></div>`).join("")
+      : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    b.closest(".ap").classList.add("gone");
+    setTimeout(() => {
+      S.pending = S.pending.filter(x => x.id !== id); S.decided.push({ ...p, ok, t: hhmm() });
+      let msg;
+      if (ok && p.k === "Purchase") {
+        S.mats[p.mat] = r3(S.mats[p.mat] + p.qty); msg = `Approved and received: ${esc(MT[p.mat].n)} is now ${fmtQ(S.mats[p.mat], MT[p.mat].u)}.`;
+        S.orders.filter(o => o.st === "Waiting for material" && !shortOf(o.pid, Math.min(50, o.planned - o.produced)).length).forEach(o => { o.st = "Waiting"; logEvent("📦", `${o.no} can start now: material arrived`, 0, false); });
+        lastFlash = ["c-low"];
+      } else if (ok) { S.expenses.push({ n: p.what, amount: p.amount }); lastFlash = ["c-money", "c-expenses"]; msg = `Approved. Profit is now ${etb(summarize(todayDay()).profit)}.`; }
+      else msg = "Rejected. The staff member is told.";
+      logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, p.amount, false);
+      save(); renderApprovals(); toast(msg);
+    }, 280);
+  });
+
+  /* ---------- live simulation ---------- */
+  let liveOn = true, liveTimer = null;
+  const R = Math.random;
+  function liveTick() {
+    if (document.hidden) return;
+    const x = R(), running = S.orders.filter(o => o.st === "Running");
+    if (x < 0.42 && running.length) {
+      const o = pick(R, running), left = o.planned - o.produced, g = Math.min(left, between(R, 40, 140)), s = R() < 0.5 ? between(R, 0, 3) : 0;
+      if (shortOf(o.pid, g + s).length) { o.st = "Waiting for material"; logEvent("⛔", `${o.no} stopped: not enough ${shortOf(o.pid, g + s).join(", ")}`, 0, true); }
+      else recordOutput(o, g, s, true);
+    } else if (x < 0.55) {
+      const waiting = S.orders.find(o => o.st === "Waiting" && !S.orders.some(r => r.line === o.line && r.st === "Running"));
+      if (waiting) { startRun(waiting); liveToast(`▶️ ${waiting.no} ${waiting.st === "Running" ? "started on " + waiting.line : "is waiting for material"}`); }
+      else return;
+    } else if (x < 0.70) {
+      const pend = S.batches.find(b => b.st === "Pending"); if (!pend) return;
+      qc(pend, R() > 0.12, true); lastFlash = ["c-output"];
+    } else if (x < 0.80) {
+      const l = running.length ? pick(R, running).line : pick(R, LINES);
+      addDowntime(l, R() < 0.65 ? "Power cut" : "Breakdown", between(R, 10, 60), true);
+    } else if (x < 0.98) {
+      const ready = PRODUCTS.filter(p => S.fg[p.id].avail >= 60); if (!ready.length) return;
+      const p = pick(R, ready); sell(p.id, Math.min(S.fg[p.id].avail, between(R, 60, 300)), pick(R, CUSTOMERS), pick(R, METHODS), true);
+    } else return liveTick2(); // approvals: top 2% of ticks only
+    refreshAll();
+  }
+  function liveTick2() {
+    if (S.pending.length >= 3) return;
+    const opts = [["Expense", "Maintenance", "Spare part: capping head bearing", 7400], ["Expense", "Store keeper", "Generator fuel, 150 L", 13800], ["Expense", "Production manager", "Overtime, weekend shift", 6200], ["Purchase", "Store keeper", "Mango pulp, 600 kg", 72000, "pulp", 600], ["Purchase", "Store keeper", "Shrink film, 100 kg", 21000, "film", 100]];
+    const [k, who, what, amount, mat, qty] = pick(R, opts);
+    S.pending.push({ id: ++S.apSeq, k, who, what, amount, mat, qty });
+    logEvent("📝", `${who} asks you to approve: ${what}`, amount, true);
+    refreshAll();
+  }
+  function setLive(on) {
+    liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(liveTimer);
+    if (on) liveTimer = setInterval(liveTick, 6000);
+    renderFeed();
+  }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: the lines, staff and customers keep working" : "Live paused"); });
+
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} invSeq = 2000; S = freshState(); $("lt").innerHTML = ""; show("summary"); toast("Demo reset"); });
+
+  renderSummary();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+})();
+</script>
+</body>
+</html>

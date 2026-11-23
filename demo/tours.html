@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tours &amp; Travel Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's tour and car rental system with example data: owner dashboard, bookings, dispatch, fleet, fuel and approvals.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/tours.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* top */
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 14px; }
+.top img { height: 34px; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 560px) { .top .cta { display: none; } .top .app small { display: none; } }
+
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+
+/* cards */
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.row:first-of-type { border-top: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+/* day switcher */
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; }
+.dayhead .when b { font-family: var(--display); font-size: 20px; display: block; }
+.dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+
+/* hero numbers */
+.money { background: var(--black); color: #fff; border: 0; }
+.money .profit small { color: #9C9EA2; font-size: 13px; }
+.money .profit b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .profit.loss b { color: #FF8A80; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; }
+.money .parts b { font-size: 16px; }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+.target { margin-top: 14px; }
+.target .bar { height: 10px; border-radius: 999px; background: #2A2C30; overflow: hidden; margin: 6px 0; }
+.target .bar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
+.target .lbl { display: flex; justify-content: space-between; font-size: 13px; color: #D9DADC; gap: 10px; }
+.target button { background: none; border: 0; color: var(--gold); font-weight: 700; padding: 0; font-size: 13px; }
+
+/* tonight */
+.tonight .big { font-family: var(--display); font-size: 30px; }
+.tonight .occ { height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+.tonight .occ i { display: block; height: 100%; background: var(--green); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stats div { background: var(--bg); border-radius: 10px; padding: 8px; text-align: center; }
+.stats b { display: block; font-family: var(--display); font-size: 18px; }
+.stats small { color: var(--muted); font-size: 11.5px; }
+
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 8px; }
+.seg button { border: 0; background: none; padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--gold); }
+
+/* rooms */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.room { border: 0; border-radius: 12px; padding: 10px; text-align: left; background: var(--c-soft); color: var(--ink); border-left: 5px solid var(--c); min-height: 74px; transition: transform .12s; }
+.room:hover { transform: translateY(-2px); }
+.room b { font-family: var(--display); font-size: 17px; display: block; }
+.room small { font-size: 11.5px; color: var(--muted); display: block; line-height: 1.3; }
+.st-occupied { --c: var(--green); --c-soft: var(--green-soft); }
+.st-arriving { --c: #2B6CB0; --c-soft: #E4EEF9; }
+.st-departing { --c: var(--amber); --c-soft: var(--amber-soft); }
+.st-free { --c: #9C9EA2; --c-soft: #FFFFFF; }
+.st-cleaning { --c: #8E44AD; --c-soft: #F3E8F8; }
+
+/* restaurant */
+.pos { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .pos { grid-template-columns: 1fr; } }
+.menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.item { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 12px; text-align: left; transition: border-color .12s, transform .12s; }
+.item:hover { border-color: var(--gold); transform: translateY(-2px); }
+.item b { display: block; font-size: 14.5px; }
+.item .am { font-family: "Noto Sans Ethiopic", var(--body); font-size: 12px; color: var(--muted); display: block; }
+.item span.p { font-weight: 700; color: var(--gold-deep); font-size: 13.5px; }
+.cart { position: sticky; top: 112px; }
+.cart-line { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.qty { display: inline-flex; align-items: center; gap: 6px; }
+.qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-weight: 700; }
+.methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; }
+.methods button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 10px; padding: 8px 4px; font-size: 12.5px; font-weight: 600; }
+.methods button[aria-pressed="true"] { border-color: var(--black); background: var(--black); color: #fff; }
+select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.btn { border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-dark { background: var(--black); color: #fff; }
+.btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.wide { width: 100%; }
+.orders .row { align-items: center; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); white-space: nowrap; }
+
+/* sheet + toast */
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; box-shadow: 0 14px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; }
+.toast b { color: var(--gold); }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(211,166,40,.0); } 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } 100% { box-shadow: 0 0 0 0 rgba(211,166,40,0); } }
+/* owner interactions */
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; height: 100%; padding: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease, background .2s; min-height: 6px; position: relative; }
+.week button:hover .b { background: #D9CBA0; }
+.week button.today .b { background: var(--gold); }
+.week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d { font-size: 11.5px; color: var(--muted); text-align: center; }
+.week .v { font-size: 10.5px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.feed { display: grid; gap: 2px; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } to { opacity: 1; transform: none; background: transparent; } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; }
+.ev b.num { font-size: 13.5px; white-space: nowrap; }
+.click { cursor: pointer; }
+.click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.money .parts div.click:hover { outline-color: var(--gold); }
+.ap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ap .ok-b { background: var(--green); color: #fff; }
+.ap .no-b { background: var(--red-soft); color: var(--red); }
+.ap.gone { opacity: 0; transform: translateX(20px); transition: all .3s ease; }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+
+/* tours additions */
+.pct { font-size: 12px; font-weight: 700; display: block; margin-top: 2px; }
+.pct.up { color: #5FD58C; } .pct.down { color: #FF8A80; } .pct.flat { color: #9C9EA2; }
+.money .profit .pct { font-size: 13px; }
+.periodbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.periodbar .seg { margin-bottom: 0; }
+.dayhead.compact { margin-bottom: 0; gap: 8px; }
+.dayhead.compact .when b { font-size: 16px; }
+.tbl { overflow-x: auto; margin: 0 -4px; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; min-width: 460px; }
+.tbl th { text-align: right; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 6px 4px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl th:first-child, .tbl td:first-child { text-align: left; }
+.tbl td { text-align: right; padding: 8px 4px; border-bottom: 1px solid #F0EEE8; white-space: nowrap; }
+.tbl td:first-child { white-space: normal; }
+.tbl tr.sub td { color: var(--muted); font-style: italic; }
+.tbl tr.tot td { font-weight: 700; border-top: 2px solid var(--ink); border-bottom: 0; }
+.neg { color: var(--red); }
+.exp { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; font-size: 14px; }
+.exp:first-of-type { border-top: 0; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.red { background: var(--red); } .dot.amber { background: #E39A1C; } .dot.green { background: var(--green); }
+.outrow { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 9px 0; border-top: 1px solid #F0EEE8; }
+.outrow:first-of-type { border-top: 0; }
+.late { background: var(--red-soft); border-radius: 10px; padding: 8px 10px; color: var(--red); font-weight: 700; font-size: 13.5px; margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chips button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; padding: 6px 12px; font-weight: 600; font-size: 13px; }
+.chips button[aria-pressed="true"] { background: var(--black); border-color: var(--black); color: #fff; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.toolbar select { width: auto; }
+.bk { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); text-align: left; width: 100%; margin-bottom: 8px; }
+.bk:hover { border-color: var(--gold); }
+.bk b { font-size: 14.5px; }
+.bk .m { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.st { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; justify-self: end; align-self: start; }
+.st.draft { background: #ECEBE7; color: var(--muted); }
+.st.confirmed { background: var(--green-soft); color: var(--green); }
+.st.credit { background: #E4EEF9; color: #2B6CB0; }
+.st.cancelled { background: var(--red-soft); color: var(--red); }
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.form .full { grid-column: 1 / -1; }
+.form label { font-size: 12.5px; font-weight: 700; display: grid; gap: 4px; }
+.form input, .form select { font: inherit; font-weight: 400; padding: 9px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.form .chk { display: flex; gap: 8px; align-items: center; font-weight: 600; }
+.form .chk input { width: auto; }
+@media (max-width: 480px) { .form { grid-template-columns: 1fr; } }
+.board h4 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 14px 0 6px; }
+.board h4:first-child { margin-top: 0; }
+.job { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 10px 0; border-top: 1px solid #F0EEE8; }
+.job:first-of-type { border-top: 0; }
+.job .m { color: var(--muted); font-size: 12.5px; }
+.job button { border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13px; white-space: nowrap; }
+.go { background: var(--gold); color: var(--black); }
+.back { background: var(--black); color: #fff; }
+.vehicles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.veh { border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: var(--paper); display: grid; gap: 4px; font-size: 13px; }
+.veh b { font-family: var(--display); font-size: 15px; }
+.veh .vs { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; justify-self: start; }
+.vs.available { background: var(--green-soft); color: var(--green); }
+.vs.out { background: #E4EEF9; color: #2B6CB0; }
+.vs.repair { background: var(--amber-soft); color: var(--amber); }
+.tank { margin-top: 6px; }
+.tank .fill { height: 12px; background: var(--bg); border-radius: 999px; overflow: hidden; margin: 6px 0; }
+.tank .fill i { display: block; height: 100%; background: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../#request">Get this for your tour company →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel home"></a>
+    <div class="app">Demo Tours<small>Tours &amp; car rent · 8 vehicles</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Simulated bookings and trips keep happening"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="dash">Owner Dashboard</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+    <button type="button" role="tab" aria-selected="false" data-screen="bookings">Bookings</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="dispatch">Dispatch &amp; Fleet</button>
+  </div>
+</nav>
+
+<main>
+  <!-- OWNER DASHBOARD -->
+  <section class="screen" id="s-dash">
+    <div class="periodbar">
+      <div class="seg" role="group" aria-label="Period" id="period">
+        <button type="button" aria-pressed="true" data-p="day">Today</button>
+        <button type="button" aria-pressed="false" data-p="week">This week</button>
+        <button type="button" aria-pressed="false" data-p="month">This month</button>
+      </div>
+      <div class="dayhead compact" id="dayhead">
+        <button type="button" id="prev" aria-label="Previous day">‹</button>
+        <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+        <button type="button" id="next" aria-label="Next day">›</button>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="profit" id="profit"><small id="p-label">Net profit (before tax)</small><b class="num" id="v-net"></b><span class="pct" id="pc-net"></span></div>
+        <div class="parts">
+          <div class="click" id="k-rev" role="button" tabindex="0"><small>Revenue ›</small><b class="num" id="v-rev"></b><span class="pct" id="pc-rev"></span></div>
+          <div class="click" id="k-cost" role="button" tabindex="0"><small>Costs ›</small><b class="num" id="v-cost"></b><span class="pct" id="pc-cost"></span></div>
+          <div class="click" id="k-trips" role="button" tabindex="0"><small>Trips ›</small><b class="num" id="v-trips"></b><span class="pct" id="pc-trips"></span></div>
+        </div>
+        <p class="note">Revenue = confirmed bookings, before VAT. Costs = fuel + maintenance + driver per diem paid. Tap a number for detail.</p>
+      </div>
+      <div class="card" id="c-out">
+        <h3>Cars out now <small id="v-outcount"></small></h3>
+        <div id="v-out"></div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-trend">
+        <h3>Revenue trend <small id="trend-lbl">tap a day</small></h3>
+        <div class="week" id="trend"></div>
+      </div>
+      <div class="card" id="c-feed">
+        <h3>Happening now <small id="feed-state"></small></h3>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+
+    <div class="card" id="c-break" style="margin-top:14px">
+      <h3>Breakdown <small id="break-lbl"></small></h3>
+      <div class="seg" role="group" aria-label="Break down by" id="dim">
+        <button type="button" aria-pressed="true" data-d="vehicle">By vehicle</button>
+        <button type="button" aria-pressed="false" data-d="driver">By driver</button>
+        <button type="button" aria-pressed="false" data-d="route">By route</button>
+      </div>
+      <div class="tbl" id="break"></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-expiry">
+        <h3>Papers expiring <small>registration · insurance</small></h3>
+        <div id="v-expiry"></div>
+      </div>
+      <div class="card" id="c-credit">
+        <h3>On credit <small id="v-credit-total"></small></h3>
+        <div id="v-credit"></div>
+        <p class="muted small" style="margin-top:8px">Agency and company bookings to be paid later. Not counted in revenue until paid.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your staff ask, you decide, from anywhere. Driver per diem is a cost only once the tour operator marks it <b>paid</b>.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Approved, waiting to be paid</h3><div id="ap-topay"></div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3>Decided today</h3><div id="ap-done"></div></div>
+  </section>
+
+  <!-- BOOKINGS -->
+  <section class="screen" id="s-bookings" hidden>
+    <p class="hint">Create a booking, then confirm it with a payment (each gets a registered e-invoice) or put it on credit for an agency.</p>
+    <div class="toolbar">
+      <div class="chips" id="bk-state" role="group" aria-label="Status">
+        <button type="button" aria-pressed="true" data-s="all">All</button>
+        <button type="button" aria-pressed="false" data-s="draft">Draft</button>
+        <button type="button" aria-pressed="false" data-s="confirmed">Confirmed</button>
+        <button type="button" aria-pressed="false" data-s="credit">Credit</button>
+        <button type="button" aria-pressed="false" data-s="cancelled">Cancelled</button>
+      </div>
+      <select id="bk-type" aria-label="Trip type"><option value="all">All trip types</option><option value="tour">Tour</option><option value="shuttle">Airport shuttle</option><option value="company">Company use</option></select>
+    </div>
+    <button class="btn btn-gold wide" type="button" id="bk-new" style="margin-bottom:12px">+ New booking</button>
+    <div id="bk-list"></div>
+  </section>
+
+  <!-- DISPATCH & FLEET -->
+  <section class="screen" id="s-dispatch" hidden>
+    <p class="hint">Send cars out and bring them back. Kilometres and fuel post to each vehicle, and the dashboard updates.</p>
+    <div class="grid g2">
+      <div class="card board"><h3>Today's dispatch board</h3><div id="board"></div></div>
+      <div class="card" id="c-tanks"><h3>Fuel tanks <small>litres left</small></h3><div id="tanks"></div>
+        <button class="btn btn-line wide" type="button" id="draw" style="margin-top:10px">Draw fuel for a vehicle</button></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3>Vehicles</h3><div class="vehicles" id="vehicles"></div></div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const num = n => Math.round(n).toLocaleString("en-US");
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const VAT = 0.15;
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+  const hhmm = d => (d || new Date()).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  /* ---------- example business ---------- */
+  const FUEL = { diesel: 125, benzine: 135 };
+  const ROUTES = [
+    { id: "airport", n: "Airport ↔ Hotel", km: 24, h: 1.5, rate: 1500, w: .34 },
+    { id: "city", n: "City tour (half day)", km: 60, h: 4, rate: 4500, w: .14 },
+    { id: "dorze", n: "Dorze village (day)", km: 70, h: 8, rate: 7500, w: .16 },
+    { id: "nechsar", n: "Nech Sar National Park (day)", km: 90, h: 8, rate: 9500, w: .12 },
+    { id: "konso", n: "Konso (day)", km: 190, h: 10, rate: 13500, w: .12 },
+    { id: "hawassa", n: "Addis → Hawassa (2 days)", km: 560, h: 48, rate: 32000, w: .07 },
+    { id: "omo", n: "Omo Valley (5 days)", km: 1100, h: 120, rate: 95000, w: .05 }
+  ];
+  const RT = Object.fromEntries(ROUTES.map(r => [r.id, r]));
+  const VEHICLES = [
+    { plate: "3-B45678", type: "Land Cruiser", seats: 7, kmpl: 7.5, fuel: "diesel" },
+    { plate: "3-B51203", type: "Land Cruiser", seats: 7, kmpl: 7.2, fuel: "diesel" },
+    { plate: "3-B60417", type: "Land Cruiser", seats: 7, kmpl: 7.8, fuel: "diesel" },
+    { plate: "3-A22871", type: "Hiace", seats: 12, kmpl: 9.5, fuel: "diesel" },
+    { plate: "3-A30914", type: "Hiace", seats: 12, kmpl: 9.8, fuel: "diesel" },
+    { plate: "3-A35590", type: "Hiace", seats: 12, kmpl: 9.2, fuel: "diesel" },
+    { plate: "3-C11456", type: "Corolla", seats: 4, kmpl: 14, fuel: "benzine" },
+    { plate: "3-C18220", type: "Corolla", seats: 4, kmpl: 13.5, fuel: "benzine" }
+  ];
+  const VT = Object.fromEntries(VEHICLES.map(v => [v.plate, v]));
+  const DRIVERS = ["Driver Abel", "Driver Tesfaye", "Driver Mulugeta", "Driver Yared", "Driver Bereket", "Driver Solomon", "Driver Henok", "Driver Dawit"];
+  const CUSTOMERS = ["Mr. & Mrs. Müller", "Addis travel agency", "NGO field team", "Ms. Rossi", "Mr. Tanaka", "The Andersen family", "Hotel guest, room 12", "Mr. & Mrs. Dupont", "University research group", "Ms. Okafor"];
+  const AGENCIES = ["Addis travel agency", "Sheger Tours (agency)", "NGO field team account"];
+  const HOTELS = ["Lakeside Lodge", "Forest View Hotel", "City Centre Hotel", "Riverside Guesthouse"];
+  const MAINT = [["Oil and filter change", 4200, 6800], ["Brake pads", 7800, 12500], ["New tyre", 9500, 16000], ["Air-con repair", 5500, 14000], ["Suspension check", 3500, 9000]];
+  const PERDIEM_DAY = 500;
+  const TYPE_LBL = { tour: "Tour", shuttle: "Airport shuttle", company: "Company use" };
+  const ST_LBL = { draft: "Draft", confirmed: "Confirmed", credit: "Credit", cancelled: "Cancelled" };
+  const METHODS = ["Cash", "telebirr", "CBE Birr", "Card", "Bank transfer"];
+  function pickRoute(r) { let x = r(), a = 0; for (const t of ROUTES) { a += t.w; if (x < a) return t; } return ROUTES[0]; }
+
+  /* ---------- days ---------- */
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const dayFor = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return d; };
+  const daysBetween = (a, b) => Math.round((b - a) / 86400000);
+  function genDay(date) {
+    const r = rng(dayKey(date) * 7 + 3);
+    const day = { bookings: [], draws: [], maint: [], perdiem: [] };
+    const n = 6 + Math.floor(r() * 5);
+    for (let i = 0; i < n; i++) {
+      const rt = pickRoute(r), v = pick(r, VEHICLES), drv = pick(r, DRIVERS);
+      const company = r() < 0.06;
+      const type = company ? "company" : rt.id === "airport" ? "shuttle" : "tour";
+      const state = company ? "confirmed" : r() < 0.1 ? "credit" : "confirmed";
+      const km = Math.round(rt.km * (0.9 + r() * 0.2));
+      const L = Math.round(km / v.kmpl * 10) / 10;
+      const no = `TB-${String(dayKey(date)).slice(4)}-${i + 1}`;
+      day.bookings.push({ no, cust: company ? "Company use" : (state === "credit" ? pick(r, AGENCIES) : pick(r, CUSTOMERS)), type, route: rt.id, state, rate: company ? 0 : rt.rate, veh: v.plate, drv, km, out: "back", day: 0, pax: 1 + Math.floor(r() * 5) });
+      day.draws.push({ veh: v.plate, L, cost: Math.round(L * FUEL[v.fuel]), bk: no });
+    }
+    if (r() < 0.3) { const [m, lo, hi] = pick(r, MAINT); day.maint.push({ veh: pick(r, VEHICLES).plate, n: m, amount: Math.round((lo + r() * (hi - lo)) / 50) * 50 }); }
+    if (date.getDate() === 1 || date.getDate() === 15) DRIVERS.forEach(d => day.perdiem.push({ drv: d, amount: (10 + Math.floor(r() * 4)) * PERDIEM_DAY }));
+    return day;
+  }
+
+  /* ---------- state ---------- */
+  const STORE = "edel-demo-tours-v1";
+  let S;
+  function freshState() {
+    const now = Date.now(), H = 3600000;
+    const vehicles = VEHICLES.map((v, i) => ({ plate: v.plate, odo: 84000 + i * 23117, status: "available",
+      reg: [-3, 5, 140, 22, 210, 95, 300, 61][i], ins: [180, 40, 12, 260, 27, 150, 88, 330][i] }));
+    const today = { bookings: [], draws: [], maint: [], perdiem: [] };
+    let seq = 100;
+    const add = (o) => { const b = Object.assign({ no: "TB-" + (++seq), day: 0, pax: 2, phone: "+251 9" + String(10000000 + seq * 7919).slice(-8), hotel: pick(Math.random, HOTELS), guide: false, lang: "", deposit: 0, km: 0, kmOut: 0, kmIn: 0, out: "waiting" }, o); today.bookings.push(b); return b; };
+    const back = (o, L) => { const b = add(o); b.out = "back"; b.kmOut = 80000; b.kmIn = 80000 + b.km; const v = VT[b.veh]; today.draws.push({ veh: b.veh, L, cost: Math.round(L * FUEL[v.fuel]), bk: b.no }); return b; };
+    const inv = n => "EDL-INV-" + String(n).padStart(6, "0");
+    back({ cust: "Mr. Tanaka", type: "shuttle", route: "airport", state: "confirmed", rate: 1500, veh: "3-C11456", drv: "Driver Henok", km: 25, time: "06:30", method: "telebirr", inv: inv(2001) }, 1.8);
+    back({ cust: "The Andersen family", type: "tour", route: "city", state: "confirmed", rate: 4500, veh: "3-A22871", drv: "Driver Yared", km: 62, time: "08:00", pax: 5, method: "Cash", inv: inv(2002), guide: true, lang: "English" }, 6.5);
+    back({ cust: "Addis travel agency", type: "shuttle", route: "airport", state: "credit", rate: 1500, veh: "3-C18220", drv: "Driver Dawit", km: 24, time: "07:15" }, 1.8);
+    const o1 = add({ cust: "Mr. & Mrs. Müller", type: "tour", route: "konso", state: "confirmed", rate: 13500, veh: "3-B45678", drv: "Driver Abel", time: "07:00", method: "Card", inv: inv(2003), guide: true, lang: "German", deposit: 5000 });
+    const o2 = add({ cust: "NGO field team", type: "tour", route: "omo", state: "credit", rate: 95000, veh: "3-A30914", drv: "Driver Tesfaye", time: "06:00", pax: 6, inv: inv(2004) });
+    const o3 = add({ cust: "Ms. Okafor", type: "shuttle", route: "airport", state: "confirmed", rate: 1500, veh: "3-B51203", drv: "Driver Mulugeta", time: "09:00", pax: 1, method: "CBE Birr", inv: inv(2005) });
+    [[o1, 3.5], [o2, 2 * 24 + 4], [o3, 2.6]].forEach(([b, hAgo]) => { b.out = "out"; b.outAt = now - hAgo * H; b.kmOut = vehicles.find(v => v.plate === b.veh).odo; vehicles.find(v => v.plate === b.veh).status = "out"; });
+    add({ cust: "Ms. Rossi", type: "tour", route: "dorze", state: "confirmed", rate: 7500, time: "13:00", pax: 2, method: "telebirr", inv: inv(2006), guide: true, lang: "Italian" });
+    add({ cust: "Mr. & Mrs. Dupont", type: "tour", route: "nechsar", state: "confirmed", rate: 9500, time: "14:00", pax: 2, method: "Cash", inv: inv(2007), guide: true, lang: "French" });
+    add({ cust: "Company use", type: "company", route: "city", state: "confirmed", rate: 0, time: "15:30", pax: 1 });
+    add({ cust: "University research group", type: "tour", route: "hawassa", state: "draft", rate: 32000, time: "07:00", pax: 7, day: 1 });
+    add({ cust: "Hotel guest, room 12", type: "shuttle", route: "airport", state: "draft", rate: 1500, time: "17:45", pax: 2 });
+    const perLines = DRIVERS.map((d, i) => ({ drv: d, days: [12, 11, 13, 12, 10, 12, 9, 11][i] }));
+    return {
+      savedDay: dayKey(TODAY), today, vehicles, seq, inv: 2007, apSeq: 2,
+      tanks: [{ id: "diesel", n: "Diesel tank", L: 640, cap: 1000 }, { id: "benzine", n: "Benzine tank", L: 180, cap: 400 }],
+      pending: [
+        { id: 1, k: "Per diem", who: "Tour operator", what: "Driver per diem, last 2 weeks (8 drivers)", amount: perLines.reduce((t, l) => t + l.days * PERDIEM_DAY, 0), lines: perLines },
+        { id: 2, k: "Maintenance", who: "Driver Yared · 3-A30914", what: "Brake pads and oil change, 3-A30914", amount: 14800, veh: "3-A30914" }
+      ],
+      toPay: [], decided: [], feed: []
+    };
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+  function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.savedDay === dayKey(TODAY)) return s; } catch (e) {} return null; }
+  S = load() || freshState();
+  const V = plate => S.vehicles.find(v => v.plate === plate);
+
+  /* ---------- aggregation ---------- */
+  const COUNTED = b => (b.state === "confirmed" || b.state === "credit") && b.day === 0;
+  const pastCache = {};
+  const dayData = off => off === 0 ? S.today : (pastCache[off] || (pastCache[off] = genDay(dayFor(off))));
+  let period = "day", viewOffset = 0, dim = "vehicle";
+  function range(p, off) {
+    if (p === "day") return [off];
+    if (p === "week") { const a = []; for (let i = off - 6; i <= off; i++) a.push(i); return a; }
+    const d = dayFor(off), a = []; for (let i = off - (d.getDate() - 1); i <= off; i++) a.push(i); return a;
+  }
+  const prevRange = rg => rg.map(o => o - rg.length);
+  function agg(offs) {
+    const a = { rev: 0, credit: 0, fuel: 0, maint: 0, perdiem: 0, trips: 0, km: 0, L: 0, byType: {} };
+    offs.forEach(o => { const d = dayData(o);
+      d.bookings.filter(COUNTED).forEach(b => { a.trips++; if (b.state === "confirmed") { a.rev += b.rate; a.byType[b.type] = (a.byType[b.type] || 0) + b.rate; } else a.credit += b.rate; a.km += b.km || 0; });
+      d.draws.forEach(x => { a.fuel += x.cost; a.L += x.L; });
+      d.maint.forEach(x => a.maint += x.amount);
+      d.perdiem.forEach(x => a.perdiem += x.amount);
+    });
+    a.costs = a.fuel + a.maint + a.perdiem; a.net = a.rev - a.costs;
+    return a;
+  }
+
+  /* ---------- feed + toasts + sheets ---------- */
+  function logEvent(icon, text, amount, pop) {
+    S.feed.unshift({ icon, text, amount: amount || 0, t: hhmm() }); S.feed = S.feed.slice(0, 30);
+    if (pop) liveToast(`${icon} ${esc(text)}${amount ? " · <b>" + etb(amount) + "</b>" : ""}`);
+  }
+  function liveToast(html) { const d = document.createElement("div"); d.innerHTML = html; $("lt").prepend(d); setTimeout(() => d.remove(), 4200); while ($("lt").children.length > 3) $("lt").lastChild.remove(); }
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("button,input,select"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3400); }
+  let lastFlash = null;
+  function flash(ids) { ids.forEach(id => { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); }
+
+  /* ---------- screens ---------- */
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    ["dash", "approvals", "bookings", "dispatch"].forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "dash") { renderDash(); if (lastFlash) { flash(lastFlash); lastFlash = null; } }
+    if (name === "approvals") renderApprovals();
+    if (name === "bookings") renderBookings();
+    if (name === "dispatch") renderDispatch();
+    window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- dashboard ---------- */
+  const PLBL = { day: "day before", week: "last week", month: "last month" };
+  function pct(el, cur, prev, costLike) {
+    const e = $(el);
+    if (!prev) { e.textContent = cur ? "new" : ""; e.className = "pct flat"; return; }
+    const p = Math.round((cur - prev) / Math.abs(prev) * 100);
+    const good = costLike ? p < 0 : p > 0;
+    e.textContent = (p > 0 ? "▲ " : p < 0 ? "▼ " : "") + Math.abs(p) + "% vs " + PLBL[period];
+    e.className = "pct " + (p === 0 ? "flat" : good ? "up" : "down");
+  }
+  function renderDash() {
+    const rg = range(period, viewOffset), cur = agg(rg), prev = agg(prevRange(rg));
+    const date = dayFor(viewOffset);
+    $("dayhead").style.visibility = period === "day" ? "visible" : "hidden";
+    $("d-title").textContent = viewOffset === 0 ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(date).split(",")[0];
+    $("d-date").textContent = `${ethStr(date)} · ${date.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`;
+    $("next").disabled = viewOffset >= 0;
+    $("p-label").textContent = period === "day" ? (viewOffset === 0 ? "Net profit so far (before tax)" : "Net profit (before tax)") : period === "week" ? "Net profit, last 7 days" : "Net profit, this month so far";
+    $("v-net").textContent = etb(cur.net); $("profit").classList.toggle("loss", cur.net < 0);
+    $("v-rev").textContent = etb(cur.rev); $("v-cost").textContent = etb(cur.costs); $("v-trips").textContent = cur.trips;
+    pct("pc-net", cur.net, prev.net); pct("pc-rev", cur.rev, prev.rev); pct("pc-cost", cur.costs, prev.costs, true); pct("pc-trips", cur.trips, prev.trips);
+
+    // cars out
+    const outs = S.today.bookings.filter(b => b.out === "out");
+    $("v-outcount").textContent = `${outs.length} of ${S.vehicles.length} vehicles`;
+    const late = outs.filter(b => Date.now() - b.outAt > RT[b.route].h * 3600000);
+    $("v-out").innerHTML = (late.length ? late.map(b => `<div class="late">⚠ ${esc(b.veh)} is out too long: ${esc(RT[b.route].n)}, expected back ${hhmm(new Date(b.outAt + RT[b.route].h * 3600000))}</div>`).join("") : "")
+      + (outs.length ? outs.map(b => { const due = new Date(b.outAt + RT[b.route].h * 3600000); const days = daysBetween(new Date(new Date().setHours(0,0,0,0)), new Date(new Date(due).setHours(0,0,0,0)));
+        return `<div class="outrow"><span><b>${esc(b.veh)}</b> · ${esc(b.drv)}<br><span class="muted small">${esc(RT[b.route].n)} · out since ${hhmm(new Date(b.outAt))}</span></span><span class="muted small" style="text-align:right">back ${days > 0 ? "in " + days + " day" + (days > 1 ? "s" : "") : hhmm(due)}</span></div>`; }).join("")
+      : `<div class="empty">All cars are in.</div>`);
+
+    renderTrend(); renderFeed(); renderBreak(rg, cur); renderExpiry(); renderBadge();
+    const cr = []; rg.forEach(o => dayData(o).bookings.filter(b => b.state === "credit" && b.day === 0).forEach(b => cr.push(b)));
+    $("v-credit-total").textContent = etb(cr.reduce((t, b) => t + b.rate, 0));
+    const byC = {}; cr.forEach(b => byC[b.cust] = (byC[b.cust] || 0) + b.rate);
+    $("v-credit").innerHTML = Object.keys(byC).length ? Object.entries(byC).sort((a, b) => b[1] - a[1]).map(([c, v]) => `<div class="row"><span>${esc(c)}</span><b class="num">${etb(v)}</b></div>`).join("") : `<div class="empty">Nothing on credit.</div>`;
+  }
+  function renderTrend() {
+    let offs = period === "month" ? range("month", 0) : range("week", period === "day" ? Math.min(0, viewOffset + 3 > 0 ? 0 : viewOffset + 3) : 0);
+    const vals = offs.map(o => ({ o, v: agg([o]).rev }));
+    const max = Math.max(1, ...vals.map(x => x.v));
+    $("trend-lbl").textContent = period === "month" ? "this month · tap a day" : "tap a day";
+    $("trend").innerHTML = vals.map(x => { const d = dayFor(x.o); return `<button type="button" data-off="${x.o}" class="${x.o === 0 ? "today" : ""} ${period === "day" && x.o === viewOffset ? "sel" : ""}" aria-label="${gregStr(d)}: ${etb(x.v)}">
+      <span class="v">${vals.length > 10 ? "" : Math.round(x.v / 1000) + "k"}</span><span class="track"><span class="b" style="height:${Math.max(3, x.v / max * 100)}%"></span></span><span class="d">${vals.length > 10 ? d.getDate() : x.o === 0 ? "Today" : d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`; }).join("");
+  }
+  $("trend").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; setPeriod("day"); viewOffset = Number(b.dataset.off); renderDash(); });
+  function renderFeed() {
+    $("feed-state").textContent = liveOn ? "● live" : "paused";
+    $("feed").innerHTML = S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount ? etb(e.amount) : ""}</b></div>`).join("")
+      : `<div class="empty">Waiting for the next booking… (turn on <b>Live</b>, or make one yourself)</div>`;
+  }
+  function renderBreak(rg, cur) {
+    $("break-lbl").textContent = period === "day" ? (viewOffset === 0 ? "today" : gregStr(dayFor(viewOffset))) : period === "week" ? "last 7 days" : "this month";
+    const rows = {}, row = k => rows[k] || (rows[k] = { k, rev: 0, trips: 0, km: 0, kmN: 0, fuel: 0, L: 0, maint: 0, perdiem: 0, routes: {} });
+    rg.forEach(o => { const d = dayData(o);
+      d.bookings.filter(COUNTED).forEach(b => {
+        const key = dim === "vehicle" ? (b.veh || "—") : dim === "driver" ? (b.drv || "—") : b.route;
+        const r = row(key); r.trips++; if (b.state === "confirmed") r.rev += b.rate; if (b.km) { r.km += b.km; r.kmN++; } r.routes[b.route] = (r.routes[b.route] || 0) + 1;
+      });
+      if (dim === "vehicle") { d.draws.forEach(x => { const r = row(x.veh); r.fuel += x.cost; r.L += x.L; }); d.maint.forEach(x => row(x.veh).maint += x.amount); }
+      if (dim === "driver") d.perdiem.forEach(x => row(x.drv).perdiem += x.amount);
+    });
+    const list = Object.values(rows).sort((a, b) => b.rev - a.rev || b.trips - a.trips);
+    const notYet = k => k === "—" ? "Not dispatched yet" : esc(k);
+    let html;
+    if (dim === "vehicle") {
+      html = `<table><thead><tr><th>Vehicle</th><th>Revenue</th><th>Costs</th><th>Net</th><th>km</th><th>Cost/km</th><th>km/L</th></tr></thead><tbody>`
+        + list.map(r => { const c = r.fuel + r.maint; return `<tr><td>${notYet(r.k)}${VT[r.k] ? `<br><span class="muted small">${VT[r.k].type}</span>` : ""}</td><td>${num(r.rev)}</td><td>${num(c)}</td><td class="${r.rev - c < 0 ? "neg" : ""}">${num(r.rev - c)}</td><td>${num(r.km)}</td><td>${r.km ? (c / r.km).toFixed(1) : "—"}</td><td>${r.L ? (r.km / r.L).toFixed(1) : "—"}</td></tr>`; }).join("")
+        + `<tr class="sub"><td>Driver per diem paid</td><td>0</td><td>${num(cur.perdiem)}</td><td class="${cur.perdiem ? "neg" : ""}">${num(-cur.perdiem)}</td><td></td><td></td><td></td></tr>`
+        + `<tr class="tot"><td>Total</td><td>${num(cur.rev)}</td><td>${num(cur.costs)}</td><td>${num(cur.net)}</td><td>${num(cur.km)}</td><td>${cur.km ? (cur.costs / cur.km).toFixed(1) : "—"}</td><td></td></tr></tbody></table>`;
+    } else if (dim === "driver") {
+      const tp = list.reduce((t, r) => t + r.perdiem, 0), tt = list.reduce((t, r) => t + r.trips, 0);
+      html = `<table><thead><tr><th>Driver</th><th>Revenue</th><th>Per diem</th><th>Trips</th><th>Most driven route</th></tr></thead><tbody>`
+        + list.map(r => { const mr = Object.entries(r.routes).sort((a, b) => b[1] - a[1])[0]; return `<tr><td>${notYet(r.k)}</td><td>${num(r.rev)}</td><td>${num(r.perdiem)}</td><td>${r.trips}</td><td>${mr ? esc(RT[mr[0]].n) : "—"}</td></tr>`; }).join("")
+        + `<tr class="tot"><td>Total</td><td>${num(cur.rev)}</td><td>${num(tp)}</td><td>${tt}</td><td></td></tr></tbody></table>`;
+    } else {
+      html = `<table><thead><tr><th>Route</th><th>Revenue</th><th>Trips</th><th>Avg km</th></tr></thead><tbody>`
+        + list.map(r => `<tr><td>${esc(RT[r.k].n)}</td><td>${num(r.rev)}</td><td>${r.trips}</td><td>${r.kmN ? num(r.km / r.kmN) : "—"}</td></tr>`).join("")
+        + `<tr class="tot"><td>Total</td><td>${num(cur.rev)}</td><td>${cur.trips}</td><td></td></tr></tbody></table>`;
+    }
+    $("break").innerHTML = list.length || cur.perdiem ? html : `<div class="empty">No trips in this period.</div>`;
+  }
+  function renderExpiry() {
+    const items = [];
+    S.vehicles.forEach(v => [["Registration", v.reg], ["Insurance", v.ins]].forEach(([k, d]) => items.push({ v: v.plate, k, d })));
+    items.sort((a, b) => a.d - b.d);
+    $("v-expiry").innerHTML = items.slice(0, 6).map(x => { const c = x.d <= 7 ? "red" : x.d <= 30 ? "amber" : "green";
+      return `<div class="exp"><span class="dot ${c}"></span><span><b>${x.v}</b> · ${x.k}</span><span class="small ${c === "red" ? "neg" : "muted"}">${x.d < 0 ? "expired " + -x.d + " days ago" : x.d === 0 ? "expires today" : "in " + x.d + " days"}</span></div>`; }).join("")
+      + `<p class="muted small" style="margin-top:6px">Red: expired or within 7 days · amber: within 30 days.</p>`;
+  }
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  function setPeriod(p) { period = p; if (p !== "day") viewOffset = 0; document.querySelectorAll("[data-p]").forEach(x => x.setAttribute("aria-pressed", x.dataset.p === p)); }
+  document.querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => { setPeriod(b.dataset.p); renderDash(); }));
+  document.querySelectorAll("[data-d]").forEach(b => b.addEventListener("click", () => { dim = b.dataset.d; document.querySelectorAll("[data-d]").forEach(x => x.setAttribute("aria-pressed", x === b)); renderDash(); }));
+  $("prev").addEventListener("click", () => { viewOffset--; renderDash(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderDash(); } });
+
+  const drill = (id, fn) => { const el = $(id); el.addEventListener("click", fn); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  const curAgg = () => agg(range(period, viewOffset));
+  drill("k-rev", () => { const a = curAgg();
+    openSheet(`<h2>Revenue ${etb(a.rev)}</h2><p class="muted">Confirmed bookings, before VAT.</p><div style="margin-top:12px">
+      ${Object.entries(a.byType).filter(([, v]) => v).map(([t, v]) => `<div class="row"><span>${TYPE_LBL[t]}</span><b class="num">${etb(v)}</b></div><div class="meter"><i style="width:${v / a.rev * 100}%"></i></div>`).join("") || '<div class="empty">No confirmed revenue.</div>'}
+      <div class="row"><span class="muted">On credit, not counted yet</span><b class="num muted">${etb(a.credit)}</b></div></div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-cost", () => { const a = curAgg();
+    openSheet(`<h2>Costs ${etb(a.costs)}</h2><p class="muted">What running the cars cost in this period.</p><div style="margin-top:12px">
+      <div class="row"><span>Fuel <span class="muted small">· ${num(a.L)} L</span></span><b class="num">${etb(a.fuel)}</b></div>
+      <div class="row"><span>Maintenance</span><b class="num">${etb(a.maint)}</b></div>
+      <div class="row"><span>Driver per diem paid</span><b class="num">${etb(a.perdiem)}</b></div>
+      <div class="row" style="font-weight:700"><span>Total</span><span class="num">${etb(a.costs)}</span></div></div>
+      ${S.pending.length ? `<div class="actions"><button class="btn btn-gold" id="go-ap">${S.pending.length} waiting for your approval →</button></div>` : ""}<div class="actions"><button class="btn btn-line" data-close>Close</button></div>`,
+      () => { const g = $("go-ap"); g && g.addEventListener("click", () => { closeSheet(); show("approvals"); }); }); });
+  drill("k-trips", () => { const rg = range(period, viewOffset), list = [];
+    rg.forEach(o => dayData(o).bookings.filter(COUNTED).forEach(b => list.push(b)));
+    openSheet(`<h2>${list.length} trips</h2><p class="muted">Confirmed and credit bookings in this period.</p><div style="margin-top:12px">${list.slice(-40).reverse().map(b => `<div class="row"><span>${esc(b.cust)}<br><span class="muted small">${esc(RT[b.route].n)} · ${TYPE_LBL[b.type]} · ${ST_LBL[b.state]}</span></span><b class="num">${b.rate ? etb(b.rate) : "—"}</b></div>`).join("") || '<div class="empty">No trips.</div>'}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+
+  /* ---------- approvals ---------- */
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? etb(S.pending.reduce((t, p) => t + p.amount, 0)) : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap" data-ap="${p.id}"><div><span class="k">${esc(p.k)}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)} · ${etb(p.amount)}</span>
+      ${p.lines ? `<br><button type="button" class="muted small" data-lines="${p.id}" style="background:none;border:0;padding:0;text-decoration:underline">See each driver</button>` : ""}</div>
+      <div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("")
+      : `<div class="empty">All done. New requests appear here${liveOn ? " while Live is on" : ""}.</div>`;
+    $("ap-topay").innerHTML = S.toPay.length ? S.toPay.map(p => `<div class="ap"><div><b>${esc(p.what)}</b><br><span class="muted small">Approved by you · ${etb(p.amount)} · not a cost yet</span></div>
+      <div class="btns"><button type="button" class="ok-b" data-paid="${p.id}">Mark paid</button></div></div>`).join("")
+      + `<p class="muted small" style="margin-top:8px">The tour operator presses <b>Mark paid</b> once the money has actually gone out. Only then is it added to costs.</p>`
+      : `<div class="empty">Nothing waiting to be paid.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${esc(p.k)} · ${p.res} ${p.t}</span></span><b class="num" style="color:${p.res === "rejected" ? "var(--red)" : "var(--green)"}">${etb(p.amount)}</b></div>`).join("")
+      : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const l = e.target.closest("[data-lines]");
+    if (l) { const p = S.pending.find(x => x.id === Number(l.dataset.lines)); if (p) openSheet(`<h2>Driver per diem</h2><p class="muted">${PERDIEM_DAY} ETB per day worked, last 2 weeks.</p><div style="margin-top:12px">${p.lines.map(x => `<div class="row"><span>${esc(x.drv)} <span class="muted small">· ${x.days} days</span></span><b class="num">${etb(x.days * PERDIEM_DAY)}</b></div>`).join("")}<div class="row" style="font-weight:700"><span>Total</span><span class="num">${etb(p.amount)}</span></div></div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); return; }
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    b.closest(".ap").classList.add("gone");
+    setTimeout(() => {
+      S.pending = S.pending.filter(x => x.id !== id);
+      let msg;
+      if (!ok) { S.decided.push({ ...p, res: "rejected", t: hhmm() }); msg = "Rejected. The staff member is told."; }
+      else if (p.k === "Per diem") { S.toPay.push(p); S.decided.push({ ...p, res: "approved", t: hhmm() }); msg = "Approved. It becomes a cost when the operator marks it paid."; }
+      else if (p.k === "Maintenance") { S.today.maint.push({ veh: p.veh, n: p.what, amount: p.amount }); S.decided.push({ ...p, res: "approved", t: hhmm() }); lastFlash = ["c-money", "c-break"]; msg = `Approved. Profit is now ${etb(agg([0]).net)} today.`; }
+      else { const tk = S.tanks.find(t => t.id === p.tank); tk.L = Math.min(tk.cap, tk.L + p.litres); S.decided.push({ ...p, res: "approved", t: hhmm() }); msg = `Approved. ${tk.n} now has ${num(tk.L)} L. Fuel is a cost when it is drawn for a trip.`; }
+      logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, p.amount, false);
+      save(); renderApprovals(); toast(msg);
+    }, 280);
+  });
+  $("ap-topay").addEventListener("click", e => {
+    const b = e.target.closest("[data-paid]"); if (!b) return;
+    const p = S.toPay.find(x => x.id === Number(b.dataset.paid)); if (!p) return;
+    S.toPay = S.toPay.filter(x => x !== p);
+    p.lines.forEach(x => S.today.perdiem.push({ drv: x.drv, amount: x.days * PERDIEM_DAY }));
+    S.decided.push({ ...p, res: "paid", t: hhmm() });
+    logEvent("💵", "Operator paid the driver per diem", p.amount, false);
+    lastFlash = ["c-money", "c-break"]; save(); renderApprovals();
+    toast(`Paid. ${etb(p.amount)} is now in today's costs.`);
+  });
+
+  /* ---------- bookings ---------- */
+  let bkState = "all", bkType = "all";
+  $("bk-state").addEventListener("click", e => { const b = e.target.closest("[data-s]"); if (!b) return; bkState = b.dataset.s; $("bk-state").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderBookings(); });
+  $("bk-type").addEventListener("change", e => { bkType = e.target.value; renderBookings(); });
+  function renderBookings() {
+    const list = S.today.bookings.filter(b => (bkState === "all" || b.state === bkState) && (bkType === "all" || b.type === bkType)).slice().reverse();
+    $("bk-list").innerHTML = list.length ? list.map(b => `<button type="button" class="bk" data-bk="${esc(b.no)}">
+      <span><b>${esc(b.cust)}</b><br><span class="m">${esc(b.no)} · ${TYPE_LBL[b.type]} · ${esc(RT[b.route].n)}<br>${b.day ? "Tomorrow" : "Today"} ${esc(b.time || "")} · ${b.pax} pax${b.guide ? " · guide (" + esc(b.lang) + ")" : ""}${b.veh ? " · " + esc(b.veh) + " · " + esc(b.drv) : ""}</span></span>
+      <span style="display:grid;gap:6px;justify-items:end"><span class="st ${b.state}">${ST_LBL[b.state]}</span><b class="num">${b.rate ? etb(b.rate) : "No charge"}</b></span></button>`).join("")
+      : `<div class="empty">No bookings match.</div>`;
+  }
+  function receipt(b) {
+    const net = b.rate;
+    return `<div class="receipt"><b>TAX INVOICE</b><br>${esc(RT[b.route].n)} (${TYPE_LBL[b.type]})<span style="float:right">${num(net)}</span><br>VAT 15%<span style="float:right">${num(net * VAT)}</span><br>------------------------------<br>TOTAL ETB<span style="float:right">${num(net * (1 + VAT))}</span>
+      ${b.deposit ? `<br>Deposit received<span style="float:right">${num(b.deposit)}</span>` : ""}<br>${b.state === "credit" ? "On credit: " + esc(b.cust) : "Paid: " + esc(b.method || "")}<br>No ${esc(b.inv)}<br><span class="stamp">REGISTERED · ተመዝግቧል</span></div>`;
+  }
+  $("bk-list").addEventListener("click", e => { const c = e.target.closest("[data-bk]"); if (c) openBooking(c.dataset.bk); });
+  function openBooking(no) {
+    const b = S.today.bookings.find(x => x.no === no); if (!b) return;
+    const info = `<h2>${esc(b.cust)}</h2><p class="muted">${esc(b.no)} · <span class="st ${b.state}">${ST_LBL[b.state]}</span></p>
+      <div style="margin-top:10px">
+      <div class="row"><span>Trip</span><b>${TYPE_LBL[b.type]} · ${esc(RT[b.route].n)}</b></div>
+      <div class="row"><span>When</span><b>${b.day ? "Tomorrow" : "Today"} ${esc(b.time || "")}</b></div>
+      <div class="row"><span>Passengers</span><b>${b.pax}${b.guide ? " · guide in " + esc(b.lang) : ""}</b></div>
+      <div class="row"><span>Phone · hotel</span><b>${esc(b.phone || "—")} · ${esc(b.hotel || "—")}</b></div>
+      <div class="row"><span>Agreed rate (before VAT)</span><b class="num">${b.rate ? etb(b.rate) : "No charge"}</b></div>
+      ${b.deposit ? `<div class="row"><span>Deposit received</span><b class="num">${etb(b.deposit)}</b></div>` : ""}
+      <div class="row"><span>Car</span><b>${b.veh ? esc(b.veh) + " · " + esc(b.drv) : "Assigned at dispatch"}</b></div>
+      ${b.out === "back" ? `<div class="row"><span>Trip done</span><b>${num(b.km)} km</b></div>` : b.out === "out" ? `<div class="row"><span>Status</span><b>Out since ${hhmm(new Date(b.outAt))}</b></div>` : ""}</div>`;
+    if (b.state === "draft") {
+      if (b.type === "company") return openSheet(info + `<div class="actions"><button class="btn btn-gold" id="cf">Confirm (company use, no invoice)</button><button class="btn btn-line" id="cx">Cancel booking</button><button class="btn btn-line" data-close>Close</button></div>`, () => { $("cf").onclick = () => confirmBk(b, null); $("cx").onclick = () => cancelBk(b); });
+      openSheet(info + `<p style="margin-top:12px;font-weight:700">Confirm and take payment of ${etb(b.rate * (1 + VAT))} <span class="muted small">(with VAT)</span></p>
+        <div class="methods">${METHODS.map((m, i) => `<button type="button" aria-pressed="${i === 0}" data-pm="${m}">${m}</button>`).join("")}</div>
+        <div class="actions"><button class="btn btn-gold" id="cf">Confirm &amp; issue invoice</button>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px"><select id="ag" aria-label="Agency">${AGENCIES.map(a => `<option ${a === b.cust ? "selected" : ""}>${esc(a)}</option>`).join("")}</select><button class="btn btn-dark" id="cr">On credit</button></div>
+        <button class="btn btn-line" id="cx">Cancel booking</button><button class="btn btn-line" data-close>Close</button></div>`, () => {
+        $("sheet").querySelectorAll("[data-pm]").forEach(x => x.addEventListener("click", () => $("sheet").querySelectorAll("[data-pm]").forEach(y => y.setAttribute("aria-pressed", y === x))));
+        $("cf").onclick = () => confirmBk(b, $("sheet").querySelector('[data-pm][aria-pressed="true"]').dataset.pm);
+        $("cr").onclick = () => creditBk(b, $("ag").value);
+        $("cx").onclick = () => cancelBk(b);
+      });
+    } else if (b.state === "confirmed" || b.state === "credit") {
+      openSheet(info + (b.inv ? receipt(b) : "") + `<div class="actions">${b.out === "waiting" && !b.day ? `<button class="btn btn-gold" id="go-d">Go to dispatch</button>` : ""}<button class="btn btn-line" data-close>Close</button></div>`,
+        () => { const g = $("go-d"); g && g.addEventListener("click", () => { closeSheet(); show("dispatch"); }); });
+    } else openSheet(info + `<div class="actions"><button class="btn btn-line" data-close>Close</button></div>`);
+  }
+  const nextInv = () => "EDL-INV-" + String(++S.inv).padStart(6, "0");
+  function confirmBk(b, method) {
+    b.state = "confirmed"; b.method = method; if (b.type !== "company") b.inv = nextInv();
+    logEvent("✅", `Booking confirmed: ${b.cust} · ${RT[b.route].n}${method ? " · " + method : ""}`, b.rate, false);
+    lastFlash = b.day ? null : ["c-money", "c-break"]; save(); renderBookings();
+    if (b.inv) openSheet(`<h2>Confirmed ✓</h2><p class="muted">${esc(b.cust)}${b.day ? " · counts on tomorrow's revenue" : ""}</p>${receipt(b)}<p class="muted small" style="margin-top:8px">In the real system this invoice is registered with the Ministry of Revenues as the sale happens.</p>
+      <div class="actions"><button class="btn btn-dark" id="go-dash">See it on the dashboard</button><button class="btn btn-line" data-close>Back to bookings</button></div>`, () => $("go-dash").addEventListener("click", () => { closeSheet(); show("dash"); }));
+    else { closeSheet(); toast("Company use confirmed. It counts as a trip, with no revenue."); }
+  }
+  function creditBk(b, agency) {
+    b.state = "credit"; b.cust = agency; b.inv = nextInv();
+    logEvent("🧾", `On credit: ${agency} · ${RT[b.route].n}`, b.rate, false);
+    save(); renderBookings();
+    openSheet(`<h2>On credit ✓</h2><p class="muted">${esc(agency)} pays later. Not in revenue until paid.</p>${receipt(b)}<div class="actions"><button class="btn btn-line" data-close>Back to bookings</button></div>`);
+  }
+  function cancelBk(b) { b.state = "cancelled"; logEvent("✕", `Booking cancelled: ${b.cust}`, 0, false); save(); renderBookings(); closeSheet(); toast("Booking cancelled"); }
+
+  $("bk-new").addEventListener("click", () => {
+    openSheet(`<h2>New booking</h2><div class="form">
+      <label class="full">Customer name<input id="f-cust" value="${esc(pick(Math.random, CUSTOMERS))}"></label>
+      <label>Phone<input id="f-phone" type="tel" value="+251 9"></label>
+      <label>Hotel<select id="f-hotel">${HOTELS.map(h => `<option>${h}</option>`).join("")}</select></label>
+      <label>Trip type<select id="f-type"><option value="tour">Tour</option><option value="shuttle">Airport shuttle</option><option value="company">Company use</option></select></label>
+      <label>Route<select id="f-route"></select></label>
+      <label>Date<select id="f-day"><option value="0">Today</option><option value="1">Tomorrow</option></select></label>
+      <label>Pick-up time<input id="f-time" type="time" value="14:00"></label>
+      <label>Passengers<input id="f-pax" type="number" min="1" max="12" value="2"></label>
+      <label class="chk"><input id="f-guide" type="checkbox"> Guide required</label>
+      <label>Guide language<select id="f-lang"><option>English</option><option>German</option><option>French</option><option>Italian</option><option>Spanish</option><option>Amharic</option></select></label>
+      <label>Agreed rate, ETB (before VAT)<input id="f-rate" type="number" min="0" step="100"></label>
+      <label>Deposit received, ETB<input id="f-dep" type="number" min="0" step="100" value="0"></label>
+      </div><p class="muted small" id="f-msg" style="margin-top:8px">Saved as Draft. Confirm it with a payment next.</p>
+      <div class="actions"><button class="btn btn-gold" id="f-save">Save booking</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      const fill = () => { const t = $("f-type").value; const opts = ROUTES.filter(r => t === "shuttle" ? r.id === "airport" : t === "tour" ? r.id !== "airport" : true);
+        $("f-route").innerHTML = opts.map(r => `<option value="${r.id}">${r.n}</option>`).join(""); setRate(); };
+      const setRate = () => { const t = $("f-type").value; $("f-rate").value = t === "company" ? 0 : RT[$("f-route").value].rate; $("f-rate").disabled = t === "company"; };
+      $("f-type").addEventListener("change", fill); $("f-route").addEventListener("change", setRate); fill();
+      $("f-save").addEventListener("click", () => {
+        const cust = $("f-cust").value.trim(), pax = Number($("f-pax").value), rate = Number($("f-rate").value), dep = Number($("f-dep").value) || 0;
+        if (!cust) { $("f-msg").textContent = "Add the customer's name."; $("f-msg").style.color = "var(--red)"; return; }
+        if (!(pax >= 1 && pax <= 12)) { $("f-msg").textContent = "Passengers must be 1 to 12."; $("f-msg").style.color = "var(--red)"; return; }
+        if ($("f-type").value !== "company" && !(rate > 0)) { $("f-msg").textContent = "Enter the agreed rate."; $("f-msg").style.color = "var(--red)"; return; }
+        const b = { no: "TB-" + (++S.seq), cust, phone: $("f-phone").value.trim(), hotel: $("f-hotel").value, type: $("f-type").value, route: $("f-route").value, day: Number($("f-day").value), time: $("f-time").value, pax,
+          guide: $("f-guide").checked, lang: $("f-guide").checked ? $("f-lang").value : "", rate: $("f-type").value === "company" ? 0 : rate, deposit: Math.min(dep, rate * (1 + VAT)), state: "draft", out: "waiting", km: 0, kmOut: 0, kmIn: 0 };
+        if (b.type === "company") b.cust = "Company use: " + cust;
+        S.today.bookings.push(b); logEvent("📝", `New booking: ${b.cust} · ${RT[b.route].n}`, b.rate, false); save();
+        bkState = "all"; $("bk-state").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.s === "all"));
+        renderBookings(); openBooking(b.no);
+      });
+    });
+  });
+
+  /* ---------- dispatch & fleet ---------- */
+  const busyDrivers = () => S.today.bookings.filter(b => b.out === "out").map(b => b.drv);
+  function renderDispatch() {
+    const todays = S.today.bookings.filter(b => b.day === 0 && (b.state === "confirmed" || b.state === "credit"));
+    const waiting = todays.filter(b => b.out === "waiting"), out = todays.filter(b => b.out === "out"), back = todays.filter(b => b.out === "back");
+    const job = (b, btn) => `<div class="job"><span><b>${esc(b.time || "")} · ${esc(b.cust)}</b><br><span class="m">${esc(RT[b.route].n)} · ${b.pax} pax${b.veh ? " · " + esc(b.veh) + " · " + esc(b.drv) : ""}${b.out === "back" ? " · " + num(b.km) + " km" : ""}</span></span>${btn}</div>`;
+    $("board").innerHTML = `<h4>Waiting to go (${waiting.length})</h4>${waiting.map(b => job(b, `<button type="button" class="go" data-disp="${esc(b.no)}">Dispatch</button>`)).join("") || '<div class="empty">Nothing waiting.</div>'}
+      <h4>Out now (${out.length})</h4>${out.map(b => job(b, `<button type="button" class="back" data-ret="${esc(b.no)}">Return</button>`)).join("") || '<div class="empty">No car is out.</div>'}
+      <h4>Back today (${back.length})</h4>${back.map(b => job(b, `<span class="tag">Done</span>`)).join("") || '<div class="empty">None yet.</div>'}`;
+    $("tanks").innerHTML = S.tanks.map(t => `<div class="tank"><div class="row" style="border:0"><span>${t.n}</span><b class="num">${num(t.L)} / ${num(t.cap)} L</b></div><div class="fill"><i style="width:${t.L / t.cap * 100}%"></i></div><span class="muted small">${etb(FUEL[t.id])} per litre${t.L < t.cap * 0.2 ? " · <b class='neg'>running low</b>" : ""}</span></div>`).join("");
+    $("vehicles").innerHTML = S.vehicles.map(v => { const s = VT[v.plate], c = d => d <= 7 ? "red" : d <= 30 ? "amber" : "green", dl = d => d < 0 ? "expired" : "in " + d + " d";
+      return `<div class="veh"><b>${v.plate}</b><span>${s.type} · ${s.seats} seats · ${s.fuel}</span><span class="vs ${v.status}">${v.status === "available" ? "Available" : v.status === "out" ? "Out on a trip" : "In repair"}</span>
+        <span class="muted">${num(v.odo)} km · normal ${s.kmpl} km/L</span><span><span class="dot ${c(v.reg)}"></span> Registration ${dl(v.reg)}</span><span><span class="dot ${c(v.ins)}"></span> Insurance ${dl(v.ins)}</span></div>`; }).join("");
+  }
+  $("board").addEventListener("click", e => {
+    const d = e.target.closest("[data-disp]"), r = e.target.closest("[data-ret]");
+    if (d) dispatchSheet(S.today.bookings.find(b => b.no === d.dataset.disp));
+    if (r) returnSheet(S.today.bookings.find(b => b.no === r.dataset.ret));
+  });
+  function dispatchSheet(b) {
+    const cars = S.vehicles.filter(v => v.status === "available" && VT[v.plate].seats >= b.pax), busy = busyDrivers(), drivers = DRIVERS.filter(x => !busy.includes(x));
+    if (!cars.length || !drivers.length) return openSheet(`<h2>No free ${!cars.length ? "car" : "driver"}</h2><p class="muted">Every ${!cars.length ? "car with " + b.pax + "+ seats" : "driver"} is out. Return a car first.</p><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`);
+    openSheet(`<h2>Dispatch</h2><p class="muted">${esc(b.cust)} · ${esc(RT[b.route].n)} · ${b.pax} pax</p><div class="form">
+      <label class="full">Vehicle<select id="d-veh">${cars.map(v => `<option value="${v.plate}">${v.plate} · ${VT[v.plate].type} (${VT[v.plate].seats} seats) · ${num(v.odo)} km</option>`).join("")}</select></label>
+      <label class="full">Driver<select id="d-drv">${drivers.map(x => `<option>${x}</option>`).join("")}</select></label></div>
+      <p class="muted small" style="margin-top:8px">The odometer reading is recorded as km out, with the time.</p>
+      <div class="actions"><button class="btn btn-gold" id="d-go">Dispatch now</button><button class="btn btn-line" data-close>Close</button></div>`, () =>
+      $("d-go").addEventListener("click", () => { doDispatch(b, $("d-veh").value, $("d-drv").value); closeSheet(); toast(`${b.veh} is out with ${esc(b.drv)}. <b>Dashboard</b> shows it under Cars out now.`); }));
+  }
+  function doDispatch(b, plate, drv) {
+    const v = V(plate); b.veh = plate; b.drv = drv; b.out = "out"; b.outAt = Date.now(); b.kmOut = v.odo; v.status = "out";
+    logEvent("🚙", `${plate} left with ${drv} · ${RT[b.route].n}`, 0, false); lastFlash = ["c-out"]; save(); renderDispatch();
+  }
+  function returnSheet(b) {
+    const v = V(b.veh), s = VT[b.veh], tank = S.tanks.find(t => t.id === s.fuel), est = Math.round(RT[b.route].km * 1.02);
+    openSheet(`<h2>Return ${esc(b.veh)}</h2><p class="muted">${esc(b.drv)} · ${esc(RT[b.route].n)} · km out ${num(b.kmOut)}</p><div class="form">
+      <label>Km in (odometer)<input id="r-km" type="number" value="${b.kmOut + est}"></label>
+      <label>Fuel drawn, litres<input id="r-l" type="number" step="0.1"></label>
+      <label class="full">From<select id="r-tank"><option value="${tank.id}">${tank.n} · ${num(tank.L)} L left</option></select></label></div>
+      <p style="margin-top:10px"><b id="r-sum"></b></p><p class="muted small" id="r-msg">Fuel is suggested from the distance and this car's normal ${s.kmpl} km/L. Change it to what was really drawn.</p>
+      <div class="actions"><button class="btn btn-gold" id="r-go">Record return</button><button class="btn btn-line" data-close>Close</button></div>`, () => {
+      const upd = (setL) => { const km = Number($("r-km").value) - b.kmOut; if (setL) $("r-l").value = km > 0 ? (Math.round(km / s.kmpl * 10) / 10) : 0;
+        const L = Number($("r-l").value) || 0; $("r-sum").textContent = `${num(Math.max(0, km))} km · ${L} L · fuel ${etb(L * FUEL[s.fuel])}${km > 0 && L ? " · " + (km / L).toFixed(1) + " km/L" : ""}`; };
+      $("r-km").addEventListener("input", () => upd(true)); $("r-l").addEventListener("input", () => upd(false)); upd(true);
+      $("r-go").addEventListener("click", () => {
+        const km = Number($("r-km").value) - b.kmOut, L = Number($("r-l").value);
+        const err = t => { $("r-msg").textContent = t; $("r-msg").style.color = "var(--red)"; };
+        if (!(km > 0)) return err("Km in must be more than km out.");
+        if (!(L >= 0) || L > tank.L) return err(`Fuel must be between 0 and ${num(tank.L)} L (what is left in the tank).`);
+        doReturn(b, km, L); closeSheet();
+        toast(`Back: ${num(km)} km, ${etb(L * FUEL[s.fuel])} fuel posted to ${b.veh}. <b>Dashboard</b> is updated.`);
+      });
+    });
+  }
+  function doReturn(b, km, L) {
+    const v = V(b.veh), s = VT[b.veh], tank = S.tanks.find(t => t.id === s.fuel);
+    b.km = km; b.kmIn = b.kmOut + km; b.out = "back"; v.odo = b.kmIn; v.status = "available"; tank.L = Math.round((tank.L - L) * 10) / 10;
+    if (L > 0) S.today.draws.push({ veh: b.veh, L, cost: Math.round(L * FUEL[s.fuel]), bk: b.no });
+    logEvent("🏁", `${b.veh} back · ${num(km)} km · ${L} L fuel`, L * FUEL[s.fuel], false);
+    lastFlash = ["c-money", "c-out", "c-break"]; save(); renderDispatch();
+  }
+  $("draw").addEventListener("click", () => {
+    openSheet(`<h2>Draw fuel</h2><p class="muted">For fuel given outside a trip. It is a cost on that vehicle today.</p><div class="form">
+      <label class="full">Vehicle<select id="w-veh">${S.vehicles.map(v => `<option value="${v.plate}">${v.plate} · ${VT[v.plate].type} · ${VT[v.plate].fuel}</option>`).join("")}</select></label>
+      <label class="full">Litres<input id="w-l" type="number" min="1" step="0.5" value="20"></label></div><p class="muted small" id="w-msg" style="margin-top:8px"></p>
+      <div class="actions"><button class="btn btn-gold" id="w-go">Record</button><button class="btn btn-line" data-close>Close</button></div>`, () =>
+      $("w-go").addEventListener("click", () => { const plate = $("w-veh").value, L = Number($("w-l").value), s = VT[plate], tank = S.tanks.find(t => t.id === s.fuel);
+        if (!(L > 0) || L > tank.L) { $("w-msg").textContent = `Enter 1 to ${num(tank.L)} L (left in the ${tank.n.toLowerCase()}).`; $("w-msg").style.color = "var(--red)"; return; }
+        tank.L = Math.round((tank.L - L) * 10) / 10; S.today.draws.push({ veh: plate, L, cost: Math.round(L * FUEL[s.fuel]) });
+        logEvent("⛽", `${L} L ${s.fuel} drawn for ${plate}`, L * FUEL[s.fuel], false); lastFlash = ["c-money", "c-break"]; save(); renderDispatch(); closeSheet();
+        toast(`${etb(L * FUEL[s.fuel])} fuel cost posted to ${plate}.`); }));
+  });
+
+  /* ---------- live ---------- */
+  let liveOn = true, liveTimer = null;
+  const R = Math.random;
+  function liveTick() {
+    if (document.hidden) return;
+    const x = R(), today = S.today.bookings;
+    if (x < 0.30) {
+      const b = today.find(z => z.day === 0 && z.out === "waiting" && (z.state === "confirmed" || z.state === "credit"));
+      const car = b && S.vehicles.find(v => v.status === "available" && VT[v.plate].seats >= b.pax), drv = DRIVERS.find(d => !busyDrivers().includes(d));
+      if (!b || !car || !drv) return;
+      doDispatch(b, car.plate, drv); S.feed[0].icon = "🚙"; liveToast(`🚙 ${esc(car.plate)} left with ${esc(drv)} · ${esc(RT[b.route].n)}`);
+    } else if (x < 0.55) {
+      const b = today.find(z => z.out === "out" && RT[z.route].h <= 10 && Date.now() - z.outAt > 20000 && !(z.route === "airport" && Date.now() - z.outAt > RT.airport.h * 3600000));
+      if (!b) return;
+      const km = Math.round(RT[b.route].km * (0.95 + R() * 0.12)), L = Math.round(km / VT[b.veh].kmpl * 10) / 10;
+      if (L > S.tanks.find(t => t.id === VT[b.veh].fuel).L) return;
+      doReturn(b, km, L); liveToast(`🏁 ${esc(b.veh)} back · ${num(km)} km · <b>${etb(L * FUEL[VT[b.veh].fuel])}</b> fuel`);
+    } else if (x < 0.75) {
+      if (today.filter(z => z.state === "draft").length >= 5) return;
+      const rt = pickRoute(R), type = rt.id === "airport" ? "shuttle" : "tour";
+      const h = Math.min(20, new Date().getHours() + 1 + Math.floor(R() * 4));
+      const b = { no: "TB-" + (++S.seq), cust: pick(R, CUSTOMERS), phone: "+251 9" + String(Math.floor(R() * 1e8)).padStart(8, "0"), hotel: pick(R, HOTELS), type, route: rt.id, day: R() < 0.3 ? 1 : 0, time: String(h).padStart(2, "0") + ":" + pick(R, ["00", "15", "30", "45"]),
+        pax: 1 + Math.floor(R() * 4), guide: type === "tour" && R() < 0.5, lang: pick(R, ["English", "German", "French"]), rate: rt.rate, deposit: 0, state: "draft", out: "waiting", km: 0, kmOut: 0, kmIn: 0 };
+      today.push(b); logEvent("📝", `New booking request: ${b.cust} · ${rt.n}`, b.rate, true);
+    } else if (x < 0.98) {
+      const b = today.find(z => z.state === "draft" && z.type !== "company");
+      if (!b) return;
+      b.state = "confirmed"; b.method = pick(R, METHODS); b.inv = nextInv();
+      logEvent("✅", `Operator confirmed ${b.cust} · ${RT[b.route].n} · ${b.method}`, b.rate, true);
+      if (!b.day) lastFlash = ["c-money", "c-break"];
+    } else {
+      if (S.pending.length >= 3) return;
+      if (R() < 0.6) { const v = pick(R, S.vehicles), [m, lo, hi] = pick(R, MAINT), a = Math.round((lo + R() * (hi - lo)) / 50) * 50;
+        S.pending.push({ id: ++S.apSeq, k: "Maintenance", who: "Mechanic · " + v.plate, what: `${m}, ${v.plate}`, amount: a, veh: v.plate });
+        logEvent("🔧", `Maintenance request: ${m}, ${v.plate}`, a, true); }
+      else { const tk = S.tanks.find(t => t.L / t.cap < 0.7) || S.tanks[0], litres = Math.min(400, Math.floor((tk.cap - tk.L) / 50) * 50); if (litres < 50) return;
+        S.pending.push({ id: ++S.apSeq, k: "Fuel purchase", who: "Tour operator", what: `${tk.n}: buy ${litres} L`, amount: litres * FUEL[tk.id], tank: tk.id, litres });
+        logEvent("⛽", `Fuel purchase request: ${tk.n}, ${litres} L`, litres * FUEL[tk.id], true); }
+      if (!$("s-approvals").hidden) renderApprovals();
+    }
+    save();
+    if (!$("s-dash").hidden) { if (viewOffset === 0 || period !== "day") renderDash(); else renderBadge(); if (lastFlash) { flash(lastFlash); lastFlash = null; } } else renderBadge();
+    if (!$("s-bookings").hidden) renderBookings();
+    if (!$("s-dispatch").hidden) renderDispatch();
+  }
+  function setLive(on) { liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(liveTimer); if (on) liveTimer = setInterval(liveTick, 6000); renderFeed(); }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: bookings and trips keep happening" : "Live paused"); });
+
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} S = freshState(); $("lt").innerHTML = ""; setPeriod("day"); viewOffset = 0; show("dash"); toast("Demo reset"); });
+
+  renderDash();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+})();
+</script>
+</body>
+</html>

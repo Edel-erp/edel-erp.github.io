@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Import &amp; Export Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's import and export system with example data: shipments from order to warehouse, landed cost tax by tax, letters of credit, foreign currency and sales margin.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/import.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* top */
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 14px; }
+.top img { height: 34px; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 560px) { .top .cta { display: none; } .top .app small { display: none; } }
+
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+
+/* cards */
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.row:first-of-type { border-top: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+/* day switcher */
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; }
+.dayhead .when b { font-family: var(--display); font-size: 20px; display: block; }
+.dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+
+/* hero numbers */
+.money { background: var(--black); color: #fff; border: 0; }
+.money .profit small { color: #9C9EA2; font-size: 13px; }
+.money .profit b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .profit.loss b { color: #FF8A80; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; }
+.money .parts b { font-size: 16px; }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+.target { margin-top: 14px; }
+.target .bar { height: 10px; border-radius: 999px; background: #2A2C30; overflow: hidden; margin: 6px 0; }
+.target .bar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
+.target .lbl { display: flex; justify-content: space-between; font-size: 13px; color: #D9DADC; gap: 10px; }
+.target button { background: none; border: 0; color: var(--gold); font-weight: 700; padding: 0; font-size: 13px; }
+
+/* tonight */
+.tonight .big { font-family: var(--display); font-size: 30px; }
+.tonight .occ { height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+.tonight .occ i { display: block; height: 100%; background: var(--green); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stats div { background: var(--bg); border-radius: 10px; padding: 8px; text-align: center; }
+.stats b { display: block; font-family: var(--display); font-size: 18px; }
+.stats small { color: var(--muted); font-size: 11.5px; }
+
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 8px; }
+.seg button { border: 0; background: none; padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--gold); }
+
+/* rooms */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.room { border: 0; border-radius: 12px; padding: 10px; text-align: left; background: var(--c-soft); color: var(--ink); border-left: 5px solid var(--c); min-height: 74px; transition: transform .12s; }
+.room:hover { transform: translateY(-2px); }
+.room b { font-family: var(--display); font-size: 17px; display: block; }
+.room small { font-size: 11.5px; color: var(--muted); display: block; line-height: 1.3; }
+.st-occupied { --c: var(--green); --c-soft: var(--green-soft); }
+.st-arriving { --c: #2B6CB0; --c-soft: #E4EEF9; }
+.st-departing { --c: var(--amber); --c-soft: var(--amber-soft); }
+.st-free { --c: #9C9EA2; --c-soft: #FFFFFF; }
+.st-cleaning { --c: #8E44AD; --c-soft: #F3E8F8; }
+
+/* restaurant */
+.pos { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .pos { grid-template-columns: 1fr; } }
+.menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.item { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 12px; text-align: left; transition: border-color .12s, transform .12s; }
+.item:hover { border-color: var(--gold); transform: translateY(-2px); }
+.item b { display: block; font-size: 14.5px; }
+.item .am { font-family: "Noto Sans Ethiopic", var(--body); font-size: 12px; color: var(--muted); display: block; }
+.item span.p { font-weight: 700; color: var(--gold-deep); font-size: 13.5px; }
+.cart { position: sticky; top: 112px; }
+.cart-line { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.qty { display: inline-flex; align-items: center; gap: 6px; }
+.qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-weight: 700; }
+.methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; }
+.methods button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 10px; padding: 8px 4px; font-size: 12.5px; font-weight: 600; }
+.methods button[aria-pressed="true"] { border-color: var(--black); background: var(--black); color: #fff; }
+select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.btn { border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-dark { background: var(--black); color: #fff; }
+.btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.wide { width: 100%; }
+.orders .row { align-items: center; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); white-space: nowrap; }
+
+/* sheet + toast */
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; box-shadow: 0 14px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; }
+.toast b { color: var(--gold); }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(211,166,40,.0); } 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } 100% { box-shadow: 0 0 0 0 rgba(211,166,40,0); } }
+/* owner interactions */
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; height: 100%; padding: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease, background .2s; min-height: 6px; position: relative; }
+.week button:hover .b { background: #D9CBA0; }
+.week button.today .b { background: var(--gold); }
+.week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d { font-size: 11.5px; color: var(--muted); text-align: center; }
+.week .v { font-size: 10.5px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.feed { display: grid; gap: 2px; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } to { opacity: 1; transform: none; background: transparent; } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; }
+.ev b.num { font-size: 13.5px; white-space: nowrap; }
+.click { cursor: pointer; }
+.click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.money .parts div.click:hover { outline-color: var(--gold); }
+.ap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ap .ok-b { background: var(--green); color: #fff; }
+.ap .no-b { background: var(--red-soft); color: var(--red); }
+.ap.gone { opacity: 0; transform: translateX(20px); transition: all .3s ease; }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+</style>
+
+<style>
+/* import & export additions */
+.top .app { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row b, .row .num { white-space: nowrap; }
+@media (max-width: 560px) { .top .app { font-size: 14px; max-width: 34vw; } .top img { height: 28px; } .money .parts b { font-size: 14px; } .money .parts { gap: 6px; } .money .parts div { padding: 9px 9px; } }
+.pipe { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.pipe button { border: 0; background: var(--bg); border-radius: 12px; padding: 10px 4px; text-align: center; }
+.pipe button:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.pipe b { display: block; font-family: var(--display); font-size: 22px; }
+.pipe small { font-size: 11px; color: var(--muted); line-height: 1.2; display: block; }
+@media (max-width: 560px) { .pipe { grid-template-columns: repeat(3, 1fr); } }
+.kv { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.kv .big { font-family: var(--display); font-size: 24px; }
+.warn { color: var(--red); font-weight: 700; }
+.goodc { color: var(--green); font-weight: 700; }
+.fxbar { height: 10px; border-radius: 999px; background: var(--bg); overflow: hidden; display: flex; margin: 8px 0; }
+.fxbar i { display: block; height: 100%; }
+.fxbar .c { background: var(--gold); }
+.fxbar .f { background: var(--green); }
+.stage-row { display: flex; gap: 4px; margin: 8px 0; }
+.stage-row i { flex: 1; height: 6px; border-radius: 999px; background: var(--line); }
+.stage-row i.on { background: var(--gold); }
+.ship { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--paper); display: grid; gap: 4px; }
+.ship .top2 { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.ship .no { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.ship .st { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--gold-soft); color: var(--gold-deep); white-space: nowrap; }
+.ship .btn { justify-self: start; padding: 9px 14px; font-size: 13.5px; margin-top: 6px; }
+.ships { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+.chips button { flex: none; border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 600; }
+.chips button[aria-pressed="true"] { background: var(--black); color: #fff; border-color: var(--black); }
+.calc { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .calc { grid-template-columns: 1fr; } }
+.f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fld { display: grid; gap: 4px; }
+.fld label { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.fld input, .fld select { font: inherit; padding: 9px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.fld input:focus, .fld select:focus { outline: 2px solid var(--gold); border-color: var(--gold); }
+.lines2 .row span:first-child small { display: block; color: var(--muted); font-size: 12px; }
+.lines2 .row.tot { font-weight: 700; border-top: 2px solid var(--ink); }
+.lines2 .row.sub { color: var(--muted); }
+.note-ex { background: var(--amber-soft); color: #6B4A00; border-radius: 10px; padding: 8px 10px; font-size: 12.5px; margin-top: 10px; }
+.stock { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.sk { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 14px; display: grid; gap: 6px; }
+.sk .btn { justify-self: start; padding: 9px 16px; font-size: 13.5px; }
+.low { color: var(--red); font-weight: 700; font-size: 12px; }
+.ex { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 10px 0; border-top: 1px solid #F0EEE8; }
+.ex:first-child { border-top: 0; }
+.ex button { border: 0; border-radius: 999px; padding: 8px 12px; font-weight: 700; font-size: 12.5px; background: var(--green); color: #fff; }
+.pill { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.due { background: var(--amber-soft); color: var(--amber); }
+.pill.late { background: var(--red-soft); color: var(--red); }
+.pill.paid { background: var(--green-soft); color: var(--green); }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../#request">Get this for your trading business →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel home"></a>
+    <div class="app">Demo Trading PLC<small>Import &amp; export · Addis Ababa</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Simulated shipments, customers and staff keep working"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="summary">Owner Summary</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+    <button type="button" role="tab" aria-selected="false" data-screen="ships">Shipments</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="calc">Landed cost</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="sales">Sales &amp; stock</button>
+  </div>
+</nav>
+
+<main>
+  <!-- OWNER SUMMARY -->
+  <section class="screen" id="s-summary">
+    <div class="dayhead">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+      <button type="button" id="next" aria-label="Next day">›</button>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="profit" id="profit"><small>Profit so far (before tax)</small><b class="num" id="v-profit"></b></div>
+        <div class="parts">
+          <div class="click" id="k-sales" role="button" tabindex="0"><small>Sales ›</small><b class="num" id="v-sales"></b></div>
+          <div class="click" id="k-margin" role="button" tabindex="0"><small>Gross margin ›</small><b class="num" id="v-margin"></b></div>
+          <div class="click" id="k-exp" role="button" tabindex="0"><small>Expenses ›</small><b class="num" id="v-exp"></b></div>
+        </div>
+        <div class="target">
+          <div class="lbl"><span id="t-left"></span><button type="button" id="t-set">Change target</button></div>
+          <div class="bar"><i id="t-bar"></i></div>
+          <div class="lbl"><span id="t-pct"></span><span id="t-of"></span></div>
+        </div>
+        <p class="note">Profit = sales − landed cost of goods sold − approved expenses. Before tax. Tap a number for detail.</p>
+      </div>
+      <div class="card" id="c-pipe">
+        <h3>Shipments by stage <small id="v-pipe-total"></small></h3>
+        <div class="pipe" id="pipe"></div>
+        <p class="muted small" style="margin-top:10px">Tap a stage to see those shipments.</p>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-week">
+        <h3>Last 7 days <small>Sales · tap a day</small></h3>
+        <div class="week" id="week"></div>
+      </div>
+      <div class="card" id="c-feed">
+        <h3>Happening now <small id="feed-state"></small></h3>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card click" id="c-fx" role="button" tabindex="0">
+        <h3>Foreign currency <small>now</small></h3>
+        <div class="kv"><span class="muted">USD held</span><span class="big num" id="v-held"></span></div>
+        <div class="fxbar" aria-hidden="true"><i class="c" id="fx-c"></i><i class="f" id="fx-f"></i></div>
+        <div class="row"><span><span style="color:var(--gold-deep)">■</span> Committed (LCs + orders)</span><b class="num" id="v-comm"></b></div>
+        <div class="row"><span><span style="color:var(--green)">■</span> Free to use</span><b class="num" id="v-free"></b></div>
+        <div class="row"><span>Example rate</span><b class="num" id="v-rate"></b></div>
+      </div>
+      <div class="card click" id="c-lc" role="button" tabindex="0">
+        <h3>Letters of credit <small id="v-lc-n"></small></h3>
+        <div class="kv"><span class="muted">Open value</span><span class="big num" id="v-lc"></span></div>
+        <div id="v-lc-next" style="margin-top:8px"></div>
+      </div>
+      <div class="card click" id="c-exports" role="button" tabindex="0">
+        <h3>Export receipts <small>USD</small></h3>
+        <div class="row"><span>Expected</span><b class="num" id="v-ex-exp"></b></div>
+        <div class="row"><span>Overdue</span><b class="num" id="v-ex-late"></b></div>
+        <div class="row"><span>Received this month</span><b class="num" id="v-ex-recv"></b></div>
+      </div>
+      <div class="card" id="c-landed">
+        <h3>Landed cost this month</h3>
+        <div class="kv"><span class="muted" id="v-landed-n"></span><span class="big num" id="v-landed"></span></div>
+        <p class="muted small" style="margin-top:6px">Goods + freight + insurance + duty + excise + surtax + clearing. VAT and withholding are claimable, so not counted.</p>
+      </div>
+      <div class="card click" id="c-stock" role="button" tabindex="0">
+        <h3>Stock in warehouse <small>at landed cost</small></h3>
+        <div class="kv"><span class="muted" id="v-stock-n"></span><span class="big num" id="v-stock"></span></div>
+        <div id="v-stock-low" style="margin-top:8px"></div>
+      </div>
+      <div class="card" id="c-items">
+        <h3>What sold most</h3>
+        <div id="v-items"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your team asks, you decide, from anywhere. Approve or reject, then watch the <b>Owner Summary</b> change.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+
+  <!-- SHIPMENTS -->
+  <section class="screen" id="s-ships" hidden>
+    <p class="hint">Move a shipment along. When it clears customs its <b>landed cost</b> is worked out; when it reaches the warehouse it becomes <b>stock</b> at that cost.</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+      <div class="chips" id="stage-chips" role="group" aria-label="Filter by stage" style="margin:0"></div>
+      <button class="btn btn-dark" type="button" id="new-ship">+ New order</button>
+    </div>
+    <div class="ships" id="ships"></div>
+  </section>
+
+  <!-- LANDED COST -->
+  <section class="screen" id="s-calc" hidden>
+    <p class="hint">Change any number and see the true cost of a container, tax by tax.</p>
+    <div class="calc">
+      <div class="card">
+        <h3>Shipment</h3>
+        <div class="f2">
+          <div class="fld"><label for="c-fob">Goods value (FOB, USD)</label><input id="c-fob" type="number" min="0" step="100" value="20000"></div>
+          <div class="fld"><label for="c-units">Units</label><input id="c-units" type="number" min="1" step="1" value="500"></div>
+          <div class="fld"><label for="c-fr">Sea freight (USD)</label><input id="c-fr" type="number" min="0" step="50" value="2500"></div>
+          <div class="fld"><label for="c-ins">Insurance (USD)</label><input id="c-ins" type="number" min="0" step="10" value="200"></div>
+          <div class="fld"><label for="c-rate">Exchange rate (ETB per USD)</label><input id="c-rate" type="number" min="1" step="0.5" value="130"></div>
+          <div class="fld"><label for="c-cat">Product category</label><select id="c-cat"></select></div>
+          <div class="fld"><label for="c-clr">Clearing agent (ETB)</label><input id="c-clr" type="number" min="0" step="1000" value="25000"></div>
+          <div class="fld"><label for="c-trn">Djibouti → Addis transport (ETB)</label><input id="c-trn" type="number" min="0" step="1000" value="60000"></div>
+          <div class="fld"><label for="c-port">Port and storage (ETB)</label><input id="c-port" type="number" min="0" step="1000" value="15000"></div>
+        </div>
+        <p class="note-ex">Example rates. Your actual duty and excise rates are set per product (HS code).</p>
+      </div>
+      <div class="card lines2" id="c-out">
+        <h3>Landed cost <small id="c-cat-lbl"></small></h3>
+        <div id="c-lines"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SALES & STOCK -->
+  <section class="screen" id="s-sales" hidden>
+    <p class="hint">Sell imported goods and see the margin before you confirm. Record an export and follow its USD payment.</p>
+    <h3 style="margin-bottom:10px">Imported goods in stock</h3>
+    <div class="stock" id="stock"></div>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card"><h3>Today's sales <small id="v-salecount"></small></h3><div id="sales"></div></div>
+      <div class="card"><h3 style="align-items:center">Exports <button class="btn btn-dark" type="button" id="new-export" style="padding:7px 12px;font-size:12.5px">+ Export sale</button></h3><div id="exports"></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const usd = n => "USD " + Math.round(n).toLocaleString("en-US");
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const VAT = 0.15, SURTAX = 0.10, WHT = 0.03;
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  const shortDate = d => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  /* ---------- example business ---------- */
+  // Example duty and excise rates only. Real rates are set per product (HS code).
+  const CATS = {
+    "Electronics": { duty: 0.20, excise: 0 },
+    "Vehicle parts": { duty: 0.10, excise: 0 },
+    "Edible oil": { duty: 0.05, excise: 0 },
+    "Textiles": { duty: 0.35, excise: 0 },
+    "Beverages": { duty: 0.30, excise: 0.25 }
+  };
+  const STAGES = ["Ordered", "Shipped", "Djibouti port", "In transit", "Customs cleared", "In warehouse"];
+  const CUSTOMERS = ["Retail shop, Merkato", "Wholesaler, Adama", "Supermarket, Bole", "Distributor, Hawassa", "Contractor, Bahir Dar"];
+  const BUYERS = ["Roaster, Germany", "Importer, Japan", "Trader, Saudi Arabia", "Buyer, South Korea"];
+  const DAY_EXP = [["Office rent share", 6000, 9000], ["Staff transport", 1500, 3500], ["Bank charges", 800, 2500], ["Phone and internet", 1200, 2000]];
+
+  // Landed cost, tax by tax. CIF in ETB; duty on CIF; excise on CIF+duty;
+  // VAT on CIF+duty+excise; surtax on CIF+duty+excise+VAT; withholding on CIF. VAT and withholding
+  // are paid at customs but claimable, so they are not part of the landed cost.
+  function landed(x) {
+    const c = CATS[x.cat];
+    const cifUsd = x.fob + x.fr + x.ins, cif = cifUsd * x.rate;
+    const duty = cif * c.duty, excise = (cif + duty) * c.excise, base = cif + duty + excise;
+    const vat = base * VAT, surtax = (base + vat) * SURTAX, wht = cif * WHT;
+    const charges = x.clr + x.trn + x.port;
+    const total = cif + duty + excise + surtax + charges;
+    return { cifUsd, cif, duty, excise, base, vat, surtax, wht, charges, total, perUnit: total / Math.max(1, x.units), cashAtCustoms: duty + excise + vat + surtax + wht };
+  }
+  const STD_CHARGES = { clr: 25000, trn: 60000, port: 15000 };
+
+  /* ---------- day generator (deterministic per date) ---------- */
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const ITEMS = [
+    { name: "Laptops", cat: "Electronics", cost: 52400, price: 64000 },
+    { name: "LED TVs 43\"", cat: "Electronics", cost: 23800, price: 29500 },
+    { name: "Brake pads (set)", cat: "Vehicle parts", cost: 2650, price: 3400 },
+    { name: "Sunflower oil 20L", cat: "Edible oil", cost: 4180, price: 4950 },
+    { name: "Cotton fabric (roll)", cat: "Textiles", cost: 9100, price: 11800 }
+  ];
+  function makeDay(date, fraction) {
+    const r = rng(dayKey(date));
+    const day = { sales: [], expenses: [] };
+    const n = Math.round((6 + Math.floor(r() * 7)) * fraction);
+    for (let i = 0; i < n; i++) {
+      const it = pick(r, ITEMS), qty = 2 + Math.floor(r() * 12);
+      day.sales.push({ no: "", item: it.name, qty, price: it.price, cost: it.cost, who: pick(r, CUSTOMERS) });
+    }
+    const ne = 1 + Math.floor(r() * 3);
+    for (let i = 0; i < ne; i++) { const [nm, lo, hi] = pick(r, DAY_EXP); day.expenses.push({ n: nm, amount: Math.round((lo + r() * (hi - lo)) / 50) * 50 }); }
+    return day;
+  }
+  function summarize(day) {
+    const sales = day.sales.reduce((t, s) => t + s.qty * s.price, 0);
+    const cogs = day.sales.reduce((t, s) => t + s.qty * s.cost, 0);
+    const exp = day.expenses.reduce((t, e) => t + e.amount, 0);
+    return { sales, cogs, margin: sales - cogs, exp, profit: sales - cogs - exp };
+  }
+
+  /* ---------- state ---------- */
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const STORE = "edel-demo-import-v1";
+  const dayFor = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return d; };
+  let invSeq = 1000, S;
+  function freshState() {
+    const ships = [
+      { id: 1, no: "SHP-0418", country: "China", goods: "Laptops", cat: "Electronics", units: 120, fob: 48000, fr: 3200, ins: 450, stage: 0, cont: "MSCU 418 2201" },
+      { id: 2, no: "SHP-0415", country: "Turkey", goods: "Cotton fabric (roll)", cat: "Textiles", units: 300, fob: 21000, fr: 2600, ins: 180, stage: 1, cont: "TGHU 415 7730" },
+      { id: 3, no: "SHP-0412", country: "India", goods: "Brake pads (set)", cat: "Vehicle parts", units: 1500, fob: 16500, fr: 2100, ins: 140, stage: 2, cont: "CMAU 412 5518" },
+      { id: 4, no: "SHP-0409", country: "UAE", goods: "Sunflower oil 20L", cat: "Edible oil", units: 1100, fob: 27500, fr: 1900, ins: 210, stage: 3, cont: "MSKU 409 3364" },
+      { id: 5, no: "SHP-0406", country: "China", goods: "LED TVs 43\"", cat: "Electronics", units: 200, fob: 30000, fr: 2800, ins: 260, stage: 3, cont: "OOLU 406 9912" }
+    ];
+    const stock = ITEMS.map((it, i) => ({ id: i + 1, name: it.name, cat: it.cat, units: [18, 64, 340, 210, 9][i], cost: it.cost, price: it.price }));
+    const lcs = [
+      { id: 1, no: "LC-2207", ship: "SHP-0418", usd: 51650, days: 38 },
+      { id: 2, no: "LC-2203", ship: "SHP-0415", usd: 23780, days: 9 }
+    ];
+    const exports = [
+      { id: 1, buyer: BUYERS[0], goods: "Washed coffee", kg: 19200, usd: 96000, days: 12, received: false },
+      { id: 2, buyer: BUYERS[2], goods: "White sesame", kg: 25000, usd: 41250, days: -4, received: false },
+      { id: 3, buyer: BUYERS[1], goods: "Washed coffee", kg: 9600, usd: 52800, days: -9, received: true }
+    ];
+    const pending = [
+      { id: 1, k: "Letter of credit", who: "Finance", what: "Open LC for edible oil order from UAE", amount: 0, usdAmt: 31600, act: "lc" },
+      { id: 2, k: "Payment", who: "Logistics", what: "Pay clearing agent for SHP-0409", amount: 25000, act: "exp" }
+    ];
+    return { today: makeDay(TODAY, 0.55), ships, stock, lcs, exports, pending, decided: [], feed: [], held: 185000, rate: 130, target: 600000,
+      landedMonth: 7480000, landedN: 3, recvMonth: 52800, shipSeq: 418, apSeq: 2, exSeq: 3, lcSeq: 2207, savedDay: dayKey(TODAY) };
+  }
+  function save() { try { S.invSeq = invSeq; localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+  function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.savedDay === dayKey(TODAY)) { invSeq = s.invSeq || 1000; return s; } } catch (e) {} return null; }
+  S = load() || freshState();
+
+  /* ---------- feed, toasts, sheet ---------- */
+  function logEvent(icon, text, amount, pop) {
+    S.feed.unshift({ icon, text, amount: amount || "", t: hhmm() });
+    S.feed = S.feed.slice(0, 30);
+    if (pop) liveToast(`${icon} ${esc(text)}${amount ? " · <b>" + amount + "</b>" : ""}`);
+  }
+  function liveToast(html) {
+    const d = document.createElement("div"); d.innerHTML = html; $("lt").prepend(d);
+    setTimeout(() => d.remove(), 4200);
+    while ($("lt").children.length > 3) $("lt").lastChild.remove();
+  }
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3400); }
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("input,select,button"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+  const closeBtn = '<div class="actions"><button class="btn btn-line" data-close>Close</button></div>';
+
+  /* ---------- screens ---------- */
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  const SCREENS = ["summary", "approvals", "ships", "calc", "sales"];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    SCREENS.forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "summary") { viewOffset = 0; renderSummary(true); }
+    if (name === "approvals") renderApprovals();
+    if (name === "ships") renderShips();
+    if (name === "calc") renderCalc();
+    if (name === "sales") { renderStock(); renderSales(); renderExports(); }
+    window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- positions ---------- */
+  const committed = () => S.lcs.reduce((t, l) => t + l.usd, 0) + S.ships.filter(s => s.stage === 0 && !S.lcs.some(l => l.ship === s.no)).reduce((t, s) => t + s.fob + s.fr + s.ins, 0);
+  const stockValue = () => S.stock.reduce((t, s) => t + s.units * s.cost, 0);
+
+  /* ---------- owner summary ---------- */
+  let viewOffset = 0, lastFlash = null;
+  function renderSummary(flash) {
+    const date = dayFor(viewOffset), isToday = viewOffset === 0;
+    const day = isToday ? S.today : makeDay(date, 1), sm = summarize(day);
+    $("d-title").textContent = isToday ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(date).split(",")[0];
+    $("d-date").textContent = `${ethStr(date)} · ${gregStr(date)}`;
+    $("next").disabled = isToday;
+    $("v-profit").textContent = etb(sm.profit);
+    $("profit").classList.toggle("loss", sm.profit < 0);
+    $("profit").querySelector("small").textContent = isToday ? "Profit so far (before tax)" : "Profit (before tax)";
+    $("v-sales").textContent = etb(sm.sales);
+    $("v-margin").textContent = sm.sales ? `${etb(sm.margin)} · ${Math.round(sm.margin / sm.sales * 100)}%` : etb(0);
+    $("v-exp").textContent = etb(sm.exp);
+    const pct = Math.min(100, Math.round(sm.sales / S.target * 100));
+    $("t-bar").style.width = pct + "%";
+    $("t-pct").textContent = pct + "% of sales target";
+    $("t-of").textContent = "Target " + etb(S.target);
+    $("t-left").textContent = sm.sales >= S.target ? "Target reached 🎉" : etb(S.target - sm.sales) + " to go";
+
+    // pipeline (positions are always "now")
+    const counts = STAGES.map((_, i) => S.ships.filter(s => s.stage === i).length);
+    $("pipe").innerHTML = STAGES.map((st, i) => `<button type="button" data-stage="${i}"><b class="num">${counts[i]}</b><small>${st}</small></button>`).join("");
+    $("v-pipe-total").textContent = S.ships.filter(s => s.stage < 5).length + " on the way";
+
+    // FX
+    const comm = committed(), free = S.held - comm, w = Math.max(S.held, comm);
+    $("v-held").textContent = usd(S.held);
+    $("v-comm").textContent = usd(comm);
+    $("v-free").innerHTML = free < 0 ? `<span class="warn">${usd(free)}</span>` : usd(free);
+    $("fx-c").style.width = Math.min(100, comm / w * 100) + "%";
+    $("fx-f").style.width = Math.max(0, free / w * 100) + "%";
+    $("v-rate").textContent = S.rate.toFixed(2) + " ETB";
+
+    // LCs
+    const lcTotal = S.lcs.reduce((t, l) => t + l.usd, 0);
+    $("v-lc").textContent = usd(lcTotal);
+    $("v-lc-n").textContent = S.lcs.length + " open";
+    const nx = S.lcs.slice().sort((a, b) => a.days - b.days)[0];
+    $("v-lc-next").innerHTML = nx ? `<div class="row"><span>Next expiry: ${esc(nx.no)}</span><b class="${nx.days <= 10 ? "warn" : ""}">in ${nx.days} days</b></div>` : `<div class="empty">No open LC.</div>`;
+
+    // exports
+    const open = S.exports.filter(x => !x.received);
+    $("v-ex-exp").textContent = usd(open.filter(x => x.days >= 0).reduce((t, x) => t + x.usd, 0));
+    const late = open.filter(x => x.days < 0);
+    $("v-ex-late").innerHTML = late.length ? `<span class="warn">${usd(late.reduce((t, x) => t + x.usd, 0))} · ${late.length}</span>` : `<span class="goodc">None</span>`;
+    $("v-ex-recv").textContent = usd(S.recvMonth);
+
+    // landed + stock
+    $("v-landed").textContent = etb(S.landedMonth);
+    $("v-landed-n").textContent = S.landedN + " shipments cleared";
+    $("v-stock").textContent = etb(stockValue());
+    $("v-stock-n").textContent = S.stock.reduce((t, s) => t + s.units, 0).toLocaleString("en-US") + " units";
+    const lows = S.stock.filter(s => s.units < 20);
+    $("v-stock-low").innerHTML = lows.length ? lows.map(s => `<div class="row"><span>${esc(s.name)}</span><span class="low">${s.units} left</span></div>`).join("") : `<div class="empty">Nothing running low.</div>`;
+
+    // items
+    const byI = {}; day.sales.forEach(s => { byI[s.item] = byI[s.item] || { q: 0, v: 0, m: 0 }; byI[s.item].q += s.qty; byI[s.item].v += s.qty * s.price; byI[s.item].m += s.qty * (s.price - s.cost); });
+    const rows = Object.entries(byI).sort((a, b) => b[1].v - a[1].v);
+    $("v-items").innerHTML = rows.length ? rows.map(([n, v]) => `<div class="row"><span>${esc(n)} <span class="muted small">· ${v.q} sold · ${Math.round(v.m / v.v * 100)}% margin</span></span><b class="num">${etb(v.v)}</b></div>`).join("") : `<div class="empty">No sales yet.</div>`;
+
+    renderWeek(); renderFeed(); renderBadge();
+    if (flash && lastFlash) { lastFlash.forEach(id => { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); lastFlash = null; }
+  }
+  function renderWeek() {
+    const vals = []; for (let off = -6; off <= 0; off++) { const d = dayFor(off); vals.push({ off, d, v: summarize(off === 0 ? S.today : makeDay(d, 1)).sales }); }
+    const max = Math.max(...vals.map(x => x.v), S.target);
+    $("week").innerHTML = vals.map(x => `<button type="button" data-off="${x.off}" class="${x.off === 0 ? "today" : ""} ${x.off === viewOffset ? "sel" : ""}" aria-label="${gregStr(x.d)}: ${etb(x.v)}">
+      <span class="v">${Math.round(x.v / 1000)}k</span><span class="track"><span class="b" style="height:${Math.max(4, x.v / max * 100)}%"></span></span><span class="d">${x.off === 0 ? "Today" : x.d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`).join("");
+  }
+  $("week").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; viewOffset = Number(b.dataset.off); renderSummary(); });
+  function renderFeed() {
+    const isToday = viewOffset === 0;
+    $("feed-state").textContent = isToday ? (liveOn ? "● live" : "paused") : "";
+    $("feed").innerHTML = !isToday ? `<div class="empty">Live activity shows for today. Tap <b>Today</b> in the chart.</div>`
+      : S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount}</b></div>`).join("")
+      : `<div class="empty">Waiting for the next event… (turn on <b>Live</b> at the top, or move a shipment yourself)</div>`;
+  }
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  $("prev").addEventListener("click", () => { viewOffset--; renderSummary(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderSummary(); } });
+  $("pipe").addEventListener("click", e => { const b = e.target.closest("[data-stage]"); if (!b) return; stageFilter = Number(b.dataset.stage); show("ships"); });
+
+  const drill = (id, fn) => { const el = $(id); el.addEventListener("click", fn); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  const curDay = () => viewOffset === 0 ? S.today : makeDay(dayFor(viewOffset), 1);
+  drill("k-sales", () => { const d = curDay();
+    openSheet(`<h2>Sales ${etb(summarize(d).sales)}</h2><p class="muted">Before VAT · ${gregStr(dayFor(viewOffset))}</p><div style="margin-top:12px">${d.sales.map(s => `<div class="row"><span>${esc(s.item)} × ${s.qty}<br><span class="muted small">${esc(s.who)}</span></span><b class="num">${etb(s.qty * s.price)}</b></div>`).join("") || '<div class="empty">No sales.</div>'}</div>${closeBtn}`); });
+  drill("k-margin", () => { const d = curDay(), sm = summarize(d);
+    openSheet(`<h2>Gross margin ${etb(sm.margin)}</h2><p class="muted">Sales minus the landed cost of the goods sold.</p>
+      <div style="margin-top:12px"><div class="row"><span>Sales</span><b class="num">${etb(sm.sales)}</b></div><div class="row"><span>Landed cost of goods sold</span><b class="num">− ${etb(sm.cogs)}</b></div>
+      <div class="row" style="font-weight:700"><span>Gross margin</span><b class="num">${etb(sm.margin)} · ${sm.sales ? Math.round(sm.margin / sm.sales * 100) : 0}%</b></div></div>${closeBtn}`); });
+  drill("k-exp", () => { const d = curDay();
+    openSheet(`<h2>Expenses ${etb(summarize(d).exp)}</h2><p class="muted">Approved expenses dated this day, before tax.</p><div style="margin-top:12px">${d.expenses.map(e => `<div class="row"><span>${esc(e.n)}</span><b class="num">${etb(e.amount)}</b></div>`).join("") || '<div class="empty">None.</div>'}</div>
+      ${viewOffset === 0 && S.pending.length ? `<div class="actions"><button class="btn btn-gold" id="go-ap">${S.pending.length} waiting for your approval →</button></div>` : ""}${closeBtn}`,
+      () => { const g = $("go-ap"); g && g.addEventListener("click", () => { closeSheet(); show("approvals"); }); }); });
+  drill("c-fx", () => openSheet(`<h2>Foreign currency</h2><p class="muted">What you hold against what is already promised.</p>
+    <div style="margin-top:12px"><div class="row"><span>USD held in your accounts</span><b class="num">${usd(S.held)}</b></div>
+    ${S.lcs.map(l => `<div class="row"><span>${esc(l.no)} · ${esc(l.ship)}</span><b class="num">− ${usd(l.usd)}</b></div>`).join("")}
+    ${S.ships.filter(s => s.stage === 0 && !S.lcs.some(l => l.ship === s.no)).map(s => `<div class="row"><span>${esc(s.no)} ordered, no LC yet</span><b class="num">− ${usd(s.fob + s.fr + s.ins)}</b></div>`).join("")}
+    <div class="row" style="font-weight:700"><span>Free to use</span><b class="num">${usd(S.held - committed())}</b></div></div>${closeBtn}`));
+  drill("c-lc", () => openSheet(`<h2>Letters of credit</h2><div style="margin-top:12px">${S.lcs.map(l => `<div class="row"><span>${esc(l.no)} · ${esc(l.ship)}<br><span class="muted small">Expires ${shortDate(dayFor(l.days))}</span></span><b class="num ${l.days <= 10 ? "warn" : ""}">${usd(l.usd)} · ${l.days} d</b></div>`).join("") || '<div class="empty">No open LC.</div>'}</div>${closeBtn}`));
+  drill("c-exports", () => show("sales"));
+  drill("c-stock", () => show("sales"));
+  $("t-set").addEventListener("click", () => openSheet(`<h2>Daily sales target</h2><p class="muted">Before VAT.</p>
+    <input id="t-in" type="number" min="1000" step="10000" value="${S.target}" style="font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:10px;width:100%;margin-top:12px">
+    <div class="actions"><button class="btn btn-gold" id="t-save">Save</button><button class="btn btn-line" data-close>Cancel</button></div>`, () =>
+    $("t-save").addEventListener("click", () => { const v = Number($("t-in").value); if (v > 0) { S.target = v; save(); closeSheet(); renderSummary(); toast("Target saved"); } })));
+
+  /* ---------- shipments ---------- */
+  let stageFilter = -1;
+  function renderShips() {
+    $("stage-chips").innerHTML = [`<button type="button" aria-pressed="${stageFilter === -1}" data-sf="-1">All</button>`].concat(STAGES.map((st, i) => `<button type="button" aria-pressed="${stageFilter === i}" data-sf="${i}">${st} · ${S.ships.filter(s => s.stage === i).length}</button>`)).join("");
+    const list = S.ships.filter(s => stageFilter === -1 || s.stage === stageFilter).sort((a, b) => a.stage - b.stage);
+    $("ships").innerHTML = list.length ? list.map(s => {
+      const cifUsd = s.fob + s.fr + s.ins;
+      return `<div class="ship"><div class="top2"><span class="no">${esc(s.no)} · ${esc(s.cont)}</span><span class="st">${STAGES[s.stage]}</span></div>
+        <b>${esc(s.goods)} × ${s.units.toLocaleString("en-US")}</b><span class="muted small">From ${esc(s.country)} · ${usd(cifUsd)} CIF · ${esc(s.cat)}</span>
+        <div class="stage-row" aria-hidden="true">${STAGES.map((_, i) => `<i class="${i <= s.stage ? "on" : ""}"></i>`).join("")}</div>
+        ${s.landed ? `<span class="small">Landed ${etb(s.landed)} · <b>${etb(s.landed / s.units)}</b> per unit</span>` : ""}
+        ${s.stage < 5 ? `<button class="btn btn-gold" type="button" data-move="${s.id}">Move to ${STAGES[s.stage + 1]} →</button>` : `<span class="tag" style="justify-self:start">In stock</span>`}</div>`;
+    }).join("") : `<div class="empty">No shipment at this stage.</div>`;
+  }
+  $("stage-chips").addEventListener("click", e => { const b = e.target.closest("[data-sf]"); if (!b) return; stageFilter = Number(b.dataset.sf); renderShips(); });
+  function moveShip(s, quiet) {
+    s.stage++;
+    const st = STAGES[s.stage];
+    if (s.stage === 4) {
+      const L = landed({ fob: s.fob, fr: s.fr, ins: s.ins, rate: S.rate, cat: s.cat, units: s.units, ...STD_CHARGES });
+      s.landed = L.total; S.landedMonth += L.total; S.landedN++;
+      const lc = S.lcs.find(l => l.ship === s.no); if (lc) { S.lcs = S.lcs.filter(l => l !== lc); S.held -= lc.usd; }
+      logEvent("🛃", `${s.no} cleared customs · ${s.goods}`, etb(L.total), !quiet);
+      lastFlash = ["c-landed", "c-pipe", "c-fx", "c-lc"];
+      if (!quiet) openSheet(`<h2>${esc(s.no)} cleared ✓</h2><p class="muted">${esc(s.goods)} × ${s.units} · landed cost worked out</p>${landedLines(L, s.units)}
+        <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Owner Summary</button><button class="btn btn-line" data-close>Back</button></div>`, () => $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+    } else if (s.stage === 5) {
+      let it = S.stock.find(x => x.name === s.goods);
+      const per = s.landed / s.units;
+      if (it) { it.cost = (it.cost * it.units + per * s.units) / (it.units + s.units); it.units += s.units; }
+      else S.stock.push(it = { id: S.stock.length + 1, name: s.goods, cat: s.cat, units: s.units, cost: per, price: Math.round(per * 1.25 / 10) * 10 });
+      logEvent("📦", `${s.no} in warehouse · ${s.units} ${s.goods} at ${etb(per)} each`, "", !quiet);
+      lastFlash = ["c-stock", "c-pipe"];
+      if (!quiet) toast(`${s.units} × ${esc(s.goods)} added to stock at <b>${etb(per)}</b> each.`);
+    } else {
+      logEvent(s.stage === 1 ? "🚢" : s.stage === 2 ? "⚓" : "🚚", `${s.no} ${s.stage === 1 ? "shipped from " + s.country : s.stage === 2 ? "arrived at Djibouti port" : "on the road to Addis Ababa"}`, "", !quiet);
+      lastFlash = ["c-pipe"];
+      if (!quiet) toast(`${esc(s.no)} → <b>${st}</b>`);
+    }
+  }
+  $("ships").addEventListener("click", e => { const b = e.target.closest("[data-move]"); if (!b) return; const s = S.ships.find(x => x.id === Number(b.dataset.move)); if (!s || s.stage >= 5) return; moveShip(s, false); save(); renderShips(); renderBadge(); });
+  $("new-ship").addEventListener("click", () => openSheet(`<h2>New order</h2><p class="muted">Order goods from a supplier. The USD is committed until it ships.</p>
+    <div class="f2" style="margin-top:12px">
+      <div class="fld"><label for="n-goods">Goods</label><select id="n-goods">${ITEMS.map(i => `<option>${esc(i.name)}</option>`).join("")}</select></div>
+      <div class="fld"><label for="n-country">From</label><select id="n-country"><option>China</option><option>Turkey</option><option>India</option><option>UAE</option></select></div>
+      <div class="fld"><label for="n-units">Units</label><input id="n-units" type="number" min="1" value="200"></div>
+      <div class="fld"><label for="n-fob">Goods value (FOB, USD)</label><input id="n-fob" type="number" min="100" step="100" value="24000"></div>
+    </div>
+    <div class="actions"><button class="btn btn-gold" id="n-save">Place order</button><button class="btn btn-line" data-close>Cancel</button></div>`, () =>
+    $("n-save").addEventListener("click", () => {
+      const goods = $("n-goods").value, it = ITEMS.find(i => i.name === goods), units = Math.max(1, Math.round(Number($("n-units").value) || 0)), fob = Math.max(100, Number($("n-fob").value) || 0);
+      const s = { id: Date.now(), no: "SHP-0" + (++S.shipSeq), country: $("n-country").value, goods, cat: it.cat, units, fob, fr: Math.round(fob * 0.1), ins: Math.round(fob * 0.009), stage: 0, cont: "TBA" };
+      S.ships.push(s); logEvent("🧾", `New order ${s.no}: ${goods} × ${units} from ${s.country}`, usd(fob + s.fr + s.ins), false);
+      lastFlash = ["c-pipe", "c-fx"]; save(); closeSheet(); renderShips(); toast(`Order ${s.no} placed. ${usd(fob + s.fr + s.ins)} committed.`);
+    })));
+
+  /* ---------- landed cost calculator ---------- */
+  $("c-cat").innerHTML = Object.entries(CATS).map(([k, v]) => `<option value="${esc(k)}">${esc(k)} · duty ${v.duty * 100}%${v.excise ? " · excise " + v.excise * 100 + "%" : ""}</option>`).join("");
+  function landedLines(L, units) {
+    const r = (lbl, v, small, cls) => `<div class="row ${cls || ""}"><span>${lbl}${small ? `<small>${small}</small>` : ""}</span><b class="num">${etb(v)}</b></div>`;
+    return `<div class="lines2" style="margin-top:10px">
+      ${r("CIF value", L.cif, `${usd(L.cifUsd)} goods + freight + insurance`)}
+      ${r("Customs duty", L.duty, "on CIF")}
+      ${r("Excise tax", L.excise, L.excise ? "on CIF + duty" : "none for this category")}
+      ${r("Surtax 10%", L.surtax, "on CIF + duty + excise + VAT")}
+      ${r("Clearing, transport, port", L.charges)}
+      ${r("Landed cost", L.total, "", "tot")}
+      ${r("Per unit", L.perUnit, `${units.toLocaleString("en-US")} units`, "tot")}
+      ${r("VAT 15% (claimable)", L.vat, "on CIF + duty + excise · paid at customs", "sub")}
+      ${r("Withholding 3% (claimable)", L.wht, "on CIF · paid at customs", "sub")}
+      ${r("Cash paid at customs", L.cashAtCustoms, "duty + excise + VAT + surtax + withholding", "sub")}</div>`;
+  }
+  const CALC_IDS = ["c-fob", "c-units", "c-fr", "c-ins", "c-rate", "c-cat", "c-clr", "c-trn", "c-port"];
+  function renderCalc() {
+    const n = id => Math.max(0, Number($(id).value) || 0);
+    const x = { fob: n("c-fob"), fr: n("c-fr"), ins: n("c-ins"), rate: n("c-rate") || 1, cat: $("c-cat").value, units: Math.max(1, Math.round(n("c-units"))), clr: n("c-clr"), trn: n("c-trn"), port: n("c-port") };
+    const L = landed(x);
+    $("c-cat-lbl").textContent = x.cat;
+    $("c-lines").innerHTML = landedLines(L, x.units).replace('<div class="lines2" style="margin-top:10px">', "<div>");
+  }
+  CALC_IDS.forEach(id => $(id).addEventListener("input", renderCalc));
+
+  /* ---------- sales & stock ---------- */
+  function renderStock() {
+    $("stock").innerHTML = S.stock.map(s => `<div class="sk"><b>${esc(s.name)}</b><span class="muted small">${esc(s.cat)} · ${s.units.toLocaleString("en-US")} in stock${s.units < 20 ? ' · <span class="low">low</span>' : ""}</span>
+      <div class="row"><span>Landed cost</span><b class="num">${etb(s.cost)}</b></div><div class="row"><span>List price</span><b class="num">${etb(s.price)}</b></div>
+      <div class="row"><span>Margin</span><b class="num goodc">${Math.round((s.price - s.cost) / s.price * 100)}%</b></div>
+      <button class="btn btn-gold" type="button" data-sell="${s.id}" ${s.units < 1 ? "disabled" : ""}>Sell</button></div>`).join("");
+  }
+  function renderSales() {
+    const live = S.today.sales.filter(s => s.no).slice().reverse();
+    $("v-salecount").textContent = S.today.sales.length + " today";
+    $("sales").innerHTML = live.length ? live.slice(0, 8).map(s => `<div class="row"><span><b class="num">${s.no}</b><br><span class="muted small">${esc(s.item)} × ${s.qty} · ${esc(s.who)}</span></span><span style="text-align:right"><b class="num">${etb(s.qty * s.price)}</b><br><span class="tag">Registered</span></span></div>`).join("")
+      : `<div class="empty">Sales you make appear here, each with its e-invoice number.</div>`;
+  }
+  function renderExports() {
+    $("exports").innerHTML = S.exports.slice().reverse().map(x => `<div class="ex"><span><b>${esc(x.goods)}</b> · ${x.kg.toLocaleString("en-US")} kg<br><span class="muted small">${esc(x.buyer)} · ${usd(x.usd)} · due ${shortDate(dayFor(x.days))}</span><br>
+      ${x.received ? '<span class="pill paid">Received</span>' : x.days < 0 ? `<span class="pill late">${-x.days} days overdue</span>` : `<span class="pill due">Due in ${x.days} days</span>`}</span>
+      ${x.received ? "" : `<button type="button" data-recv="${x.id}">Mark received</button>`}</div>`).join("") || `<div class="empty">No exports yet.</div>`;
+  }
+  function doSale(it, qty, price, who) {
+    const no = "EDL-INV-" + String(++invSeq).padStart(6, "0");
+    S.today.sales.push({ no, item: it.name, qty, price, cost: it.cost, who });
+    it.units -= qty;
+    logEvent("🧾", `Sold ${it.name} × ${qty} to ${who}`, etb(qty * price * (1 + VAT)), false);
+    lastFlash = ["c-money", "c-items", "c-stock"];
+    return no;
+  }
+  $("stock").addEventListener("click", e => {
+    const b = e.target.closest("[data-sell]"); if (!b) return;
+    const it = S.stock.find(s => s.id === Number(b.dataset.sell)); if (!it) return;
+    openSheet(`<h2>Sell ${esc(it.name)}</h2><p class="muted">${it.units} in stock · landed cost ${etb(it.cost)} each</p>
+      <div class="f2" style="margin-top:12px">
+        <div class="fld" style="grid-column:1/-1"><label for="s-who">Customer</label><select id="s-who">${CUSTOMERS.map(c => `<option>${esc(c)}</option>`).join("")}</select></div>
+        <div class="fld"><label for="s-qty">Quantity</label><input id="s-qty" type="number" min="1" max="${it.units}" value="${Math.min(5, it.units)}"></div>
+        <div class="fld"><label for="s-price">Price each (before VAT)</label><input id="s-price" type="number" min="1" step="10" value="${Math.round(it.price)}"></div>
+      </div>
+      <div class="card" style="margin-top:12px;padding:12px" id="s-calc"></div>
+      <div class="actions"><button class="btn btn-gold" id="s-go">Confirm sale &amp; issue invoice</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      const upd = () => {
+        const q = Math.max(1, Math.min(it.units, Math.round(Number($("s-qty").value) || 1))), p = Math.max(0, Number($("s-price").value) || 0);
+        const m = p ? (p - it.cost) / p : -1, low = m < 0.10;
+        $("s-calc").innerHTML = `<div class="row"><span>Sales (before VAT)</span><b class="num">${etb(q * p)}</b></div><div class="row"><span>Landed cost</span><b class="num">− ${etb(q * it.cost)}</b></div>
+          <div class="row" style="font-weight:700"><span>Margin</span><b class="num ${low ? "warn" : "goodc"}">${etb(q * (p - it.cost))} · ${Math.round(m * 100)}%</b></div>
+          ${low ? '<p class="warn small" style="margin-top:6px">Below 10% margin. This goes to the owner for approval.</p>' : ""}`;
+        $("s-go").textContent = low ? "Send for owner approval" : `Confirm sale · ${etb(q * p * (1 + VAT))} with VAT`;
+        return { q, p, low };
+      };
+      ["s-qty", "s-price"].forEach(id => $(id).addEventListener("input", upd)); upd();
+      $("s-go").addEventListener("click", () => {
+        const { q, p, low } = upd(), who = $("s-who").value;
+        if (low) {
+          S.pending.push({ id: ++S.apSeq, k: "Price below margin", who: "Sales", what: `Sell ${it.name} × ${q} at ${etb(p)} each to ${who}`, amount: q * p, act: "sale", sale: { id: it.id, q, p, who } });
+          logEvent("📝", `Sales asks to sell ${it.name} below margin`, etb(q * p), false);
+          save(); closeSheet(); renderBadge(); toast("Sent to the owner for approval. Open <b>Approvals</b>."); return;
+        }
+        const no = doSale(it, q, p, who); save(); renderStock(); renderSales();
+        openSheet(`<h2>Sold ✓</h2><p class="muted">${esc(who)}</p><div class="receipt"><b>TAX INVOICE</b><br>${esc(it.name)} × ${q}<span style="float:right">${etb(q * p)}</span><br>VAT 15%<span style="float:right">${etb(q * p * VAT)}</span><br>------------------------------<br>TOTAL ETB<span style="float:right">${Math.round(q * p * (1 + VAT)).toLocaleString("en-US")}</span><br>No ${no}<br><span class="stamp">REGISTERED · ተመዝግቧል</span></div>
+          <p class="muted small" style="margin-top:8px">Margin on this sale: ${etb(q * (p - it.cost))}. In the real system this invoice is registered with the Ministry of Revenues as you sell.</p>
+          <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Owner Summary</button><button class="btn btn-line" data-close>Back</button></div>`, () => $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+      });
+    });
+  });
+  $("exports").addEventListener("click", e => {
+    const b = e.target.closest("[data-recv]"); if (!b) return;
+    const x = S.exports.find(z => z.id === Number(b.dataset.recv)); if (!x || x.received) return;
+    x.received = true; S.held += x.usd; S.recvMonth += x.usd;
+    logEvent("💵", `Export payment received from ${x.buyer}`, usd(x.usd), false);
+    lastFlash = ["c-fx", "c-exports"]; save(); renderExports(); toast(`${usd(x.usd)} received. Foreign currency held is now <b>${usd(S.held)}</b>.`);
+  });
+  $("new-export").addEventListener("click", () => openSheet(`<h2>Export sale</h2><p class="muted">Record a shipment to a foreign buyer and follow its USD payment.</p>
+    <div class="f2" style="margin-top:12px">
+      <div class="fld"><label for="x-goods">Goods</label><select id="x-goods"><option>Washed coffee</option><option>Natural coffee</option><option>White sesame</option></select></div>
+      <div class="fld"><label for="x-buyer">Buyer</label><select id="x-buyer">${BUYERS.map(c => `<option>${esc(c)}</option>`).join("")}</select></div>
+      <div class="fld"><label for="x-kg">Quantity (kg)</label><input id="x-kg" type="number" min="1" step="60" value="19200"></div>
+      <div class="fld"><label for="x-price">Price (USD per kg)</label><input id="x-price" type="number" min="0.1" step="0.05" value="5.10"></div>
+      <div class="fld"><label for="x-days">Payment due in (days)</label><input id="x-days" type="number" min="1" value="30"></div>
+      <div class="fld"><label>Total</label><b id="x-total" class="num" style="padding:9px 0"></b></div>
+    </div>
+    <div class="actions"><button class="btn btn-gold" id="x-save">Record export</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+    const t = () => { const v = Math.max(0, Number($("x-kg").value) || 0) * Math.max(0, Number($("x-price").value) || 0); $("x-total").textContent = usd(v); return v; };
+    ["x-kg", "x-price"].forEach(id => $(id).addEventListener("input", t)); t();
+    $("x-save").addEventListener("click", () => {
+      const v = t(); if (!v) return;
+      const x = { id: ++S.exSeq, buyer: $("x-buyer").value, goods: $("x-goods").value, kg: Math.round(Number($("x-kg").value)), usd: v, days: Math.max(1, Math.round(Number($("x-days").value) || 30)), received: false };
+      S.exports.push(x); logEvent("🌍", `Export: ${x.goods} ${x.kg.toLocaleString("en-US")} kg to ${x.buyer}`, usd(v), false);
+      lastFlash = ["c-exports"]; save(); closeSheet(); renderExports(); toast(`Export recorded. ${usd(v)} expected ${shortDate(dayFor(x.days))}.`);
+    });
+  }));
+
+  /* ---------- approvals ---------- */
+  const apAmount = p => p.usdAmt ? usd(p.usdAmt) : etb(p.amount);
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? S.pending.length + " waiting" : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap" data-ap="${p.id}"><div><span class="k">${esc(p.k)}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)} · ${apAmount(p)}</span></div>
+      <div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("")
+      : `<div class="empty">All done. New requests appear here${liveOn ? " while Live is on" : ""}.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${esc(p.k)} · ${p.ok ? "approved" : "rejected"} ${p.t}</span></span><b class="num" style="color:${p.ok ? "var(--green)" : "var(--red)"}">${apAmount(p)}</b></div>`).join("")
+      : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    b.closest(".ap").classList.add("gone");
+    setTimeout(() => {
+      S.pending = S.pending.filter(x => x.id !== id); S.decided.push({ ...p, ok, t: hhmm() });
+      let msg = ok ? "Approved." : "Rejected. Your team is told.";
+      if (ok && p.act === "exp") { S.today.expenses.push({ n: p.what, amount: p.amount }); lastFlash = ["c-money"]; msg = `Approved. Profit is now ${etb(summarize(S.today).profit)}.`; }
+      if (ok && p.act === "lc") { const s = S.ships.find(x => x.stage === 0 && x.goods.indexOf("oil") >= 0) || null; S.lcs.push({ id: Date.now(), no: "LC-" + (++S.lcSeq), ship: s ? s.no : "Oil order", usd: p.usdAmt, days: 60 }); lastFlash = ["c-lc", "c-fx"]; msg = `LC opened. ${usd(p.usdAmt)} is now committed.`; }
+      if (ok && p.act === "sale") { const it = S.stock.find(x => x.id === p.sale.id); if (it && it.units >= p.sale.q) { doSale(it, p.sale.q, p.sale.p, p.sale.who); msg = "Approved. The sale is made and the invoice issued."; } else msg = "Approved, but that stock is no longer there."; }
+      logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, apAmount(p), false);
+      save(); renderApprovals(); toast(msg);
+    }, 280);
+  });
+
+  /* ---------- live simulation ---------- */
+  let liveOn = true, liveTimer = null;
+  const R = Math.random;
+  function liveTick() {
+    if (document.hidden) return;
+    const x = R();
+    if (x < 0.32) {
+      const movable = S.ships.filter(s => s.stage < 5); if (!movable.length) return;
+      moveShip(pick(R, movable), true);
+    } else if (x < 0.60) {
+      const inStock = S.stock.filter(s => s.units > 2); if (!inStock.length) return;
+      const it = pick(R, inStock), q = 1 + Math.floor(R() * Math.min(6, it.units - 1));
+      const cust = pick(R, CUSTOMERS);
+      doSale(it, q, it.price, cust);
+      liveToast(`🧾 ${esc(cust)} bought ${esc(it.name)} × ${q} · <b>${etb(q * it.price * (1 + VAT))}</b>`);
+    } else if (x < 0.74) {
+      const old = S.rate; S.rate = Math.round((S.rate + (R() - 0.45) * 0.6) * 100) / 100;
+      logEvent("💱", `Example bank rate updated: ${old.toFixed(2)} → ${S.rate.toFixed(2)} ETB per USD`, "", true); lastFlash = ["c-fx"];
+    } else if (x < 0.84) {
+      const nx = S.lcs.slice().sort((a, b) => a.days - b.days)[0]; if (!nx) return;
+      logEvent("⏰", `${nx.no} expires in ${nx.days} days. Check the shipment documents.`, usd(nx.usd), true); lastFlash = ["c-lc"];
+    } else if (x < 0.98) {
+      const due = S.exports.filter(z => !z.received).sort((a, b) => a.days - b.days)[0]; if (!due) return;
+      due.received = true; S.held += due.usd; S.recvMonth += due.usd;
+      logEvent("💵", `Export payment received from ${due.buyer}`, usd(due.usd), true); lastFlash = ["c-fx", "c-exports"];
+    } else {
+      // rare: top 2% of ticks, never more than 3 waiting
+      if (S.pending.length >= 3) return;
+      const opts = [["Payment", "Logistics", "Pay clearing agent for next container", 28000], ["Payment", "Logistics", "Djibouti port storage, 4 extra days", 8600], ["Payment", "Finance", "Bank charges for LC amendment", 5400], ["Payment", "Warehouse", "Forklift repair", 14500]];
+      const [k, who, what, amount] = pick(R, opts);
+      S.pending.push({ id: ++S.apSeq, k, who, what, amount, act: "exp" });
+      logEvent("📝", `${who} asks you to approve: ${what}`, etb(amount), true);
+      if (!$("s-approvals").hidden) renderApprovals();
+    }
+    save();
+    if (!$("s-summary").hidden && viewOffset === 0) renderSummary(true); else renderBadge();
+    if (!$("s-ships").hidden) renderShips();
+    if (!$("s-sales").hidden) { renderStock(); renderSales(); renderExports(); }
+  }
+  function setLive(on) {
+    liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(liveTimer);
+    if (on) liveTimer = setInterval(liveTick, 6000);
+    renderFeed();
+  }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: shipments, customers and staff keep moving" : "Live paused"); });
+
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} invSeq = 1000; S = freshState(); stageFilter = -1; $("lt").innerHTML = ""; show("summary"); toast("Demo reset"); });
+
+  renderSummary(); renderCalc();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+})();
+</script>
+</body>
+</html>

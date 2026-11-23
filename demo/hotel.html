@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hotel Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's hotel system with example data: day summary, front desk and restaurant with registered e-invoices.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/hotel.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* top */
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 14px; }
+.top img { height: 34px; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 560px) { .top .cta { display: none; } .top .app small { display: none; } }
+
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+
+/* cards */
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.row:first-of-type { border-top: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+/* day switcher */
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; }
+.dayhead .when b { font-family: var(--display); font-size: 20px; display: block; }
+.dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+
+/* hero numbers */
+.money { background: var(--black); color: #fff; border: 0; }
+.money .profit small { color: #9C9EA2; font-size: 13px; }
+.money .profit b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .profit.loss b { color: #FF8A80; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; }
+.money .parts b { font-size: 16px; }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+.target { margin-top: 14px; }
+.target .bar { height: 10px; border-radius: 999px; background: #2A2C30; overflow: hidden; margin: 6px 0; }
+.target .bar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
+.target .lbl { display: flex; justify-content: space-between; font-size: 13px; color: #D9DADC; gap: 10px; }
+.target button { background: none; border: 0; color: var(--gold); font-weight: 700; padding: 0; font-size: 13px; }
+
+/* tonight */
+.tonight .big { font-family: var(--display); font-size: 30px; }
+.tonight .occ { height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+.tonight .occ i { display: block; height: 100%; background: var(--green); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stats div { background: var(--bg); border-radius: 10px; padding: 8px; text-align: center; }
+.stats b { display: block; font-family: var(--display); font-size: 18px; }
+.stats small { color: var(--muted); font-size: 11.5px; }
+
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 8px; }
+.seg button { border: 0; background: none; padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--gold); }
+
+/* rooms */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.room { border: 0; border-radius: 12px; padding: 10px; text-align: left; background: var(--c-soft); color: var(--ink); border-left: 5px solid var(--c); min-height: 74px; transition: transform .12s; }
+.room:hover { transform: translateY(-2px); }
+.room b { font-family: var(--display); font-size: 17px; display: block; }
+.room small { font-size: 11.5px; color: var(--muted); display: block; line-height: 1.3; }
+.st-occupied { --c: var(--green); --c-soft: var(--green-soft); }
+.st-arriving { --c: #2B6CB0; --c-soft: #E4EEF9; }
+.st-departing { --c: var(--amber); --c-soft: var(--amber-soft); }
+.st-free { --c: #9C9EA2; --c-soft: #FFFFFF; }
+.st-cleaning { --c: #8E44AD; --c-soft: #F3E8F8; }
+
+/* restaurant */
+.pos { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .pos { grid-template-columns: 1fr; } }
+.menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.item { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 12px; text-align: left; transition: border-color .12s, transform .12s; }
+.item:hover { border-color: var(--gold); transform: translateY(-2px); }
+.item b { display: block; font-size: 14.5px; }
+.item .am { font-family: "Noto Sans Ethiopic", var(--body); font-size: 12px; color: var(--muted); display: block; }
+.item span.p { font-weight: 700; color: var(--gold-deep); font-size: 13.5px; }
+.cart { position: sticky; top: 112px; }
+.cart-line { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.qty { display: inline-flex; align-items: center; gap: 6px; }
+.qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-weight: 700; }
+.methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; }
+.methods button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 10px; padding: 8px 4px; font-size: 12.5px; font-weight: 600; }
+.methods button[aria-pressed="true"] { border-color: var(--black); background: var(--black); color: #fff; }
+select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.btn { border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-dark { background: var(--black); color: #fff; }
+.btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.wide { width: 100%; }
+.orders .row { align-items: center; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); white-space: nowrap; }
+
+/* sheet + toast */
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; box-shadow: 0 14px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; }
+.toast b { color: var(--gold); }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(211,166,40,.0); } 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } 100% { box-shadow: 0 0 0 0 rgba(211,166,40,0); } }
+/* owner interactions */
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; height: 100%; padding: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease, background .2s; min-height: 6px; position: relative; }
+.week button:hover .b { background: #D9CBA0; }
+.week button.today .b { background: var(--gold); }
+.week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d { font-size: 11.5px; color: var(--muted); text-align: center; }
+.week .v { font-size: 10.5px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.feed { display: grid; gap: 2px; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } to { opacity: 1; transform: none; background: transparent; } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; }
+.ev b.num { font-size: 13.5px; white-space: nowrap; }
+.click { cursor: pointer; }
+.click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.money .parts div.click:hover { outline-color: var(--gold); }
+.ap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ap .ok-b { background: var(--green); color: #fff; }
+.ap .no-b { background: var(--red-soft); color: var(--red); }
+.ap.gone { opacity: 0; transform: translateX(20px); transition: all .3s ease; }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../#request">Get this for your hotel →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel home"></a>
+    <div class="app">Demo Lodge<small>Hotel · 30 rooms</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Simulated guests and staff keep working"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="summary">Day Summary</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+    <button type="button" role="tab" aria-selected="false" data-screen="desk">Front Desk</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="pos">Restaurant</button>
+  </div>
+</nav>
+
+<main>
+  <!-- DAY SUMMARY -->
+  <section class="screen" id="s-summary">
+    <div class="dayhead">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+      <button type="button" id="next" aria-label="Next day">›</button>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="profit" id="profit"><small>Profit so far (before tax)</small><b class="num" id="v-profit"></b></div>
+        <div class="parts">
+          <div class="click" id="k-income" role="button" tabindex="0"><small>Income ›</small><b class="num" id="v-income"></b></div>
+          <div class="click" id="k-exp" role="button" tabindex="0"><small>Expenses ›</small><b class="num" id="v-exp"></b></div>
+          <div class="click" id="k-food" role="button" tabindex="0"><small>Food cost ›</small><b class="num" id="v-food"></b></div>
+        </div>
+        <div class="target">
+          <div class="lbl"><span id="t-left"></span><button type="button" id="t-set">Change target</button></div>
+          <div class="bar"><i id="t-bar"></i></div>
+          <div class="lbl"><span id="t-pct"></span><span id="t-of"></span></div>
+        </div>
+        <p class="note">Profit = income − approved expenses − food cost. Before tax. Tap a number for detail.</p>
+      </div>
+      <div class="card tonight" id="c-tonight">
+        <h3>Tonight <small id="v-full"></small></h3>
+        <div class="big num" id="v-taken"></div>
+        <div class="occ"><i id="v-occ"></i></div>
+        <div class="stats">
+          <div><b class="num" id="v-free"></b><small>rooms free</small></div>
+          <div><b class="num" id="v-guests"></b><small>guests in</small></div>
+          <div><b class="num" id="v-arr"></b><small>arrived</small></div>
+          <div><b class="num" id="v-dep"></b><small>left</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-week">
+        <h3>Last 7 days <small>Income · tap a day</small></h3>
+        <div class="week" id="week"></div>
+      </div>
+      <div class="card" id="c-feed">
+        <h3>Happening now <small id="feed-state"></small></h3>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card" id="c-recv">
+        <h3>Money received <small id="v-recv-total"></small></h3>
+        <div class="seg" role="group" aria-label="Filter money received">
+          <button type="button" aria-pressed="true" data-src="all">All</button>
+          <button type="button" aria-pressed="false" data-src="Front desk">Front desk</button>
+          <button type="button" aria-pressed="false" data-src="Restaurant">Restaurant</button>
+        </div>
+        <div id="v-recv"></div>
+        <p class="muted small" style="margin-top:8px">As paid, with tax. Credit and Charge to Room are not money yet.</p>
+      </div>
+      <div class="card" id="c-rooms">
+        <h3>Room types that sold most</h3>
+        <div id="v-roomtypes"></div>
+      </div>
+      <div class="card" id="c-items">
+        <h3>What sold most</h3>
+        <div id="v-items"></div>
+      </div>
+      <div class="card" id="c-credit">
+        <h3>Sold on credit <small id="v-credit-total"></small></h3>
+        <div id="v-credit"></div>
+      </div>
+      <div class="card" id="c-expenses">
+        <h3>Expenses approved <small id="v-exp-total"></small></h3>
+        <div id="v-explist"></div>
+      </div>
+      <div class="card" id="c-month">
+        <h3>Month so far <small id="v-mday"></small></h3>
+        <div id="v-month"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your staff ask, you decide, from anywhere. Approve or reject, then watch <b>Day Summary</b> change.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+
+  <!-- FRONT DESK -->
+  <section class="screen" id="s-desk" hidden>
+    <p class="hint">Tap a room. Check guests in or out, take a walk-in, or mark a room clean. Then open <b>Day Summary</b> to see the numbers move.</p>
+    <div class="legend">
+      <span class="st-occupied">In house</span><span class="st-arriving">Arriving today</span><span class="st-departing">Leaving today</span><span class="st-cleaning">Cleaning</span><span class="st-free">Free</span>
+    </div>
+    <div class="rooms" id="rooms"></div>
+  </section>
+
+  <!-- RESTAURANT -->
+  <section class="screen" id="s-pos" hidden>
+    <p class="hint">Tap dishes to add them, pick how the guest pays, then press <b>Pay</b>. Each sale gets a registered e-invoice number.</p>
+    <div class="pos">
+      <div>
+        <div class="seg" role="group" aria-label="Menu category" id="cats"></div>
+        <div class="menu" id="menu"></div>
+      </div>
+      <div class="card cart">
+        <h3>Order <small id="v-cartcount"></small></h3>
+        <div id="cart"></div>
+        <div class="row" style="font-weight:700"><span>Total (with VAT)</span><span class="num" id="v-carttotal">ETB 0</span></div>
+        <div class="methods" id="methods"></div>
+        <div id="m-extra"></div>
+        <button class="btn btn-gold wide" type="button" id="pay" disabled>Pay</button>
+      </div>
+    </div>
+        <div class="card orders" style="margin-top:14px">
+          <h3>Today's orders <small id="v-ordercount"></small></h3>
+          <div id="orders"></div>
+        </div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const VAT = 0.15;
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+
+  /* ---------- example business ---------- */
+  const TYPES = { Standard: 3800, Deluxe: 5200, Family: 6500, Suite: 9800 };
+  const ROOM_TYPES = ["Standard", "Standard", "Standard", "Deluxe", "Deluxe", "Family", "Suite"];
+  const MENU = [
+    { id: "tibs", n: "Beef tibs", am: "ጥብስ", c: "Food", p: 650, cost: 260 },
+    { id: "shiro", n: "Shiro", am: "ሽሮ", c: "Food", p: 320, cost: 95 },
+    { id: "kitfo", n: "Kitfo", am: "ክትፎ", c: "Food", p: 780, cost: 340 },
+    { id: "fish", n: "Fried fish", am: "የተጠበሰ አሳ", c: "Food", p: 720, cost: 290 },
+    { id: "pasta", n: "Pasta", am: "ፓስታ", c: "Food", p: 420, cost: 140 },
+    { id: "salad", n: "Mixed salad", am: "ሰላጣ", c: "Food", p: 280, cost: 90 },
+    { id: "macch", n: "Macchiato", am: "ማኪያቶ", c: "Drinks", p: 90, cost: 22 },
+    { id: "juice", n: "Fresh juice", am: "ጭማቂ", c: "Drinks", p: 160, cost: 55 },
+    { id: "soda", n: "Soft drink", am: "ለስላሳ", c: "Drinks", p: 70, cost: 38 },
+    { id: "water", n: "Water 1L", am: "ውሃ", c: "Drinks", p: 50, cost: 24 },
+    { id: "beer", n: "Beer", am: "ቢራ", c: "Drinks", p: 110, cost: 62 },
+    { id: "tea", n: "Tea", am: "ሻይ", c: "Drinks", p: 50, cost: 10 }
+  ];
+  const M = Object.fromEntries(MENU.map(m => [m.id, m]));
+  const METHODS = ["Cash", "telebirr", "CBE Birr", "Card", "Charge to room", "Credit"];
+  const NOT_MONEY = ["Charge to room", "Credit"];
+  const COMPANIES = ["NGO conference account", "Travel agency account", "Embassy account"];
+  const GUESTS = ["Abebe K.", "Hana T.", "Dawit M.", "Sara L.", "Yonas B.", "Meron A.", "Samuel G.", "Liya W.", "Daniel F.", "Ruth H.", "Mr. Smith", "Ms. Jensen", "Kebede A.", "Tigist N.", "Bethel Y."];
+  const EXPENSES = [["Generator fuel", 4200, 9800], ["Laundry soap and supplies", 1800, 3600], ["Transport", 900, 2400], ["Small repairs", 1500, 6500], ["Staff lunch", 2200, 3800], ["Internet", 3000, 3000]];
+
+  /* ---------- day generator (deterministic per date) ---------- */
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  function makeDay(date, fraction) {
+    const r = rng(dayKey(date));
+    const day = { roomSales: [], orders: [], payments: [], expenses: [], credit: [], arrived: 0, left: 0 };
+    const sold = 16 + Math.floor(r() * 10);
+    for (let i = 0; i < Math.round(sold * fraction); i++) {
+      const t = pick(r, ROOM_TYPES), nights = r() < 0.7 ? 1 : 2, amt = TYPES[t] * nights;
+      const m = r() < 0.08 ? "Credit" : pick(r, ["Cash", "telebirr", "CBE Birr", "Card", "Card", "telebirr"]);
+      day.roomSales.push({ type: t, nights, amount: amt });
+      day.left++;
+      if (m === "Credit") day.credit.push({ who: pick(r, COMPANIES), src: "Front desk", amount: amt * (1 + VAT) });
+      else day.payments.push({ src: "Front desk", method: m, amount: amt * (1 + VAT) });
+    }
+    day.arrived = Math.round((12 + Math.floor(r() * 8)) * fraction);
+    const nOrders = Math.round((40 + Math.floor(r() * 30)) * fraction);
+    for (let i = 0; i < nOrders; i++) {
+      const lines = [], k = 1 + Math.floor(r() * 3);
+      for (let j = 0; j < k; j++) { const it = pick(r, MENU); lines.push({ id: it.id, q: 1 + Math.floor(r() * 2) }); }
+      const m = pick(r, ["Cash", "Cash", "telebirr", "CBE Birr", "Card", "Charge to room", "Charge to room", r() < 0.3 ? "Credit" : "Cash"]);
+      addOrder(day, lines, m, m === "Credit" ? pick(r, COMPANIES) : null, false);
+    }
+    const ne = 2 + Math.floor(r() * 3);
+    for (let i = 0; i < ne; i++) { const [n, lo, hi] = pick(r, EXPENSES); day.expenses.push({ n, amount: Math.round((lo + r() * (hi - lo)) / 50) * 50 }); }
+    return day;
+  }
+  let invSeq = 1000;
+  function addOrder(day, lines, method, who, live) {
+    const net = lines.reduce((t, l) => t + M[l.id].p * l.q, 0);
+    const gross = net * (1 + VAT);
+    const no = live ? "EDL-INV-" + String(++invSeq).padStart(6, "0") : "";
+    const o = { no, lines, method, net, gross, time: live ? new Date() : null };
+    day.orders.push(o);
+    if (method === "Credit") day.credit.push({ who: who || "Company account", src: "Restaurant", amount: gross });
+    else if (method !== "Charge to room") day.payments.push({ src: "Restaurant", method, amount: gross });
+    return o;
+  }
+  function summarize(day) {
+    const rooms = day.roomSales.reduce((t, s) => t + s.amount, 0);
+    const resto = day.orders.reduce((t, o) => t + o.net, 0);
+    const food = day.orders.reduce((t, o) => t + o.lines.reduce((u, l) => u + M[l.id].cost * l.q, 0), 0);
+    const exp = day.expenses.reduce((t, e) => t + e.amount, 0);
+    const income = rooms + resto;
+    return { rooms, resto, income, food, exp, profit: income - exp - food };
+  }
+
+  /* ---------- state ---------- */
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const STORE = "edel-demo-hotel-v3";
+  let S;
+  function freshState() {
+    const r = rng(dayKey(TODAY) + 7);
+    const today = makeDay(TODAY, 0.55);
+    const rooms = [];
+    for (let i = 0; i < 30; i++) {
+      const no = (i < 15 ? 100 : 185) + i + 1, type = i % 10 === 9 ? "Suite" : i % 5 === 4 ? "Family" : i % 3 === 2 ? "Deluxe" : "Standard";
+      const x = r();
+      const st = x < 0.5 ? "occupied" : x < 0.62 ? "arriving" : x < 0.74 ? "departing" : x < 0.82 ? "cleaning" : "free";
+      rooms.push({ no, type, st, guest: st === "free" || st === "cleaning" ? "" : pick(r, GUESTS), people: 1 + Math.floor(r() * 3), nights: 1 + Math.floor(r() * 3) });
+    }
+    const pending = [
+      { id: 1, k: "Expense", who: "Store keeper", what: "Generator fuel, 200 L", amount: 18400 },
+      { id: 2, k: "Purchase", who: "Chef", what: "Meat and vegetables for tomorrow", amount: 26750 }
+    ];
+    return { today, rooms, target: 150000, invSeq, pending, decided: [], feed: [], purchases: [], apSeq: 3 };
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify({ ...S, savedDay: dayKey(TODAY), invSeq })); } catch (e) {} }
+  function load() {
+    try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.savedDay === dayKey(TODAY)) { invSeq = s.invSeq || invSeq; return s; } } catch (e) {}
+    return null;
+  }
+  S = load() || freshState();
+
+  /* ---------- activity feed + live alerts ---------- */
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  function logEvent(icon, text, amount, pop) {
+    S.feed.unshift({ icon, text, amount: amount || 0, t: hhmm() });
+    S.feed = S.feed.slice(0, 30);
+    if (pop) liveToast(`${icon} ${text}${amount ? " · <b>" + etb(amount) + "</b>" : ""}`);
+  }
+  function liveToast(html) {
+    const d = document.createElement("div"); d.innerHTML = html; $("lt").prepend(d);
+    setTimeout(() => d.remove(), 4200);
+    while ($("lt").children.length > 3) $("lt").lastChild.remove();
+  }
+
+  /* ---------- screens ---------- */
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    ["summary", "approvals", "desk", "pos"].forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "approvals") renderApprovals();
+    if (name === "summary") { viewOffset = 0; renderSummary(true); }
+    window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- day summary ---------- */
+  let viewOffset = 0, recvSrc = "all", lastFlash = null;
+  const dayFor = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return d; };
+  function list(el, rows, emptyText) { el.innerHTML = rows.length ? rows.join("") : `<div class="empty">${emptyText}</div>`; }
+  function renderSummary(flash) {
+    const date = dayFor(viewOffset), isToday = viewOffset === 0;
+    const day = isToday ? S.today : makeDay(date, 1);
+    const sm = summarize(day);
+    $("d-title").textContent = isToday ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(date).split(",")[0];
+    $("d-date").textContent = `${ethStr(date)} · ${gregStr(date)}`;
+    $("next").disabled = isToday;
+    $("v-profit").textContent = etb(sm.profit);
+    $("profit").classList.toggle("loss", sm.profit < 0);
+    $("profit").querySelector("small").textContent = isToday ? "Profit so far (before tax)" : "Profit (before tax)";
+    $("v-income").textContent = etb(sm.income);
+    $("v-exp").textContent = etb(sm.exp);
+    $("v-food").textContent = etb(sm.food);
+    const pct = Math.min(100, Math.round(sm.income / S.target * 100));
+    $("t-bar").style.width = pct + "%";
+    $("t-pct").textContent = pct + "% of target";
+    $("t-of").textContent = "Target " + etb(S.target);
+    $("t-left").textContent = sm.income >= S.target ? "Target reached 🎉" : etb(S.target - sm.income) + " to go";
+
+    // tonight
+    let taken, free, guests, arr, dep;
+    if (isToday) {
+      taken = S.rooms.filter(r => r.st === "occupied" || r.st === "arriving").length;
+      free = 30 - taken; guests = S.rooms.filter(r => r.st === "occupied" || r.st === "departing").reduce((t, r) => t + r.people, 0);
+      arr = S.today.arrived; dep = S.today.left;
+    } else {
+      const r = rng(dayKey(date) + 3); taken = 18 + Math.floor(r() * 11); free = 30 - taken; guests = Math.round(taken * 1.7); arr = day.arrived; dep = day.left;
+    }
+    $("v-taken").textContent = `${taken} of 30 rooms taken`;
+    $("v-full").textContent = Math.round(taken / 30 * 100) + "% full";
+    $("v-occ").style.width = (taken / 30 * 100) + "%";
+    $("v-free").textContent = free; $("v-guests").textContent = guests; $("v-arr").textContent = arr; $("v-dep").textContent = dep;
+
+    // money received
+    const pays = day.payments.filter(p => recvSrc === "all" || p.src === recvSrc);
+    const byM = {}; pays.forEach(p => byM[p.method] = (byM[p.method] || 0) + p.amount);
+    const totalR = Object.values(byM).reduce((a, b) => a + b, 0);
+    $("v-recv-total").textContent = etb(totalR);
+    list($("v-recv"), Object.entries(byM).sort((a, b) => b[1] - a[1]).map(([m, v]) =>
+      `<div class="row"><span>${esc(m)}</span><b class="num">${etb(v)}</b></div><div class="meter"><i style="width:${v / totalR * 100}%"></i></div>`), "No money received.");
+
+    // room types
+    const byT = {}; day.roomSales.forEach(s => { byT[s.type] = byT[s.type] || { n: 0, a: 0 }; byT[s.type].n += s.nights; byT[s.type].a += s.amount; });
+    list($("v-roomtypes"), Object.entries(byT).sort((a, b) => b[1].a - a[1].a).map(([t, v]) =>
+      `<div class="row"><span>${t} <span class="muted small">· ${v.n} nights</span></span><b class="num">${etb(v.a)}</b></div>`), "No room sales yet.");
+
+    // items
+    const byI = {}; day.orders.forEach(o => o.lines.forEach(l => { byI[l.id] = (byI[l.id] || 0) + l.q; }));
+    list($("v-items"), Object.entries(byI).sort((a, b) => b[1] * M[b[0]].p - a[1] * M[a[0]].p).slice(0, 6).map(([id, q]) =>
+      `<div class="row"><span>${M[id].n} <span class="muted small">· ${q} sold</span></span><b class="num">${etb(q * M[id].p)}</b></div>`), "No restaurant sales yet.");
+
+    // credit
+    const credT = day.credit.reduce((t, c) => t + c.amount, 0);
+    $("v-credit-total").textContent = etb(credT);
+    const byC = {}; day.credit.forEach(c => byC[c.who + " · " + c.src] = (byC[c.who + " · " + c.src] || 0) + c.amount);
+    list($("v-credit"), Object.entries(byC).map(([w, v]) => `<div class="row"><span>${esc(w)}</span><b class="num">${etb(v)}</b></div>`), "Nothing sold on credit.");
+
+    // expenses
+    $("v-exp-total").textContent = etb(sm.exp);
+    list($("v-explist"), day.expenses.map(e => `<div class="row"><span>${esc(e.n)}</span><b class="num">${etb(e.amount)}</b></div>`), "No approved expense this day.");
+
+    // month so far
+    const e = toEth(date); let mIncome = 0, mExp = 0, days = 0;
+    for (let off = viewOffset; ; off--) {
+      const d = dayFor(off); if (toEth(d).m !== e.m) break;
+      const s = off === 0 ? summarize(S.today) : summarize(makeDay(d, 1));
+      mIncome += s.income; mExp += s.exp + s.food; days++;
+    }
+    const want = S.target * days, diff = mIncome - want;
+    $("v-mday").textContent = `Day ${days} of 30`;
+    $("v-month").innerHTML = `<div class="row"><span>Income</span><b class="num">${etb(mIncome)}</b></div>
+      <div class="row"><span>Expenses + food cost</span><b class="num">${etb(mExp)}</b></div>
+      <div class="row"><span>Profit</span><b class="num">${etb(mIncome - mExp)}</b></div>
+      <div class="row"><span>Against target to date</span><b class="num" style="color:${diff >= 0 ? "var(--green)" : "var(--red)"}">${diff >= 0 ? "Ahead " : "Behind "}${etb(Math.abs(diff))}</b></div>`;
+
+    renderWeek(); renderFeed(); renderBadge();
+    if (flash && lastFlash) { lastFlash.forEach(id => { const el = $(id); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); lastFlash = null; }
+  }
+  function renderWeek() {
+    const vals = []; for (let off = -6; off <= 0; off++) { const d = dayFor(off); vals.push({ off, d, v: summarize(off === 0 ? S.today : makeDay(d, 1)).income }); }
+    const max = Math.max(...vals.map(x => x.v), S.target);
+    $("week").innerHTML = vals.map(x => `<button type="button" data-off="${x.off}" class="${x.off === 0 ? "today" : ""} ${x.off === viewOffset ? "sel" : ""}" aria-label="${gregStr(x.d)}: ${etb(x.v)}">
+      <span class="v">${Math.round(x.v / 1000)}k</span><span class="track"><span class="b" style="height:${Math.max(4, x.v / max * 100)}%"></span></span><span class="d">${x.off === 0 ? "Today" : x.d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`).join("");
+  }
+  $("week").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; viewOffset = Number(b.dataset.off); renderSummary(); });
+  function renderFeed() {
+    const isToday = viewOffset === 0;
+    $("feed-state").textContent = isToday ? (liveOn ? "● live" : "paused") : "";
+    $("feed").innerHTML = !isToday ? `<div class="empty">Live activity shows for today. Tap <b>Today</b> in the chart.</div>`
+      : S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount ? etb(e.amount) : ""}</b></div>`).join("")
+      : `<div class="empty">Waiting for the next sale… (turn on <b>Live</b> at the top, or make a sale yourself)</div>`;
+  }
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  $("prev").addEventListener("click", () => { viewOffset--; renderSummary(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderSummary(); } });
+  document.querySelectorAll("[data-src]").forEach(b => b.addEventListener("click", () => {
+    recvSrc = b.dataset.src; document.querySelectorAll("[data-src]").forEach(x => x.setAttribute("aria-pressed", x === b)); renderSummary();
+  }));
+  const drill = (id, fn) => { const el = $(id); el.addEventListener("click", fn); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  const curDay = () => viewOffset === 0 ? S.today : makeDay(dayFor(viewOffset), 1);
+  drill("k-income", () => { const d = curDay(), sm = summarize(d);
+    openSheet(`<h2>Income ${etb(sm.income)}</h2><p class="muted">Before tax · ${gregStr(dayFor(viewOffset))}</p>
+      <div style="margin-top:12px"><div class="row"><span>Rooms <span class="muted small">· ${d.roomSales.length} stays</span></span><b class="num">${etb(sm.rooms)}</b></div><div class="meter"><i style="width:${sm.rooms / sm.income * 100}%"></i></div>
+      <div class="row"><span>Restaurant and bar <span class="muted small">· ${d.orders.length} orders</span></span><b class="num">${etb(sm.resto)}</b></div><div class="meter"><i style="width:${sm.resto / sm.income * 100}%"></i></div></div>
+      <div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-exp", () => { const d = curDay();
+    openSheet(`<h2>Expenses ${etb(summarize(d).exp)}</h2><p class="muted">Approved expenses dated this day, before tax.</p><div style="margin-top:12px">${d.expenses.map(e => `<div class="row"><span>${esc(e.n)}</span><b class="num">${etb(e.amount)}</b></div>`).join("") || '<div class="empty">None.</div>'}</div>
+      ${viewOffset === 0 && S.pending.length ? `<div class="actions"><button class="btn btn-gold" id="go-ap">${S.pending.length} waiting for your approval →</button></div>` : ""}<div class="actions"><button class="btn btn-line" data-close>Close</button></div>`,
+      () => { const g = $("go-ap"); g && g.addEventListener("click", () => { closeSheet(); show("approvals"); }); }); });
+  drill("k-food", () => { const d = curDay(), by = {};
+    d.orders.forEach(o => o.lines.forEach(l => { by[l.id] = (by[l.id] || 0) + M[l.id].cost * l.q; }));
+    openSheet(`<h2>Food cost ${etb(summarize(d).food)}</h2><p class="muted">What the dishes and drinks sold cost to make, from their recipes.</p><div style="margin-top:12px">${Object.entries(by).sort((a, b) => b[1] - a[1]).map(([id, v]) => `<div class="row"><span>${M[id].n}</span><b class="num">${etb(v)}</b></div>`).join("") || '<div class="empty">Nothing sold yet.</div>'}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  $("t-set").addEventListener("click", () => openSheet(`<h2>Daily income target</h2><p class="muted">Before tax. Used for the bar and for "Month so far".</p>
+    <input id="t-in" type="number" min="1000" step="1000" value="${S.target}" style="font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:10px;width:100%;margin-top:12px">
+    <div class="actions"><button class="btn btn-gold" id="t-save">Save</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      $("t-save").addEventListener("click", () => { const v = Number($("t-in").value); if (v > 0) { S.target = v; save(); closeSheet(); renderSummary(); toast("Target saved"); } });
+    }));
+
+  /* ---------- sheet + toast ---------- */
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("button,input,select"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3200); }
+  function receipt(title, lines, total, method, no) {
+    return `<div class="receipt"><b>${title}</b><br>${lines.map(l => `${esc(l[0])}<span style="float:right">${l[1]}</span>`).join("<br>")}
+      <br>------------------------------<br>TOTAL ETB<span style="float:right">${Math.round(total).toLocaleString("en-US")}</span><br>Paid: ${esc(method)}<br>No ${no}<br><span class="stamp">REGISTERED · ተመዝግቧል</span></div>`;
+  }
+
+  /* ---------- approvals ---------- */
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? etb(S.pending.reduce((t, p) => t + p.amount, 0)) : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap" data-ap="${p.id}"><div><span class="k">${p.k}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)} · ${etb(p.amount)}</span></div>
+      <div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("")
+      : `<div class="empty">All done. New requests appear here${liveOn ? " while Live is on" : ""}.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${p.k} · ${p.ok ? "approved" : "rejected"} ${p.t}</span></span><b class="num" style="color:${p.ok ? "var(--green)" : "var(--red)"}">${etb(p.amount)}</b></div>`).join("")
+      : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    b.closest(".ap").classList.add("gone");
+    setTimeout(() => {
+      S.pending = S.pending.filter(x => x.id !== id); S.decided.push({ ...p, ok, t: hhmm() });
+      if (ok && p.k === "Expense") { S.today.expenses.push({ n: p.what, amount: p.amount }); lastFlash = ["c-money", "c-expenses"]; }
+      logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, p.amount, false);
+      save(); renderApprovals();
+      toast(ok ? (p.k === "Expense" ? `Approved. Profit is now ${etb(summarize(S.today).profit)}.` : "Approved. The purchaser can buy now.") : "Rejected. The staff member is told.");
+    }, 280);
+  });
+
+  /* ---------- front desk ---------- */
+  const ST_LABEL = { occupied: "In house", arriving: "Arriving", departing: "Leaving today", cleaning: "Cleaning", free: "Free" };
+  function renderRooms() {
+    $("rooms").innerHTML = S.rooms.map((r, i) => `<button type="button" class="room st-${r.st}" data-room="${i}">
+      <b>${r.no}</b><small>${r.type}</small><small>${r.guest ? esc(r.guest) : ST_LABEL[r.st]}</small></button>`).join("");
+  }
+  const payButtons = (exclude = []) => `<div class="methods">${METHODS.filter(m => !exclude.includes(m)).map((m, i) => `<button type="button" aria-pressed="${i === 0}" data-pm="${m}">${m}</button>`).join("")}</div>`;
+  function wirePM(root) { root.querySelectorAll("[data-pm]").forEach(b => b.addEventListener("click", () => root.querySelectorAll("[data-pm]").forEach(x => x.setAttribute("aria-pressed", x === b)))); }
+  const chosenPM = root => root.querySelector('[data-pm][aria-pressed="true"]').dataset.pm;
+
+  $("rooms").addEventListener("click", e => {
+    const b = e.target.closest("[data-room]"); if (!b) return;
+    const r = S.rooms[b.dataset.room], price = TYPES[r.type];
+    if (r.st === "arriving") openSheet(`<h2>Room ${r.no} · ${r.type}</h2><p class="muted">${esc(r.guest)} · ${r.people} guest(s) · ${r.nights} night(s) booked</p>
+      <div class="actions"><button class="btn btn-gold" id="act">Check in</button><button class="btn btn-line" data-close>Close</button></div>`, () =>
+      $("act").addEventListener("click", () => { r.st = "occupied"; S.today.arrived++; lastFlash = ["c-tonight"]; logEvent("🛎️", `${r.guest} checked in · room ${r.no}`); done(`Checked in <b>${esc(r.guest)}</b> to room ${r.no}`); }));
+    else if (r.st === "departing" || r.st === "occupied") {
+      const nights = r.st === "departing" ? r.nights : 1, net = price * nights;
+      openSheet(`<h2>Room ${r.no} · ${r.type}</h2><p class="muted">${esc(r.guest)} · ${nights} night(s) × ${etb(price)} · before VAT</p>
+        <p style="margin-top:10px;font-weight:700">Check out and pay ${etb(net * (1 + VAT))} <span class="muted small">(with VAT)</span></p>
+        ${payButtons(["Charge to room"])}
+        <div class="actions"><button class="btn btn-gold" id="act">Check out &amp; issue invoice</button><button class="btn btn-line" data-close>Close</button></div>`, () => {
+        wirePM($("sheet"));
+        $("act").addEventListener("click", () => {
+          const m = chosenPM($("sheet")), no = "EDL-INV-" + String(++invSeq).padStart(6, "0");
+          S.today.roomSales.push({ type: r.type, nights, amount: net }); S.today.left++;
+          if (m === "Credit") S.today.credit.push({ who: "Company account", src: "Front desk", amount: net * (1 + VAT) });
+          else S.today.payments.push({ src: "Front desk", method: m, amount: net * (1 + VAT) });
+          const g = r.guest; r.st = "cleaning"; r.guest = "";
+          logEvent("🧾", `${g} checked out · room ${r.no} · ${m}`, net * (1 + VAT));
+          lastFlash = ["c-money", "c-tonight", "c-recv", "c-rooms"];
+          save(); renderRooms();
+          openSheet(`<h2>Checked out ✓</h2><p class="muted">${esc(g)} · room ${r.no}</p>${receipt("TAX INVOICE", [[`${r.type} × ${nights} night(s)`, etb(net)], ["VAT 15%", etb(net * VAT)]], net * (1 + VAT), m, no)}
+            <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Day Summary</button><button class="btn btn-line" data-close>Back to rooms</button></div>`, () =>
+            $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+        });
+      });
+    } else if (r.st === "cleaning") openSheet(`<h2>Room ${r.no} · ${r.type}</h2><p class="muted">Housekeeping is cleaning this room.</p>
+      <div class="actions"><button class="btn btn-gold" id="act">Mark clean</button><button class="btn btn-line" data-close>Close</button></div>`, () =>
+      $("act").addEventListener("click", () => { r.st = "free"; done(`Room ${r.no} is ready`); }));
+    else openSheet(`<h2>Room ${r.no} · ${r.type}</h2><p class="muted">Free tonight · ${etb(price)} per night before VAT</p>
+      <label class="small" for="wi-name" style="display:block;margin-top:12px;font-weight:700">Guest name</label>
+      <input id="wi-name" value="${pick(Math.random, GUESTS)}" style="font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:10px;width:100%">
+      <div class="actions"><button class="btn btn-gold" id="act">Walk-in: check in now</button><button class="btn btn-line" data-close>Close</button></div>`, () =>
+      $("act").addEventListener("click", () => { r.st = "occupied"; r.guest = $("wi-name").value.trim() || "Walk-in guest"; r.nights = 1; S.today.arrived++; lastFlash = ["c-tonight"]; done(`Walk-in checked in to room ${r.no}`); }));
+  });
+  function done(msg) { save(); renderRooms(); closeSheet(); toast(msg + ". <b>Day Summary</b> is updated."); }
+
+  /* ---------- restaurant ---------- */
+  let cat = "Food", cart = {}, pm = "Cash";
+  $("cats").innerHTML = ["Food", "Drinks"].map(c => `<button type="button" aria-pressed="${c === cat}" data-cat="${c}">${c}</button>`).join("");
+  $("cats").addEventListener("click", e => { const b = e.target.closest("[data-cat]"); if (!b) return; cat = b.dataset.cat; $("cats").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderMenu(); });
+  function renderMenu() {
+    $("menu").innerHTML = MENU.filter(m => m.c === cat).map(m => `<button type="button" class="item" data-add="${m.id}"><b>${m.n}</b><span class="am">${m.am}</span><span class="p">${etb(m.p)}</span></button>`).join("");
+  }
+  $("menu").addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return; cart[b.dataset.add] = (cart[b.dataset.add] || 0) + 1; renderCart(); });
+  $("methods").innerHTML = METHODS.map(m => `<button type="button" aria-pressed="${m === pm}" data-m="${m}">${m}</button>`).join("");
+  $("methods").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (!b) return; pm = b.dataset.m; $("methods").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderCart(); });
+  function renderCart() {
+    const ids = Object.keys(cart).filter(k => cart[k] > 0);
+    const net = ids.reduce((t, k) => t + M[k].p * cart[k], 0);
+    $("cart").innerHTML = ids.length ? ids.map(k => `<div class="cart-line"><span>${M[k].n}</span><span class="qty"><button type="button" data-q="${k}" data-d="-1" aria-label="One less">−</button><b>${cart[k]}</b><button type="button" data-q="${k}" data-d="1" aria-label="One more">+</button></span><span class="num">${etb(M[k].p * cart[k])}</span></div>`).join("")
+      : `<div class="empty">Tap a dish to start an order.</div>`;
+    $("v-carttotal").textContent = etb(net * (1 + VAT));
+    $("v-cartcount").textContent = ids.length ? ids.reduce((t, k) => t + cart[k], 0) + " items" : "";
+    $("pay").disabled = !ids.length;
+    $("pay").textContent = ids.length ? `Pay ${etb(net * (1 + VAT))}` : "Pay";
+    const inHouse = S.rooms.filter(r => r.st === "occupied");
+    $("m-extra").innerHTML = pm === "Charge to room" ? `<select id="m-room" aria-label="Room">${inHouse.map(r => `<option value="${r.no}">Room ${r.no} · ${esc(r.guest)}</option>`).join("")}</select><div style="height:10px"></div>`
+      : pm === "Credit" ? `<select id="m-co" aria-label="Company account">${COMPANIES.map(c => `<option>${c}</option>`).join("")}</select><div style="height:10px"></div>` : "";
+  }
+  $("cart").addEventListener("click", e => { const b = e.target.closest("[data-q]"); if (!b) return; cart[b.dataset.q] = Math.max(0, cart[b.dataset.q] + Number(b.dataset.d)); renderCart(); });
+  $("pay").addEventListener("click", () => {
+    const lines = Object.keys(cart).filter(k => cart[k] > 0).map(k => ({ id: k, q: cart[k] }));
+    if (!lines.length) return;
+    const who = pm === "Credit" ? $("m-co").value : pm === "Charge to room" ? "Room " + $("m-room").value : null;
+    const o = addOrder(S.today, lines, pm, who, true);
+    o.who = who; cart = {};
+    logEvent("🍽️", `Restaurant: ${lines.map(l => M[l.id].n + " × " + l.q).join(", ")} · ${pm}`, o.gross);
+    save(); renderCart(); renderOrders();
+    lastFlash = ["c-money", "c-items"].concat(NOT_MONEY.includes(pm) ? (pm === "Credit" ? ["c-credit"] : []) : ["c-recv"]);
+    openSheet(`<h2>Paid ✓</h2><p class="muted">${who ? esc(who) + " · " : ""}${esc(pm)}</p>${receipt("TAX INVOICE", lines.map(l => [`${M[l.id].n} × ${l.q}`, etb(M[l.id].p * l.q)]).concat([["VAT 15%", etb(o.net * VAT)]]), o.gross, pm, o.no)}
+      <p class="muted small" style="margin-top:8px">In the real system this invoice is registered with the Ministry of Revenues as the sale happens.</p>
+      <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Day Summary</button><button class="btn btn-line" data-close>New order</button></div>`, () =>
+      $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+  });
+  function renderOrders() {
+    const live = S.today.orders.filter(o => o.time).slice().reverse();
+    $("v-ordercount").textContent = S.today.orders.length + " today";
+    $("orders").innerHTML = live.length ? live.slice(0, 8).map(o => `<div class="row"><span><b class="num">${o.no}</b><br><span class="muted small">${o.lines.map(l => M[l.id].n + " × " + l.q).join(", ")} · ${esc(o.method)}</span></span><span style="text-align:right"><b class="num">${etb(o.gross)}</b><br><span class="tag">Registered</span></span></div>`).join("")
+      : `<div class="empty">Orders you ring up appear here, each with its e-invoice number.</div>`;
+  }
+
+  /* ---------- live simulation ---------- */
+  let liveOn = true, liveTimer = null;
+  const R = Math.random;
+  function liveTick() {
+    if (document.hidden) return;
+    const x = R();
+    if (x < 0.55) {
+      const lines = [], k = 1 + Math.floor(R() * 3);
+      for (let j = 0; j < k; j++) { const it = pick(R, MENU); const ex = lines.find(l => l.id === it.id); ex ? ex.q++ : lines.push({ id: it.id, q: 1 }); }
+      const m = pick(R, ["Cash", "telebirr", "telebirr", "CBE Birr", "Card", "Charge to room"]);
+      const o = addOrder(S.today, lines, m, null, true);
+      logEvent("🍽️", `Restaurant: ${lines.map(l => M[l.id].n + " × " + l.q).join(", ")} · ${m}`, o.gross, true);
+      lastFlash = ["c-money", "c-items"].concat(m === "Charge to room" ? [] : ["c-recv"]);
+    } else if (x < 0.72) {
+      const r = S.rooms.find(z => z.st === "departing");
+      if (!r) return liveTick();
+      const net = TYPES[r.type] * r.nights, m = pick(R, ["Cash", "telebirr", "CBE Birr", "Card"]);
+      S.today.roomSales.push({ type: r.type, nights: r.nights, amount: net }); S.today.left++;
+      S.today.payments.push({ src: "Front desk", method: m, amount: net * (1 + VAT) });
+      logEvent("🧾", `${r.guest} checked out · room ${r.no} · ${m}`, net * (1 + VAT), true);
+      r.st = "cleaning"; r.guest = ""; lastFlash = ["c-money", "c-tonight", "c-recv", "c-rooms"];
+    } else if (x < 0.85) {
+      const r = S.rooms.find(z => z.st === "arriving");
+      if (!r) return liveTick();
+      r.st = "occupied"; S.today.arrived++;
+      logEvent("🛎️", `${r.guest} checked in · room ${r.no}`, 0, true); lastFlash = ["c-tonight"];
+    } else if (x < 0.98) {
+      const r = S.rooms.find(z => z.st === "cleaning"); if (!r) return;
+      r.st = "free"; logEvent("🧹", `Room ${r.no} cleaned and ready`, 0, false);
+    } else {
+      if (S.pending.length >= 3) return;
+      const opts = [["Expense", "Waiter", "Taxi for airport guest", 650], ["Purchase", "Bar", "Soft drinks, 10 crates", 9800], ["Expense", "Front desk", "Printer paper and ink", 2350], ["Purchase", "Housekeeping", "Towels and soap", 7400], ["Expense", "Gardener", "Garden hose and tools", 1900]];
+      const [k, who, what, amount] = pick(R, opts);
+      S.pending.push({ id: ++S.apSeq, k, who, what, amount });
+      logEvent("📝", `${who} asks you to approve: ${what}`, amount, true);
+      if (!$("s-approvals").hidden) renderApprovals();
+    }
+    save();
+    if (!$("s-summary").hidden && viewOffset === 0) renderSummary(true); else renderBadge();
+    if (!$("s-desk").hidden) renderRooms();
+    if (!$("s-pos").hidden) renderOrders();
+  }
+  function setLive(on) {
+    liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(liveTimer);
+    if (on) liveTimer = setInterval(liveTick, 6000);
+    renderFeed();
+  }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: guests and staff keep working" : "Live paused"); });
+
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} invSeq = 1000; S = freshState(); cart = {}; $("lt").innerHTML = ""; renderRooms(); renderCart(); renderOrders(); show("summary"); toast("Demo reset"); });
+
+  renderRooms(); renderMenu(); renderCart(); renderOrders(); renderSummary();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+})();
+</script>
+</body>
+</html>

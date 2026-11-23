@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>E-Invoicing Software in Ethiopia | Edel · ኤሌክትሮኒክ ደረሰኝ</title>
-<meta name="description" content="Edel is a Ministry of Revenues approved e-invoicing system for Ethiopian businesses, and ERP for hotels, distribution, import and export, manufacturing, farms and logistics. Based in Addis Ababa.">
+<meta name="description" content="Edel is a Ministry of Revenues approved e-invoicing system for Ethiopian businesses, and ERP for hotels, distribution, import and export, manufacturing, farms, and tours and travel. Based in Addis Ababa.">
 <link rel="canonical" href="https://edel-erp.github.io/">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
@@ -128,6 +128,8 @@ section.dark p.intro { color: #B9BBBF; }
 .ind-head h3 { font-size: clamp(26px, 3vw, 34px); }
 .ind-head p { color: #B9BBBF; font-size: 18px; }
 .ind-head .btn { justify-self: start; margin-top: 6px; }
+.ind-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.btn-ghost-dark { color: #fff; border: 1.5px solid #55575C; background: transparent; }
 .ind-tag { justify-self: start; font-size: 13px; font-weight: 700; padding: 5px 11px; border-radius: 999px; background: #2A2C30; color: #D9DADC; }
 .ind-tag.live { background: rgba(47,180,99,.16); color: #5FD58C; }
 .ind-tag.live::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5FD58C; margin-right: 7px; vertical-align: 1px; }
@@ -287,7 +289,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
       <div class="ind-tabs" role="tablist" aria-label="Industries">
         <button type="button" role="tab" id="t-hotels" aria-controls="p-hotels" aria-selected="true">Hotels</button>
         <button type="button" role="tab" id="t-beer" aria-controls="p-beer" aria-selected="false" tabindex="-1">Beer distribution</button>
-        <button type="button" role="tab" id="t-logistics" aria-controls="p-logistics" aria-selected="false" tabindex="-1">Logistics &amp; fleet</button>
+        <button type="button" role="tab" id="t-tours" aria-controls="p-tours" aria-selected="false" tabindex="-1">Tours &amp; travel</button>
         <button type="button" role="tab" id="t-import" aria-controls="p-import" aria-selected="false" tabindex="-1">Import &amp; export</button>
         <button type="button" role="tab" id="t-manufacturing" aria-controls="p-manufacturing" aria-selected="false" tabindex="-1">Manufacturing</button>
         <button type="button" role="tab" id="t-farms" aria-controls="p-farms" aria-selected="false" tabindex="-1">Farms</button>
@@ -298,7 +300,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag live">In use today</span>
           <h3>ERP for hotels</h3>
           <p>Run rooms, restaurant, bar and stores in one system, with a report for every day.</p>
-          <a class="btn btn-gold" href="#request" data-type="Hotels">Ask about this</a>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/hotel.html">Try the hotel demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Hotels">Ask about this</a></div>
         </div>
         <ol class="ind-features">
           <li><b>Rooms and front desk</b><span>Bookings, check-in, check-out and room status on one screen.</span></li>
@@ -317,7 +319,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag live">In use today</span>
           <h3>ERP for beer distribution</h3>
           <p>Every truck, crate, seller and Birr accounted for, every day.</p>
-          <a class="btn btn-gold" href="#request" data-type="Beer distribution">Ask about this</a>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/beer.html">Try the beer distribution demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Beer distribution">Ask about this</a></div>
         </div>
         <ol class="ind-features">
           <li><b>Daily sales per truck</b><span>Each truck&#x27;s load, sales, returns and cash recorded every day.</span></li>
@@ -330,23 +332,23 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <li><b>Owner dashboard</b><span>Profit and loss, stock losses, targets and an outlet map on one screen.</span></li>
         </ol>
       </div>
-      <div class="ind-panel" role="tabpanel" id="p-logistics" aria-labelledby="t-logistics" hidden>
-        <figure class="ind-shot"><img src="dashboards/logistics.png" alt="Example logistics and fleet dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
+      <div class="ind-panel" role="tabpanel" id="p-tours" aria-labelledby="t-tours" hidden>
+        <figure class="ind-shot"><img src="dashboards/tours.png" alt="Example tours and travel dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
         <div class="ind-head">
           <span class="ind-tag live">In use today</span>
-          <h3>ERP for logistics &amp; fleet</h3>
-          <p>Know where every truck is, what each trip costs and where the fuel went.</p>
-          <a class="btn btn-gold" href="#request" data-type="Logistics &amp; fleet">Ask about this</a>
+          <h3>ERP for tours &amp; travel</h3>
+          <p>Every booking, car, driver and litre of fuel, with the profit of each trip.</p>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/tours.html">Try the tours demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Tours &amp; travel">Ask about this</a></div>
         </div>
         <ol class="ind-features">
-          <li><b>Vehicle register</b><span>Every vehicle with insurance, inspection and document expiry reminders.</span></li>
-          <li><b>Trips and deliveries</b><span>Plan each trip, assign the driver and truck, and follow it to delivery.</span></li>
-          <li><b>Fuel control</b><span>Every fill-up, fuel request and fuel barrel per truck, so waste shows up fast.</span></li>
-          <li><b>GPS and trip history</b><span>Truck GPS and fuel history linked to each trip.</span></li>
-          <li><b>Maintenance and truck checks</b><span>Repair requests, service history and daily truck checks by QR code.</span></li>
-          <li><b>Driver allowances and bonuses</b><span>Per diem and bonuses calculated and paid in one run.</span></li>
-          <li><b>Cost per trip</b><span>Fuel, allowances and repairs per trip, so you price and bill correctly.</span></li>
-          <li><b>Warehouses and transfers</b><span>Stock in each warehouse and every move between branches.</span></li>
+          <li><b>Tour bookings</b><span>Tours, airport shuttles and company trips with route, passengers, guide and agreed rate.</span></li>
+          <li><b>Deposits and credit</b><span>Take a deposit, confirm with payment, or put an agency or company on credit.</span></li>
+          <li><b>Dispatch board</b><span>Assign the car and driver, then record km out and km back for every trip.</span></li>
+          <li><b>Fuel barrels</b><span>Every litre drawn for each car, so fuel used per trip is known.</span></li>
+          <li><b>Profit per car, driver and route</b><span>Revenue, fuel, repairs and per diem for each, with cost per km.</span></li>
+          <li><b>Driver per diem</b><span>Approved by the manager, and counted as a cost only once it is actually paid.</span></li>
+          <li><b>Papers and alerts</b><span>Registration and insurance expiry reminders, and an alert when a car is out too long.</span></li>
+          <li><b>Owner dashboard</b><span>Revenue, costs, profit and trips against last week, from your phone anywhere.</span></li>
         </ol>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-import" aria-labelledby="t-import" hidden>
@@ -355,7 +357,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for import &amp; export</h3>
           <p>Know the true landed cost of every container, from Djibouti to your warehouse shelf.</p>
-          <a class="btn btn-gold" href="#request" data-type="Import &amp; export">Ask about this</a>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/import.html">Try the import &amp; export demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Import &amp; export">Ask about this</a></div>
         </div>
         <ol class="ind-features">
           <li><b>Landed cost per shipment</b><span>Freight, insurance, duty, excise, VAT, surtax and withholding added to every load.</span></li>
@@ -374,7 +376,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for manufacturing</h3>
           <p>Know what every product really costs and where material is lost, from raw material to finished goods.</p>
-          <a class="btn btn-gold" href="#request" data-type="Manufacturing">Ask about this</a>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/manufacturing.html">Try the factory demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Manufacturing">Ask about this</a></div>
         </div>
         <ol class="ind-features">
           <li><b>Recipes and bills of materials</b><span>Set exactly what goes into each product, so every batch uses the right amounts.</span></li>
@@ -393,7 +395,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for farms</h3>
           <p>From field and herd to market: one system for your costs, workers, harvests and sales.</p>
-          <a class="btn btn-gold" href="#request" data-type="Farms">Ask about this</a>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/farms.html">Try the farm demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Farms">Ask about this</a></div>
         </div>
         <ol class="ind-features">
           <li><b>Plot and herd records</b><span>Every field, block, animal and flock on file, with its size, location and history.</span></li>
@@ -473,7 +475,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
         <div class="field full"><label for="f-type">Business type</label>
           <select id="f-type" name="type">
             <option>Hotel</option><option>Beer distribution</option><option>Import &amp; export</option>
-            <option>Manufacturing</option><option>Farm</option><option>Logistics &amp; supply chain</option>
+            <option>Manufacturing</option><option>Farm</option><option>Tours &amp; travel</option>
             <option>Shop or supermarket</option><option>Restaurant or café</option><option>Other</option>
           </select></div>
         <div class="actions">
@@ -573,7 +575,7 @@ document.documentElement.classList.add("js");
     });
   });
   // "Ask about this" fills the business type in the request form
-  const typeMap = { "Hotels": "Hotel", "Beer distribution": "Beer distribution", "Logistics & fleet": "Logistics & supply chain",
+  const typeMap = { "Hotels": "Hotel", "Beer distribution": "Beer distribution", "Tours & travel": "Tours & travel",
     "Import & export": "Import & export", "Manufacturing": "Manufacturing", "Farms": "Farm" };
   document.querySelectorAll("[data-type]").forEach(a => a.addEventListener("click", () => {
     const sel = document.getElementById("f-type"); if (typeMap[a.dataset.type]) sel.value = typeMap[a.dataset.type];

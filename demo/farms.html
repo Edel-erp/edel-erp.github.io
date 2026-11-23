@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farm Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's farm system with example data: harvest by block, cost per hectare, crews and wages, and produce sales with registered e-invoices.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/farms.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* top */
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 14px; }
+.top img { height: 34px; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 560px) { .top .cta { display: none; } .top .app small { display: none; } }
+
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+
+/* cards */
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.row:first-of-type { border-top: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+/* day switcher */
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; }
+.dayhead .when b { font-family: var(--display); font-size: 20px; display: block; }
+.dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+
+/* hero numbers */
+.money { background: var(--black); color: #fff; border: 0; }
+.money .profit small { color: #9C9EA2; font-size: 13px; }
+.money .profit b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .profit.loss b { color: #FF8A80; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; }
+.money .parts b { font-size: 16px; }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+.target { margin-top: 14px; }
+.target .bar { height: 10px; border-radius: 999px; background: #2A2C30; overflow: hidden; margin: 6px 0; }
+.target .bar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
+.target .lbl { display: flex; justify-content: space-between; font-size: 13px; color: #D9DADC; gap: 10px; }
+.target button { background: none; border: 0; color: var(--gold); font-weight: 700; padding: 0; font-size: 13px; }
+
+/* tonight */
+.tonight .big { font-family: var(--display); font-size: 30px; }
+.tonight .occ { height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; margin: 8px 0 12px; }
+.tonight .occ i { display: block; height: 100%; background: var(--green); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stats div { background: var(--bg); border-radius: 10px; padding: 8px; text-align: center; }
+.stats b { display: block; font-family: var(--display); font-size: 18px; }
+.stats small { color: var(--muted); font-size: 11.5px; }
+
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 8px; }
+.seg button { border: 0; background: none; padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--gold); }
+
+/* rooms */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.room { border: 0; border-radius: 12px; padding: 10px; text-align: left; background: var(--c-soft); color: var(--ink); border-left: 5px solid var(--c); min-height: 74px; transition: transform .12s; }
+.room:hover { transform: translateY(-2px); }
+.room b { font-family: var(--display); font-size: 17px; display: block; }
+.room small { font-size: 11.5px; color: var(--muted); display: block; line-height: 1.3; }
+.st-occupied { --c: var(--green); --c-soft: var(--green-soft); }
+.st-arriving { --c: #2B6CB0; --c-soft: #E4EEF9; }
+.st-departing { --c: var(--amber); --c-soft: var(--amber-soft); }
+.st-free { --c: #9C9EA2; --c-soft: #FFFFFF; }
+.st-cleaning { --c: #8E44AD; --c-soft: #F3E8F8; }
+
+/* restaurant */
+.pos { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .pos { grid-template-columns: 1fr; } }
+.menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.item { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 12px; text-align: left; transition: border-color .12s, transform .12s; }
+.item:hover { border-color: var(--gold); transform: translateY(-2px); }
+.item b { display: block; font-size: 14.5px; }
+.item .am { font-family: "Noto Sans Ethiopic", var(--body); font-size: 12px; color: var(--muted); display: block; }
+.item span.p { font-weight: 700; color: var(--gold-deep); font-size: 13.5px; }
+.cart { position: sticky; top: 112px; }
+.cart-line { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.qty { display: inline-flex; align-items: center; gap: 6px; }
+.qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-weight: 700; }
+.methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; }
+.methods button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 10px; padding: 8px 4px; font-size: 12.5px; font-weight: 600; }
+.methods button[aria-pressed="true"] { border-color: var(--black); background: var(--black); color: #fff; }
+select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.btn { border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-dark { background: var(--black); color: #fff; }
+.btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.wide { width: 100%; }
+.orders .row { align-items: center; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); white-space: nowrap; }
+
+/* sheet + toast */
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; box-shadow: 0 14px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; }
+.toast b { color: var(--gold); }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(211,166,40,.0); } 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } 100% { box-shadow: 0 0 0 0 rgba(211,166,40,0); } }
+/* owner interactions */
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; height: 100%; padding: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease, background .2s; min-height: 6px; position: relative; }
+.week button:hover .b { background: #D9CBA0; }
+.week button.today .b { background: var(--gold); }
+.week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d { font-size: 11.5px; color: var(--muted); text-align: center; }
+.week .v { font-size: 10.5px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.feed { display: grid; gap: 2px; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } to { opacity: 1; transform: none; background: transparent; } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; }
+.ev b.num { font-size: 13.5px; white-space: nowrap; }
+.click { cursor: pointer; }
+.click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.money .parts div.click:hover { outline-color: var(--gold); }
+.ap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ap .ok-b { background: var(--green); color: #fff; }
+.ap .no-b { background: var(--red-soft); color: var(--red); }
+.ap.gone { opacity: 0; transform: translateX(20px); transition: all .3s ease; }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+
+/* farm */
+.sg-planting { --c: #8D6E63; --c-soft: #F3ECE8; }
+.sg-growing { --c: #43A047; --c-soft: #E8F5E9; }
+.sg-ready { --c: var(--gold-deep); --c-soft: var(--gold-soft); }
+.sg-harvesting { --c: #E07B00; --c-soft: #FFF1D9; }
+.sg-harvested { --c: #9C9EA2; --c-soft: #FFFFFF; }
+.sg-pasture { --c: #2B6CB0; --c-soft: #E4EEF9; }
+.blocks { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.blk { border: 0; border-radius: 14px; padding: 12px; text-align: left; background: var(--c-soft); border-top: 6px solid var(--c); display: grid; gap: 3px; min-height: 128px; align-content: start; transition: transform .12s, box-shadow .12s; }
+.blk:hover { transform: translateY(-2px); box-shadow: 0 14px 26px -18px rgba(14,15,16,.45); }
+.blk-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.blk-top b { font-family: var(--display); font-size: 22px; }
+.blk .stg { font-size: 11px; font-weight: 700; color: var(--c); background: var(--paper); border-radius: 999px; padding: 2px 8px; }
+.blk-crop { font-weight: 700; }
+.blk-crop .am { font-family: "Noto Sans Ethiopic", var(--body); font-weight: 400; color: var(--muted); font-size: 12px; }
+.blk-meta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.crew { display: grid; gap: 10px; }
+.crew.paid { opacity: .75; }
+.crew-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.crew-row { display: grid; grid-template-columns: auto auto 1fr auto; gap: 10px; align-items: center; }
+@media (max-width: 480px) { .crew-row { grid-template-columns: auto 1fr auto; } .crew-row select { grid-column: 1 / -1; grid-row: 2; } }
+.qty button:disabled { opacity: .35; cursor: default; }
+#crews { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+@media (max-width: 380px) { #crews { grid-template-columns: 1fr; } }
+.methods { grid-template-columns: repeat(3, 1fr); }
+.lot { align-items: center; }
+.sell-b { margin-top: 4px; border: 0; border-radius: 999px; background: var(--gold); color: var(--black); font-weight: 700; padding: 6px 14px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../#request">Get this for your farm →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel home"></a>
+    <div class="app">Demo Farm<small>Coffee · sesame · maize · teff · dairy · 113 ha</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Simulated weigh-ins, crews and buyers keep working"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="summary">Day Summary</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+    <button type="button" role="tab" aria-selected="false" data-screen="fields">Fields</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="workers">Workers</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="sales">Sales &amp; stock</button>
+  </div>
+</nav>
+
+<main>
+  <!-- DAY SUMMARY -->
+  <section class="screen" id="s-summary">
+    <div class="dayhead">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+      <button type="button" id="next" aria-label="Next day">›</button>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="profit" id="profit"><small>Profit so far (before tax)</small><b class="num" id="v-profit"></b></div>
+        <div class="parts">
+          <div class="click" id="k-sales" role="button" tabindex="0"><small>Sales ›</small><b class="num" id="v-sales"></b></div>
+          <div class="click" id="k-costs" role="button" tabindex="0"><small>Costs ›</small><b class="num" id="v-costs"></b></div>
+          <div class="click" id="k-harvest" role="button" tabindex="0"><small>Harvest ›</small><b class="num" id="v-harvest"></b></div>
+        </div>
+        <div class="target">
+          <div class="lbl"><span id="t-left"></span><button type="button" id="t-set">Change target</button></div>
+          <div class="bar"><i id="t-bar"></i></div>
+          <div class="lbl"><span id="t-pct"></span><span id="t-of"></span></div>
+        </div>
+        <p class="note">Profit = sales − inputs − wages − fuel and other costs. Before tax. Tap a number for detail.</p>
+      </div>
+      <div class="card tonight" id="c-workers">
+        <h3>Workers today <small id="v-wpaid"></small></h3>
+        <div class="big num" id="v-present"></div>
+        <div class="occ"><i id="v-wocc"></i></div>
+        <div class="stats">
+          <div><b class="num" id="v-wbill"></b><small>wage bill</small></div>
+          <div><b class="num" id="v-milk"></b><small>milk litres</small></div>
+          <div><b class="num" id="v-ready"></b><small>blocks to harvest</small></div>
+          <div><b class="num" id="v-lots"></b><small>lots in stock</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-week">
+        <h3>Last 7 days <small>tap a day</small></h3>
+        <div class="seg" role="group" aria-label="Chart shows">
+          <button type="button" aria-pressed="true" data-wk="sales">Sales</button>
+          <button type="button" aria-pressed="false" data-wk="harvest">Harvest kg</button>
+        </div>
+        <div class="week" id="week"></div>
+      </div>
+      <div class="card" id="c-feed">
+        <h3>Happening now <small id="feed-state"></small></h3>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card" id="c-crops">
+        <h3>Harvest by crop <small id="v-htotal"></small></h3>
+        <div id="v-crops"></div>
+      </div>
+      <div class="card" id="c-stock">
+        <h3>Produce in stock <small id="v-stockval"></small></h3>
+        <div id="v-stock"></div>
+      </div>
+      <div class="card" id="c-blocks">
+        <h3>Cost and yield per hectare <small>season</small></h3>
+        <div id="v-blocks"></div>
+      </div>
+      <div class="card" id="c-salelist">
+        <h3>Sales <small id="v-salecount"></small></h3>
+        <div id="v-salelist"></div>
+      </div>
+      <div class="card" id="c-costs">
+        <h3>Costs <small id="v-costtotal"></small></h3>
+        <div id="v-costlist"></div>
+      </div>
+      <div class="card" id="c-month">
+        <h3>Month so far <small id="v-mday"></small></h3>
+        <div id="v-month"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your farm manager asks, you decide, from anywhere. Approve or reject, then watch <b>Day Summary</b> and <b>Workers</b> change.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+
+  <!-- FIELDS -->
+  <section class="screen" id="s-fields" hidden>
+    <p class="hint">Tap a block. Record a harvest weigh-in or apply fertiliser, seed or chemicals. Every birr and every kilo is charged to the block it belongs to.</p>
+    <div class="legend">
+      <span class="sg-planting">Planting</span><span class="sg-growing">Growing</span><span class="sg-ready">Ready to harvest</span><span class="sg-harvesting">Harvesting</span><span class="sg-harvested">Harvested</span><span class="sg-pasture">Pasture</span>
+    </div>
+    <div class="blocks" id="blocks"></div>
+  </section>
+
+  <!-- WORKERS -->
+  <section class="screen" id="s-workers" hidden>
+    <p class="hint">Mark who came to work, send each crew to a block, then pay today's wages. The wage cost lands on the summary and on each block.</p>
+    <div class="grid" id="crews"></div>
+    <div class="card" style="margin-top:14px" id="c-pay">
+      <div class="row"><span>People present</span><b class="num" id="w-present"></b></div>
+      <div class="row"><span>Not yet paid today</span><b class="num" id="w-unpaid"></b></div>
+      <div class="methods" id="w-methods"></div>
+      <button class="btn btn-gold wide" type="button" id="w-pay"></button>
+    </div>
+  </section>
+
+  <!-- SALES & STOCK -->
+  <section class="screen" id="s-sales" hidden>
+    <p class="hint">Every lot knows which block it came from. Sell from a lot and the buyer gets a registered e-invoice with the lot's origin.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Lots in store <small id="v-lotkg"></small></h3><div id="lots"></div></div>
+      <div class="card orders"><h3>Sales today <small id="v-salestoday"></small></h3><div id="orders"></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const kg = n => Math.round(n).toLocaleString("en-US") + " kg";
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const VAT = 0.15;
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+  const between = (r, lo, hi, step) => Math.round((lo + r() * (hi - lo)) / (step || 1)) * (step || 1);
+
+  /* ---------- example farm ---------- */
+  const CROPS = {
+    Coffee: { am: "ቡና", price: 85, color: "#7A4A2A", note: "red cherry" },
+    Sesame: { am: "ሰሊጥ", price: 145, color: "#C9A227", note: "" },
+    Maize: { am: "በቆሎ", price: 38, color: "#E0B43C", note: "" },
+    Teff: { am: "ጤፍ", price: 120, color: "#9C7B4E", note: "" },
+    Milk: { am: "ወተት", price: 55, color: "#6FA8DC", note: "per litre" }
+  };
+  const INPUTS = [
+    { n: "Urea fertiliser", unit: "50 kg bag", price: 4200 },
+    { n: "NPS fertiliser", unit: "50 kg bag", price: 4600 },
+    { n: "Maize seed", unit: "kg", price: 120 },
+    { n: "Herbicide", unit: "litre", price: 950 },
+    { n: "Pesticide", unit: "litre", price: 1300 },
+    { n: "Coffee seedlings", unit: "seedling", price: 18 }
+  ];
+  const BUYERS = [
+    { n: "Coffee exporter", vat: 0, note: "export, 0% VAT" },
+    { n: "Commodity exchange", vat: VAT, note: "" },
+    { n: "Local trader", vat: VAT, note: "" },
+    { n: "Flour mill", vat: VAT, note: "" }
+  ];
+  const STAGES = ["planting", "growing", "ready", "harvesting", "harvested"];
+  const STAGE_LABEL = { planting: "Planting", growing: "Growing", ready: "Ready to harvest", harvesting: "Harvesting", harvested: "Harvested", pasture: "Pasture · dairy" };
+  const canHarvest = b => b.stage === "ready" || b.stage === "harvesting";
+
+  /* ---------- days (deterministic for the past) ---------- */
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const emptyDay = () => ({ harvest: [], sales: [], inputs: [], wages: [], fuel: [], other: [], milk: 0, present: 0 });
+  function makeDay(date) {
+    const r = rng(dayKey(date)), day = emptyDay();
+    day.harvest.push({ crop: "Coffee", block: pick(r, ["A", "B"]), kg: between(r, 1800, 3200, 10) });
+    if (r() < 0.6) day.harvest.push({ crop: "Sesame", block: "D", kg: between(r, 700, 1500, 10) });
+    const ns = 1 + Math.floor(r() * 2);
+    for (let i = 0; i < ns; i++) {
+      const crop = pick(r, ["Coffee", "Coffee", "Sesame"]), b = pick(r, BUYERS.slice(0, 3)), q = between(r, 800, 2600, 50);
+      const net = q * CROPS[crop].price; day.sales.push({ crop, kg: q, net, vat: net * b.vat, buyer: b.n });
+    }
+    day.milk = between(r, 240, 285);
+    day.sales.push({ crop: "Milk", kg: day.milk, net: day.milk * CROPS.Milk.price, vat: day.milk * CROPS.Milk.price * VAT, buyer: "Milk collector" });
+    day.present = between(r, 108, 124);
+    day.wages.push({ n: "Daily wages", amt: day.present * 158 });
+    if (r() < 0.5) { const it = pick(r, INPUTS.slice(0, 2)), q = between(r, 6, 20); day.inputs.push({ block: pick(r, ["E", "F", "G"]), n: it.n, q, amt: q * it.price }); }
+    day.fuel.push({ n: "Diesel: tractor and pump", amt: between(r, 2400, 6800, 50) });
+    return day;
+  }
+  function summarize(d) {
+    const sales = d.sales.reduce((t, s) => t + s.net, 0);
+    const inputs = d.inputs.reduce((t, x) => t + x.amt, 0), wages = d.wages.reduce((t, x) => t + x.amt, 0);
+    const fuel = d.fuel.reduce((t, x) => t + x.amt, 0), other = d.other.reduce((t, x) => t + x.amt, 0);
+    const harvest = d.harvest.reduce((t, h) => t + h.kg, 0);
+    const costs = inputs + wages + fuel + other;
+    return { sales, inputs, wages, fuel, other, costs, harvest, profit: sales - costs };
+  }
+
+  /* ---------- state ---------- */
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const STORE = "edel-demo-farms-v1";
+  let S;
+  function freshState() {
+    const blocks = [
+      { id: "A", crop: "Coffee", ha: 12, stage: "harvesting", season: { inputs: 186000, labour: 214000, kg: 18400 } },
+      { id: "B", crop: "Coffee", ha: 10, stage: "ready", season: { inputs: 158000, labour: 171000, kg: 12650 } },
+      { id: "C", crop: "Sesame", ha: 18, stage: "harvested", season: { inputs: 232000, labour: 196000, kg: 10980 } },
+      { id: "D", crop: "Sesame", ha: 15, stage: "harvesting", season: { inputs: 198000, labour: 151000, kg: 4300 } },
+      { id: "E", crop: "Maize", ha: 20, stage: "growing", season: { inputs: 264000, labour: 98000, kg: 0 } },
+      { id: "F", crop: "Teff", ha: 14, stage: "growing", season: { inputs: 151000, labour: 86000, kg: 0 } },
+      { id: "G", crop: "Maize", ha: 16, stage: "planting", season: { inputs: 122000, labour: 41000, kg: 0 } },
+      { id: "H", crop: "Milk", ha: 8, stage: "pasture", herd: 24, season: { inputs: 96000, labour: 118000, kg: 0 } }
+    ].map(b => ({ ...b, log: [{ k: "input", n: "Season to date: fertiliser, seed, chemicals", amt: b.season.inputs }, { k: "labour", n: "Season wages to date", amt: b.season.labour }], harvested: b.season.kg }));
+    const lots = [
+      { id: "L-0101", crop: "Coffee", block: "A", grade: "Grade 1", kg: 2400, left: 2400, date: "earlier" },
+      { id: "L-0102", crop: "Coffee", block: "B", grade: "Grade 2", kg: 1850, left: 1850, date: "earlier" },
+      { id: "L-0103", crop: "Sesame", block: "C", grade: "Grade 1", kg: 3200, left: 3200, date: "earlier" }
+    ];
+    const crews = [
+      { id: 1, n: "Coffee pickers, crew 1", head: 40, rate: 150, present: 34, block: "A", paid: false },
+      { id: 2, n: "Coffee pickers, crew 2", head: 32, rate: 150, present: 27, block: "A", paid: false },
+      { id: 3, n: "Sesame cutters", head: 25, rate: 180, present: 22, block: "D", paid: false },
+      { id: 4, n: "Weeding crew", head: 18, rate: 130, present: 15, block: "E", paid: false },
+      { id: 5, n: "Dairy and store staff", head: 6, rate: 220, present: 6, block: "H", paid: false },
+      { id: 6, n: "Tractor drivers", head: 3, rate: 300, present: 3, block: "G", paid: false }
+    ];
+    const today = emptyDay();
+    today.fuel.push({ n: "Diesel: tractor, Block G ploughing", amt: 2400 });
+    today.milk = 132;
+    today.sales.push({ crop: "Milk", kg: 132, net: 132 * 55, vat: 132 * 55 * VAT, buyer: "Milk collector", no: "EDL-INV-001001", time: "06:40" });
+    const pending = [
+      { id: 1, k: "Expense", who: "Workshop", what: "Tractor clutch repair", amount: 23500 },
+      { id: 2, k: "Crew", who: "Field supervisor", what: "Extra harvest crew, 20 people for Block B", amount: 3000 }
+    ];
+    const s = { today, blocks, lots, crews, target: 6000, invSeq: 1001, lotSeq: 103, pending, decided: [], feed: [], apSeq: 2 };
+    // morning weigh-ins already in
+    harvestInto(s, "A", 1240, "Grade 1", "07:30", false);
+    harvestInto(s, "D", 560, "Grade 1", "08:10", false);
+    sellFrom(s, "L-0103", 600, "Commodity exchange", CROPS.Sesame.price, "Bank transfer", "09:05");
+    return s;
+  }
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  /* ---------- core actions (all numbers flow through here) ---------- */
+  function harvestInto(s, blockId, q, grade, t, liveLot) {
+    const b = s.blocks.find(x => x.id === blockId);
+    b.harvested += q; if (b.stage === "ready") b.stage = "harvesting";
+    s.today.harvest.push({ crop: b.crop, block: blockId, kg: q, grade, t: t || hhmm() });
+    let lot = s.lots.find(l => l.today && l.block === blockId && l.grade === grade);
+    if (!lot) { lot = { id: "L-0" + (++s.lotSeq), crop: b.crop, block: blockId, grade, kg: 0, left: 0, date: "today", today: true }; s.lots.push(lot); }
+    lot.kg += q; lot.left += q;
+    return lot;
+  }
+  function sellFrom(s, lotId, q, buyerName, price, method, t) {
+    const lot = s.lots.find(l => l.id === lotId), buyer = BUYERS.find(b => b.n === buyerName);
+    q = Math.min(q, lot.left); lot.left -= q;
+    const net = q * price, vat = net * buyer.vat, no = "EDL-INV-" + String(++s.invSeq).padStart(6, "0");
+    const sale = { crop: lot.crop, kg: q, price, net, vat, buyer: buyerName, method, no, lot: lot.id, block: lot.block, grade: lot.grade, time: t || hhmm() };
+    s.today.sales.push(sale);
+    return sale;
+  }
+  function applyInput(s, blockId, input, q) {
+    const amt = input.price * q, b = s.blocks.find(x => x.id === blockId);
+    b.log.push({ k: "input", n: `${input.n} × ${q} ${input.unit}`, amt, today: true });
+    s.today.inputs.push({ block: blockId, n: input.n, q, amt });
+    return amt;
+  }
+  const blockCost = b => b.log.reduce((t, x) => t + x.amt, 0);
+  const blockInputs = b => b.log.filter(x => x.k === "input").reduce((t, x) => t + x.amt, 0);
+  const blockLabour = b => b.log.filter(x => x.k === "labour").reduce((t, x) => t + x.amt, 0);
+
+  function save() { try { localStorage.setItem(STORE, JSON.stringify({ ...S, savedDay: dayKey(TODAY) })); } catch (e) {} }
+  function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.savedDay === dayKey(TODAY)) return s; } catch (e) {} return null; }
+  S = load() || freshState();
+
+  /* ---------- feed + live pop-ups ---------- */
+  function logEvent(icon, text, amount, pop, unit) {
+    S.feed.unshift({ icon, text, amount: amount || 0, unit: unit || "etb", t: hhmm() });
+    S.feed = S.feed.slice(0, 30);
+    if (pop) liveToast(`${icon} ${esc(text)}${amount ? " · <b>" + (unit === "kg" ? kg(amount) : etb(amount)) + "</b>" : ""}`);
+  }
+  function liveToast(html) {
+    const d = document.createElement("div"); d.innerHTML = html; $("lt").prepend(d);
+    setTimeout(() => d.remove(), 4200);
+    while ($("lt").children.length > 3) $("lt").lastChild.remove();
+  }
+
+  /* ---------- screens ---------- */
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  const SCREENS = ["summary", "approvals", "fields", "workers", "sales"];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    SCREENS.forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "summary") { viewOffset = 0; renderSummary(true); }
+    if (name === "approvals") renderApprovals();
+    if (name === "fields") renderBlocks();
+    if (name === "workers") renderCrews();
+    if (name === "sales") renderSales();
+    window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- day summary ---------- */
+  let viewOffset = 0, wkMode = "sales", lastFlash = null;
+  const dayFor = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return d; };
+  const curDay = () => viewOffset === 0 ? S.today : makeDay(dayFor(viewOffset));
+  function list(el, rows, emptyText) { el.innerHTML = rows.length ? rows.join("") : `<div class="empty">${emptyText}</div>`; }
+  function renderSummary(flash) {
+    const date = dayFor(viewOffset), isToday = viewOffset === 0, day = curDay(), sm = summarize(day);
+    $("d-title").textContent = isToday ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(date).split(",")[0];
+    $("d-date").textContent = `${ethStr(date)} · ${gregStr(date)}`;
+    $("next").disabled = isToday;
+    $("v-profit").textContent = etb(sm.profit);
+    $("profit").classList.toggle("loss", sm.profit < 0);
+    $("profit").querySelector("small").textContent = isToday ? "Profit so far (before tax)" : "Profit (before tax)";
+    $("v-sales").textContent = etb(sm.sales); $("v-costs").textContent = etb(sm.costs); $("v-harvest").textContent = kg(sm.harvest);
+    const pct = Math.min(100, Math.round(sm.harvest / S.target * 100));
+    $("t-bar").style.width = pct + "%";
+    $("t-pct").textContent = pct + "% of harvest target";
+    $("t-of").textContent = "Target " + kg(S.target);
+    $("t-left").textContent = sm.harvest >= S.target ? "Harvest target reached 🎉" : kg(S.target - sm.harvest) + " still to pick";
+
+    // workers
+    const heads = S.crews.reduce((t, c) => t + c.head, 0);
+    const present = isToday ? S.crews.reduce((t, c) => t + c.present, 0) : day.present;
+    const bill = isToday ? S.crews.reduce((t, c) => t + c.present * c.rate, 0) : sm.wages;
+    const unpaid = isToday ? S.crews.filter(c => !c.paid && c.present).length : 0;
+    $("v-present").textContent = `${present} of ${heads} people at work`;
+    $("v-wocc").style.width = Math.min(100, present / heads * 100) + "%";
+    $("v-wpaid").textContent = isToday ? (unpaid ? "wages not paid yet" : "wages paid ✓") : "paid";
+    $("v-wbill").textContent = Math.round(bill / 1000 * 10) / 10 + "k";
+    $("v-milk").textContent = day.milk;
+    $("v-ready").textContent = S.blocks.filter(canHarvest).length;
+    $("v-lots").textContent = S.lots.filter(l => l.left > 0).length;
+
+    // harvest by crop
+    const byC = {}; day.harvest.forEach(h => byC[h.crop] = (byC[h.crop] || 0) + h.kg);
+    $("v-htotal").textContent = kg(sm.harvest);
+    list($("v-crops"), Object.entries(byC).sort((a, b) => b[1] - a[1]).map(([c, v]) =>
+      `<div class="row"><span>${c} <span class="muted small">${CROPS[c].am}</span></span><b class="num">${kg(v)}</b></div><div class="meter"><i style="width:${v / sm.harvest * 100}%;background:${CROPS[c].color}"></i></div>`), "No harvest recorded.");
+
+    // stock (always current)
+    const st = {}; S.lots.forEach(l => { if (l.left > 0) st[l.crop] = (st[l.crop] || 0) + l.left; });
+    const stVal = Object.entries(st).reduce((t, [c, v]) => t + v * CROPS[c].price, 0);
+    $("v-stockval").textContent = "worth " + etb(stVal);
+    list($("v-stock"), Object.entries(st).map(([c, v]) => `<div class="row"><span>${c}</span><b class="num">${kg(v)}</b></div>`), "Store is empty.");
+
+    // blocks cost/yield per ha
+    $("v-blocks").innerHTML = `<div class="row muted small"><span>Block</span><span>cost/ha · yield/ha</span></div>` + S.blocks.filter(b => b.crop !== "Milk").map(b =>
+      `<div class="row click" role="button" tabindex="0" data-open="${b.id}"><span><b>${b.id}</b> ${b.crop} <span class="muted small">${b.ha} ha</span></span><span class="num small">${etb(blockCost(b) / b.ha)} · ${b.harvested ? kg(b.harvested / b.ha) : "–"}</span></div>`).join("");
+
+    // sales
+    $("v-salecount").textContent = etb(sm.sales);
+    list($("v-salelist"), day.sales.map(s => `<div class="row"><span>${esc(s.buyer)} <span class="muted small">· ${s.crop} ${s.crop === "Milk" ? s.kg + " L" : kg(s.kg)}</span></span><b class="num">${etb(s.net)}</b></div>`), "No sales.");
+
+    // costs
+    $("v-costtotal").textContent = etb(sm.costs);
+    const crow = (n, v) => `<div class="row"><span>${n}</span><b class="num">${etb(v)}</b></div>`;
+    $("v-costlist").innerHTML = crow("Inputs used", sm.inputs) + crow("Wages paid", sm.wages) + crow("Fuel", sm.fuel) + crow("Other approved", sm.other);
+
+    // month so far
+    const e = toEth(date); let mS = 0, mC = 0, mH = 0, days = 0;
+    for (let off = viewOffset; ; off--) {
+      const d = dayFor(off); if (toEth(d).m !== e.m) break;
+      const s = summarize(off === 0 ? S.today : makeDay(d)); mS += s.sales; mC += s.costs; mH += s.harvest; days++;
+    }
+    $("v-mday").textContent = `Day ${days} of 30`;
+    $("v-month").innerHTML = crow("Sales", mS) + crow("Costs", mC) + crow("Profit", mS - mC) + `<div class="row"><span>Harvested</span><b class="num">${(mH / 1000).toFixed(1)} tonnes</b></div>`;
+
+    renderWeek(); renderFeed(); renderBadge();
+    if (flash && lastFlash) { lastFlash.forEach(id => { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); lastFlash = null; }
+  }
+  function renderWeek() {
+    const vals = []; for (let off = -6; off <= 0; off++) { const d = dayFor(off), s = summarize(off === 0 ? S.today : makeDay(d)); vals.push({ off, d, v: wkMode === "sales" ? s.sales : s.harvest }); }
+    const max = Math.max(...vals.map(x => x.v), 1);
+    $("week").innerHTML = vals.map(x => `<button type="button" data-off="${x.off}" class="${x.off === 0 ? "today" : ""} ${x.off === viewOffset ? "sel" : ""}" aria-label="${gregStr(x.d)}: ${wkMode === "sales" ? etb(x.v) : kg(x.v)}">
+      <span class="v">${wkMode === "sales" ? Math.round(x.v / 1000) + "k" : (x.v / 1000).toFixed(1) + "t"}</span><span class="track"><span class="b" style="height:${Math.max(4, x.v / max * 100)}%"></span></span><span class="d">${x.off === 0 ? "Today" : x.d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`).join("");
+  }
+  $("week").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; viewOffset = Number(b.dataset.off); renderSummary(); });
+  document.querySelectorAll("[data-wk]").forEach(b => b.addEventListener("click", () => { wkMode = b.dataset.wk; document.querySelectorAll("[data-wk]").forEach(x => x.setAttribute("aria-pressed", x === b)); renderWeek(); }));
+  function renderFeed() {
+    const isToday = viewOffset === 0;
+    $("feed-state").textContent = isToday ? (liveOn ? "● live" : "paused") : "";
+    $("feed").innerHTML = !isToday ? `<div class="empty">Live activity shows for today. Tap <b>Today</b> in the chart.</div>`
+      : S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount ? (e.unit === "kg" ? kg(e.amount) : etb(e.amount)) : ""}</b></div>`).join("")
+      : `<div class="empty">Waiting for the next weigh-in… (turn on <b>Live</b> at the top, or record one yourself in <b>Fields</b>)</div>`;
+  }
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  $("prev").addEventListener("click", () => { viewOffset--; renderSummary(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderSummary(); } });
+  $("v-blocks").addEventListener("click", e => { const r = e.target.closest("[data-open]"); if (r) openBlock(r.dataset.open); });
+  $("v-blocks").addEventListener("keydown", e => { const r = e.target.closest("[data-open]"); if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openBlock(r.dataset.open); } });
+
+  /* ---------- sheet + toast ---------- */
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("input,select,button"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3200); }
+  const field = (id, label, inner) => `<label class="small" for="${id}" style="display:block;margin-top:12px;font-weight:700">${label}</label>${inner}`;
+  const input = (id, val, attrs) => `<input id="${id}" value="${val}" ${attrs || ""} style="font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:10px;width:100%">`;
+
+  const drill = (id, fn) => { const el = $(id); el.addEventListener("click", fn); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  drill("k-sales", () => { const d = curDay(), sm = summarize(d);
+    openSheet(`<h2>Sales ${etb(sm.sales)}</h2><p class="muted">Before VAT · ${gregStr(dayFor(viewOffset))}</p><div style="margin-top:12px">${d.sales.map(s => `<div class="row"><span>${esc(s.buyer)}<br><span class="muted small">${s.crop} · ${s.crop === "Milk" ? s.kg + " L" : kg(s.kg)}${s.lot ? " · lot " + s.lot + " from Block " + s.block : ""}</span></span><b class="num">${etb(s.net)}</b></div>`).join("") || '<div class="empty">No sales.</div>'}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-costs", () => { const d = curDay(), sm = summarize(d);
+    const rows = [...d.inputs.map(x => [`Inputs · Block ${x.block}: ${x.n}`, x.amt]), ...d.wages.map(x => [x.n, x.amt]), ...d.fuel.map(x => [x.n, x.amt]), ...d.other.map(x => [x.n, x.amt])];
+    openSheet(`<h2>Costs ${etb(sm.costs)}</h2><p class="muted">Before tax. Inputs and wages are also charged to each block.</p><div style="margin-top:12px">${rows.map(([n, v]) => `<div class="row"><span>${esc(n)}</span><b class="num">${etb(v)}</b></div>`).join("") || '<div class="empty">No costs.</div>'}</div>
+      ${viewOffset === 0 && S.pending.length ? `<div class="actions"><button class="btn btn-gold" id="go-ap">${S.pending.length} waiting for your approval →</button></div>` : ""}<div class="actions"><button class="btn btn-line" data-close>Close</button></div>`,
+      () => { const g = $("go-ap"); g && g.addEventListener("click", () => { closeSheet(); show("approvals"); }); }); });
+  drill("k-harvest", () => { const d = curDay(), sm = summarize(d);
+    openSheet(`<h2>Harvest ${kg(sm.harvest)}</h2><p class="muted">Weigh-ins by block</p><div style="margin-top:12px">${d.harvest.map(h => `<div class="row"><span>Block ${h.block} · ${h.crop}${h.grade ? " · " + h.grade : ""}${h.t ? ` <span class="muted small">${h.t}</span>` : ""}</span><b class="num">${kg(h.kg)}</b></div>`).join("") || '<div class="empty">No harvest.</div>'}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  $("t-set").addEventListener("click", () => openSheet(`<h2>Daily harvest target</h2><p class="muted">Kilos picked across all blocks.</p>${input("t-in", S.target, 'type="number" min="100" step="100"')}
+    <div class="actions"><button class="btn btn-gold" id="t-save">Save</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      $("t-save").addEventListener("click", () => { const v = Number($("t-in").value); if (v > 0) { S.target = v; save(); closeSheet(); renderSummary(); toast("Target saved"); } });
+    }));
+
+  /* ---------- approvals ---------- */
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? etb(S.pending.reduce((t, p) => t + p.amount, 0)) : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap" data-ap="${p.id}"><div><span class="k">${p.k}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)} · ${p.k === "Crew" ? etb(p.amount) + " a day" : etb(p.amount)}</span></div>
+      <div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("")
+      : `<div class="empty">All done. New requests appear here${liveOn ? " while Live is on" : ""}.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${p.k} · ${p.ok ? "approved" : "rejected"} ${p.t}</span></span><b class="num" style="color:${p.ok ? "var(--green)" : "var(--red)"}">${etb(p.amount)}</b></div>`).join("")
+      : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    b.closest(".ap").classList.add("gone");
+    setTimeout(() => {
+      S.pending = S.pending.filter(x => x.id !== id); S.decided.push({ ...p, ok, t: hhmm() });
+      let msg = "Rejected. Your manager is told.";
+      if (ok && p.k === "Expense") { (/diesel/i.test(p.what) ? S.today.fuel : S.today.other).push({ n: p.what, amt: p.amount }); lastFlash = ["c-money", "c-costs"]; msg = `Approved. Profit today is now ${etb(summarize(S.today).profit)}.`; }
+      if (ok && p.k === "Purchase") msg = "Approved. The fertiliser can be bought; it is charged to the block when applied.";
+      if (ok && p.k === "Crew") { const m = p.what.match(/(\d+) people for Block ([A-H])/); S.crews.push({ id: Date.now(), n: "Extra harvest crew", head: m ? Number(m[1]) : 20, rate: 150, present: 0, block: m ? m[2] : "B", paid: false }); msg = "Approved. The new crew is on the <b>Workers</b> screen."; }
+      logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, p.amount, false);
+      save(); renderApprovals(); toast(msg);
+    }, 280);
+  });
+
+  /* ---------- fields ---------- */
+  function renderBlocks() {
+    $("blocks").innerHTML = S.blocks.map(b => {
+      const cost = blockCost(b);
+      return `<button type="button" class="blk sg-${b.stage}" data-open="${b.id}">
+        <span class="blk-top"><b>${b.id}</b><span class="stg">${STAGE_LABEL[b.stage]}</span></span>
+        <span class="blk-crop">${b.crop === "Milk" ? "Dairy · " + b.herd + " cows" : b.crop} <span class="am">${CROPS[b.crop].am}</span></span>
+        <span class="blk-meta">${b.ha} ha · cost ${etb(cost)}</span>
+        <span class="blk-meta">${b.crop === "Milk" ? "milk sold daily" : b.harvested ? kg(b.harvested) + " picked · " + kg(b.harvested / b.ha) + "/ha" : "not harvested yet"}</span>
+      </button>`; }).join("");
+  }
+  $("blocks").addEventListener("click", e => { const b = e.target.closest("[data-open]"); if (b) openBlock(b.dataset.open); });
+  function openBlock(id) {
+    const b = S.blocks.find(x => x.id === id), cost = blockCost(b), lots = S.lots.filter(l => l.block === id);
+    const rows = b.log.slice().reverse().slice(0, 6).map(x => `<div class="row"><span>${esc(x.n)}${x.today ? ' <span class="tag">today</span>' : ""}</span><b class="num">${etb(x.amt)}</b></div>`).join("");
+    const nextStage = STAGES[STAGES.indexOf(b.stage) + 1];
+    openSheet(`<h2>Block ${b.id} · ${b.crop === "Milk" ? "Dairy" : b.crop}</h2><p class="muted">${b.ha} ha · ${STAGE_LABEL[b.stage]}</p>
+      <div style="margin-top:12px">
+        <div class="row"><span>Inputs</span><b class="num">${etb(blockInputs(b))}</b></div>
+        <div class="row"><span>Labour</span><b class="num">${etb(blockLabour(b))}</b></div>
+        <div class="row" style="font-weight:700"><span>Total cost</span><b class="num">${etb(cost)}</b></div>
+        <div class="row"><span>Cost per hectare</span><b class="num">${etb(cost / b.ha)}</b></div>
+        ${b.crop !== "Milk" ? `<div class="row"><span>Harvested this season</span><b class="num">${kg(b.harvested)}</b></div>
+        <div class="row"><span>Yield per hectare</span><b class="num">${kg(b.harvested / b.ha)}</b></div>
+        <div class="row"><span>Cost per kg</span><b class="num">${b.harvested ? "ETB " + (cost / b.harvested).toFixed(2) : "–"}</b></div>` : ""}
+      </div>
+      <h3 style="font-size:14px;margin-top:14px">Latest entries</h3>${rows}
+      ${lots.length ? `<h3 style="font-size:14px;margin-top:14px">Lots from this block</h3>${lots.map(l => `<div class="row"><span>${l.id} · ${l.grade}</span><span class="num small">${kg(l.left)} left of ${kg(l.kg)}</span></div>`).join("")}` : ""}
+      <div class="actions">
+        ${canHarvest(b) ? `<button class="btn btn-gold" id="b-harv">Record harvest weigh-in</button>` : ""}
+        ${b.crop !== "Milk" ? `<button class="btn btn-dark" id="b-inp">Apply inputs</button>` : ""}
+        ${nextStage && b.crop !== "Milk" ? `<button class="btn btn-line" id="b-stage">Move to: ${STAGE_LABEL[nextStage]}</button>` : ""}
+        <button class="btn btn-line" data-close>Close</button>
+      </div>`, () => {
+      $("b-harv") && $("b-harv").addEventListener("click", () => harvestForm(b));
+      $("b-inp") && $("b-inp").addEventListener("click", () => inputForm(b));
+      $("b-stage") && $("b-stage").addEventListener("click", () => { b.stage = nextStage; logEvent("🌱", `Block ${b.id} moved to ${STAGE_LABEL[nextStage].toLowerCase()}`); save(); renderBlocks(); openBlock(id); });
+    });
+  }
+  function harvestForm(b) {
+    openSheet(`<h2>Weigh-in · Block ${b.id}</h2><p class="muted">${b.crop} · goes into store as a lot from this block</p>
+      ${field("h-kg", "Kilos on the scale", input("h-kg", b.crop === "Coffee" ? 420 : 260, 'type="number" min="1" step="1"'))}
+      ${field("h-gr", "Quality grade", `<select id="h-gr"><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option></select>`)}
+      <div class="actions"><button class="btn btn-gold" id="h-save">Save weigh-in</button><button class="btn btn-line" id="h-back">Back</button></div>`, () => {
+      $("h-back").addEventListener("click", () => openBlock(b.id));
+      $("h-save").addEventListener("click", () => {
+        const q = Math.round(Number($("h-kg").value)); if (!(q > 0)) { $("h-kg").focus(); return; }
+        const lot = harvestInto(S, b.id, q, $("h-gr").value);
+        logEvent("⚖️", `Weigh-in: Block ${b.id} ${b.crop}, ${$("h-gr").value}`, q, false, "kg");
+        lastFlash = ["c-money", "c-crops", "c-stock", "c-blocks"]; save(); renderBlocks(); closeSheet();
+        toast(`${kg(q)} added to lot ${lot.id}. <b>Day Summary</b> is updated.`);
+      });
+    });
+  }
+  function inputForm(b) {
+    openSheet(`<h2>Apply inputs · Block ${b.id}</h2><p class="muted">Charged to this block and to today's costs</p>
+      ${field("i-it", "What", `<select id="i-it">${INPUTS.map((x, i) => `<option value="${i}">${x.n} · ${etb(x.price)} per ${x.unit}</option>`).join("")}</select>`)}
+      ${field("i-q", "How many", input("i-q", 10, 'type="number" min="1" step="1"'))}
+      <p class="row" style="margin-top:10px"><span>Cost</span><b class="num" id="i-cost"></b></p>
+      <div class="actions"><button class="btn btn-gold" id="i-save">Apply and charge to Block ${b.id}</button><button class="btn btn-line" id="i-back">Back</button></div>`, () => {
+      const upd = () => { $("i-cost").textContent = etb(INPUTS[$("i-it").value].price * (Number($("i-q").value) || 0)); };
+      $("i-it").addEventListener("change", upd); $("i-q").addEventListener("input", upd); upd();
+      $("i-back").addEventListener("click", () => openBlock(b.id));
+      $("i-save").addEventListener("click", () => {
+        const q = Math.round(Number($("i-q").value)); if (!(q > 0)) { $("i-q").focus(); return; }
+        const it = INPUTS[$("i-it").value], amt = applyInput(S, b.id, it, q);
+        logEvent("🧪", `Block ${b.id}: ${it.n} × ${q}`, amt, false);
+        lastFlash = ["c-money", "c-costs", "c-blocks"]; save(); renderBlocks(); openBlock(b.id);
+        toast(`${etb(amt)} charged to Block ${b.id}.`);
+      });
+    });
+  }
+
+  /* ---------- workers ---------- */
+  let wMethod = "Cash";
+  $("w-methods").innerHTML = ["Cash", "telebirr", "Bank transfer"].map(m => `<button type="button" aria-pressed="${m === wMethod}" data-wm="${m}">${m}</button>`).join("");
+  $("w-methods").addEventListener("click", e => { const b = e.target.closest("[data-wm]"); if (!b) return; wMethod = b.dataset.wm; $("w-methods").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  function renderCrews() {
+    $("crews").innerHTML = S.crews.map(c => `<div class="card crew${c.paid ? " paid" : ""}">
+      <div class="crew-top"><span><b>${esc(c.n)}</b><br><span class="muted small">${c.head} people · ${etb(c.rate)} a day</span></span>${c.paid ? '<span class="tag">Paid</span>' : ""}</div>
+      <div class="crew-row">
+        <span class="qty"><button type="button" data-c="${c.id}" data-d="-1" aria-label="One less present" ${c.paid ? "disabled" : ""}>−</button><b class="num">${c.present}</b><button type="button" data-c="${c.id}" data-d="1" aria-label="One more present" ${c.paid ? "disabled" : ""}>+</button></span>
+        <span class="muted small">present</span>
+        <select data-blk="${c.id}" aria-label="Block for ${esc(c.n)}" ${c.paid ? "disabled" : ""}>${S.blocks.map(b => `<option value="${b.id}" ${b.id === c.block ? "selected" : ""}>Block ${b.id} · ${b.crop === "Milk" ? "Dairy" : b.crop}</option>`).join("")}</select>
+        <b class="num">${etb(c.present * c.rate)}</b>
+      </div></div>`).join("");
+    const present = S.crews.reduce((t, c) => t + c.present, 0), unpaid = S.crews.filter(c => !c.paid).reduce((t, c) => t + c.present * c.rate, 0);
+    $("w-present").textContent = present + " of " + S.crews.reduce((t, c) => t + c.head, 0);
+    $("w-unpaid").textContent = etb(unpaid);
+    $("w-pay").textContent = unpaid ? `Pay today's wages ${etb(unpaid)}` : "All present workers are paid";
+    $("w-pay").disabled = !unpaid;
+  }
+  $("crews").addEventListener("click", e => {
+    const b = e.target.closest("[data-c]"); if (!b) return;
+    const c = S.crews.find(x => String(x.id) === b.dataset.c); if (c.paid) return;
+    c.present = Math.max(0, Math.min(c.head, c.present + Number(b.dataset.d))); save(); renderCrews();
+  });
+  $("crews").addEventListener("change", e => { const s = e.target.closest("[data-blk]"); if (!s) return; const c = S.crews.find(x => String(x.id) === s.dataset.blk); c.block = s.value; save(); toast(`${esc(c.n)} now works on Block ${c.block}`); });
+  $("w-pay").addEventListener("click", () => {
+    const due = S.crews.filter(c => !c.paid && c.present);
+    if (!due.length) return;
+    let total = 0; const perBlock = {};
+    due.forEach(c => { const amt = c.present * c.rate; total += amt; perBlock[c.block] = (perBlock[c.block] || 0) + amt; c.paid = true; });
+    Object.entries(perBlock).forEach(([bid, amt]) => S.blocks.find(b => b.id === bid).log.push({ k: "labour", n: `Wages ${hhmm()} (${wMethod})`, amt, today: true }));
+    S.today.wages.push({ n: `Wages paid by ${wMethod}`, amt: total });
+    logEvent("💵", `Wages paid to ${due.reduce((t, c) => t + c.present, 0)} people by ${wMethod}`, total, false);
+    lastFlash = ["c-money", "c-workers", "c-costs", "c-blocks"]; save(); renderCrews();
+    openSheet(`<h2>Wages paid ✓</h2><p class="muted">${wMethod} · ${due.reduce((t, c) => t + c.present, 0)} people</p><div style="margin-top:12px">${Object.entries(perBlock).map(([bid, amt]) => `<div class="row"><span>Charged to Block ${bid}</span><b class="num">${etb(amt)}</b></div>`).join("")}<div class="row" style="font-weight:700"><span>Total</span><b class="num">${etb(total)}</b></div></div>
+      <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Day Summary</button><button class="btn btn-line" data-close>Back to workers</button></div>`, () => $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+  });
+
+  /* ---------- sales & stock ---------- */
+  function receipt(sale) {
+    return `<div class="receipt"><b>${sale.vat ? "TAX INVOICE" : "EXPORT INVOICE"}</b><br>${esc(sale.buyer)}<br>${sale.crop} ${kg(sale.kg)} × ETB ${sale.price}<span style="float:right">${etb(sale.net)}</span><br>VAT ${sale.vat ? "15%" : "0% (export)"}<span style="float:right">${etb(sale.vat)}</span>
+      <br>------------------------------<br>TOTAL ETB<span style="float:right">${Math.round(sale.net + sale.vat).toLocaleString("en-US")}</span><br>Paid: ${esc(sale.method)}<br>No ${sale.no}<br>Origin: lot ${sale.lot} · Block ${sale.block} · ${sale.grade}<br><span class="stamp">REGISTERED · ተመዝግቧል</span></div>`;
+  }
+  function renderSales() {
+    const lots = S.lots.filter(l => l.left > 0);
+    $("v-lotkg").textContent = kg(lots.reduce((t, l) => t + l.left, 0));
+    $("lots").innerHTML = lots.length ? lots.map(l => `<div class="row lot"><span><b>${l.id}</b> · ${l.crop} ${l.grade}<br><span class="muted small">from Block ${l.block} · ${l.date === "today" ? "picked today" : "in store"} · worth ${etb(l.left * CROPS[l.crop].price)}</span></span><span style="text-align:right"><b class="num">${kg(l.left)}</b><br><button type="button" class="sell-b" data-sell="${l.id}">Sell</button></span></div>`).join("")
+      : `<div class="empty">Store is empty. Record a harvest in <b>Fields</b>.</div>`;
+    const sales = S.today.sales.filter(s => s.lot).slice().reverse();
+    $("v-salestoday").textContent = etb(sales.reduce((t, s) => t + s.net, 0));
+    $("orders").innerHTML = sales.length ? sales.map(s => `<div class="row"><span><b class="num">${s.no}</b><br><span class="muted small">${esc(s.buyer)} · ${s.crop} ${kg(s.kg)} · lot ${s.lot} (Block ${s.block})</span></span><span style="text-align:right"><b class="num">${etb(s.net + s.vat)}</b><br><span class="tag">Registered</span></span></div>`).join("")
+      : `<div class="empty">Sales you make appear here, each with its e-invoice number.</div>`;
+  }
+  $("lots").addEventListener("click", e => {
+    const b = e.target.closest("[data-sell]"); if (!b) return;
+    const lot = S.lots.find(l => l.id === b.dataset.sell);
+    openSheet(`<h2>Sell from lot ${lot.id}</h2><p class="muted">${lot.crop} ${lot.grade} · from Block ${lot.block} · ${kg(lot.left)} available</p>
+      ${field("s-buyer", "Buyer", `<select id="s-buyer">${BUYERS.filter(x => lot.crop === "Coffee" || x.vat).map(x => `<option>${x.n}</option>`).join("")}</select>`)}
+      ${field("s-kg", "Kilos", input("s-kg", Math.min(lot.left, 500), `type="number" min="1" max="${lot.left}" step="1"`))}
+      ${field("s-pr", "Price per kg (ETB)", input("s-pr", CROPS[lot.crop].price, 'type="number" min="1" step="1"'))}
+      ${field("s-pm", "Paid by", `<select id="s-pm"><option>Bank transfer</option><option>CBE Birr</option><option>telebirr</option><option>Cash</option></select>`)}
+      <p class="row" style="margin-top:10px"><span>Total</span><b class="num" id="s-tot"></b></p>
+      <div class="actions"><button class="btn btn-gold" id="s-go">Sell and issue e-invoice</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      const upd = () => { const q = Math.min(lot.left, Number($("s-kg").value) || 0), net = q * (Number($("s-pr").value) || 0), v = BUYERS.find(x => x.n === $("s-buyer").value).vat; $("s-tot").textContent = etb(net * (1 + v)) + (v ? " with VAT" : " · 0% VAT export"); };
+      ["s-buyer", "s-kg", "s-pr"].forEach(i => $(i).addEventListener("input", upd)); $("s-buyer").addEventListener("change", upd); upd();
+      $("s-go").addEventListener("click", () => {
+        const q = Math.round(Number($("s-kg").value)), pr = Number($("s-pr").value);
+        if (!(q > 0) || q > lot.left) { $("s-kg").focus(); toast(`Enter between 1 and ${kg(lot.left)}`); return; }
+        if (!(pr > 0)) { $("s-pr").focus(); return; }
+        const sale = sellFrom(S, lot.id, q, $("s-buyer").value, pr, $("s-pm").value);
+        logEvent("🧾", `Sold ${sale.crop} to ${sale.buyer} · lot ${sale.lot}`, sale.net + sale.vat, false);
+        lastFlash = ["c-money", "c-stock", "c-salelist"]; save(); renderSales();
+        openSheet(`<h2>Sold ✓</h2>${receipt(sale)}<p class="muted small" style="margin-top:8px">In the real system this invoice is registered with the Ministry of Revenues as the sale happens.</p>
+          <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Day Summary</button><button class="btn btn-line" data-close>Back to stock</button></div>`, () => $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+      });
+    });
+  });
+
+  /* ---------- live simulation ---------- */
+  let liveOn = true, liveTimer = null;
+  const R = Math.random;
+  function liveTick() {
+    if (document.hidden) return;
+    const x = R();
+    if (x < 0.38) {
+      const bl = S.blocks.filter(canHarvest); if (!bl.length) return;
+      const b = pick(R, bl), q = between(R, b.crop === "Coffee" ? 220 : 120, b.crop === "Coffee" ? 640 : 380, 5), g = R() < 0.75 ? "Grade 1" : "Grade 2";
+      const lot = harvestInto(S, b.id, q, g);
+      logEvent("⚖️", `Weigh-in: Block ${b.id} ${b.crop} → lot ${lot.id}`, q, true, "kg");
+      lastFlash = ["c-money", "c-crops", "c-stock"];
+    } else if (x < 0.54) {
+      const c = S.crews.filter(z => !z.paid && z.present < z.head); if (!c.length) return;
+      const cr = pick(R, c), n = Math.min(cr.head - cr.present, 1 + Math.floor(R() * 4)); cr.present += n;
+      logEvent("👷", `${n} more ${cr.n.toLowerCase()} checked in · Block ${cr.block}`, 0, true); lastFlash = ["c-workers"];
+    } else if (x < 0.64) {
+      const amt = between(R, 900, 1800, 50); S.today.fuel.push({ n: "Pump diesel, Block E irrigation", amt });
+      logEvent("💧", "Irrigation pump ran 3 hours on Block E", amt, true); lastFlash = ["c-money", "c-costs"];
+    } else if (x < 0.78) {
+      const L = between(R, 55, 90); S.today.milk += L;
+      const net = L * CROPS.Milk.price; S.today.sales.push({ crop: "Milk", kg: L, net, vat: net * VAT, buyer: "Milk collector", no: "EDL-INV-" + String(++S.invSeq).padStart(6, "0"), time: hhmm() });
+      logEvent("🥛", `Milk collection: ${L} litres`, net, true); lastFlash = ["c-money", "c-workers", "c-salelist"];
+    } else if (x < 0.98) {
+      const lots = S.lots.filter(l => l.left >= 300); if (!lots.length) return;
+      const lot = pick(R, lots), buyer = lot.crop === "Coffee" ? pick(R, BUYERS.slice(0, 3)) : pick(R, BUYERS.slice(1, 3));
+      const sale = sellFrom(S, lot.id, between(R, 300, Math.min(1200, lot.left), 50), buyer.n, CROPS[lot.crop].price, pick(R, ["Bank transfer", "CBE Birr"]));
+      logEvent("🚚", `${sale.buyer} bought ${kg(sale.kg)} ${sale.crop} · lot ${sale.lot}`, sale.net + sale.vat, true); lastFlash = ["c-money", "c-stock", "c-salelist"];
+    } else {
+      if (S.pending.length >= 3) return;
+      const opts = [["Purchase", "Farm manager", "NPS fertiliser, 40 bags for Block F", 184000], ["Expense", "Workshop", "Water pump service", 6800], ["Purchase", "Farm manager", "Herbicide, 40 litres for Block E", 38000], ["Expense", "Store keeper", "Sacks for coffee, 300 pcs", 7500], ["Crew", "Field supervisor", "Extra harvest crew, 15 people for Block D", 2700], ["Expense", "Irrigation", "Diesel for the pump, 80 L", 6560]];
+      const [k, who, what, amount] = pick(R, opts);
+      S.pending.push({ id: ++S.apSeq, k, who, what, amount });
+      logEvent("📝", `${who} asks you to approve: ${what}`, amount, true);
+      if (!$("s-approvals").hidden) renderApprovals();
+    }
+    save();
+    if (!$("s-summary").hidden && viewOffset === 0) renderSummary(true); else renderBadge();
+    if (!$("s-fields").hidden) renderBlocks();
+    if (!$("s-workers").hidden) renderCrews();
+    if (!$("s-sales").hidden) renderSales();
+  }
+  function setLive(on) { liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(liveTimer); if (on) liveTimer = setInterval(liveTick, 6000); renderFeed(); }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: weigh-ins, crews and buyers keep coming" : "Live paused"); });
+
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} S = freshState(); $("lt").innerHTML = ""; renderBlocks(); renderCrews(); renderSales(); show("summary"); toast("Demo reset"); });
+
+  renderBlocks(); renderCrews(); renderSales(); renderSummary();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+})();
+</script>
+</body>
+</html>

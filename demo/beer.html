@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beer Distribution Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's beer distribution system with example data: daily sales per truck, stock and empty crates, seller cash and deposits, approvals and registered e-invoices.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/beer.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 12px; }
+.top img { height: 34px; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; line-height: 1.15; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 560px) { .top .cta { display: none; } .top .app small { display: none; } .top { gap: 8px; } .top img { height: 28px; } .top .app { font-size: 14px; } }
+
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+@media (max-width: 420px) { nav.tabs button { padding: 13px 9px; font-size: 14px; } nav.tabs .badge { margin-left: 4px; } }
+.row b { white-space: nowrap; }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; min-width: 0; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); text-align: right; }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.row:first-of-type { border-top: 0; }
+.row.total { font-weight: 700; border-top: 1.5px solid var(--ink); }
+.row.warn b { color: var(--red); }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; }
+.dayhead .when b { font-family: var(--display); font-size: 20px; display: block; }
+.dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; flex: none; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+
+.money { background: var(--black); color: #fff; border: 0; }
+.money .profit small { color: #9C9EA2; font-size: 13px; }
+.money .profit b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .profit.loss b { color: #FF8A80; }
+.money .profit .crates { color: var(--gold); font-weight: 700; font-size: 14px; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; }
+.money .parts b { font-size: 15px; }
+@media (max-width: 420px) { .money .parts b { font-size: 13.5px; } .money .parts div { padding: 9px 8px; } }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+.target { margin-top: 14px; }
+.target .bar { height: 10px; border-radius: 999px; background: #2A2C30; overflow: hidden; margin: 6px 0; }
+.target .bar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
+.target .lbl { display: flex; justify-content: space-between; font-size: 13px; color: #D9DADC; gap: 10px; }
+.target button { background: none; border: 0; color: var(--gold); font-weight: 700; padding: 0; font-size: 13px; }
+.lbar { height: 10px; border-radius: 999px; background: var(--bg); overflow: hidden; margin: 8px 0; }
+.lbar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .4s ease; }
+.gap { margin-top: 10px; border-radius: 12px; padding: 10px 12px; background: var(--amber-soft); color: var(--amber); font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
+.gap.ok { background: var(--green-soft); color: var(--green); }
+
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 8px; flex-wrap: wrap; }
+.seg button { border: 0; background: none; padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--gold); }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stats div { background: var(--bg); border-radius: 10px; padding: 8px 4px; text-align: center; min-width: 0; }
+.stats b { display: block; font-family: var(--display); font-size: 17px; }
+.stats small { color: var(--muted); font-size: 11px; }
+
+/* stock table */
+.tr { display: grid; grid-template-columns: minmax(0, 1.7fr) .8fr .8fr 1fr; gap: 8px; padding: 9px 0; border-top: 1px solid #F0EEE8; align-items: center; font-size: 14px; }
+.tr.h { border-top: 0; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); padding-top: 0; }
+.tr > span:not(:first-child) { text-align: right; }
+.tr b { display: block; font-size: 14px; }
+.low { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--red-soft); color: var(--red); }
+.btnrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.ok-t { color: var(--green); font-weight: 700; }
+.bad-t { color: var(--red); font-weight: 700; }
+.rec { font-size: 13px; }
+.rec .tr { grid-template-columns: minmax(0, 1.2fr) 1fr 1.6fr; }
+
+/* trucks */
+.trucks { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.truck h3 { margin-bottom: 4px; }
+.truck .who { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+.truck .cash { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 14px; }
+.truck .cash b { font-family: var(--display); }
+.truck .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.truck .acts .btn:first-child { grid-column: 1 / -1; }
+.truck .load { height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 10px; }
+.truck .load i { display: block; height: 100%; background: var(--green); }
+
+.methods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
+.methods button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 10px; padding: 8px 4px; font-size: 12.5px; font-weight: 600; }
+.methods button[aria-pressed="true"] { border-color: var(--black); background: var(--black); color: #fff; }
+select, input[type=number] { font: inherit; padding: 9px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px; }
+.btn { border: 0; border-radius: 999px; padding: 11px 16px; font-weight: 700; font-size: 14px; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-dark { background: var(--black); color: #fff; }
+.btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.wide { width: 100%; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); white-space: nowrap; }
+.step { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; }
+.step:first-child { border-top: 0; }
+.step small { color: var(--muted); display: block; font-size: 12px; }
+.qty { display: inline-flex; align-items: center; gap: 6px; }
+.qty button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-weight: 700; }
+.qty b { min-width: 28px; text-align: center; }
+
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 90vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.receipt .l { display: flex; justify-content: space-between; gap: 10px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; box-shadow: 0 14px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; }
+.toast b { color: var(--gold); }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(211,166,40,.0); } 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } 100% { box-shadow: 0 0 0 0 rgba(211,166,40,0); } }
+
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; height: 100%; padding: 0; min-width: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease, background .2s; min-height: 6px; }
+.week button:hover .b { background: #D9CBA0; }
+.week button.today .b { background: var(--gold); }
+.week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d { font-size: 11.5px; color: var(--muted); text-align: center; }
+.week .v { font-size: 10.5px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.feed { display: grid; gap: 2px; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } to { opacity: 1; transform: none; background: transparent; } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; }
+.ev b.num { font-size: 13.5px; white-space: nowrap; }
+.click { cursor: pointer; }
+.click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.ap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ap .ok-b { background: var(--green); color: #fff; }
+.ap .no-b { background: var(--red-soft); color: var(--red); }
+.ap.gone { opacity: 0; transform: translateX(20px); transition: all .3s ease; }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+.lt div.w { border-left-color: var(--red); }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../#request">Get this for your distribution business →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel home"></a>
+    <div class="app">Demo Beverage Distributors<small>Beer distribution · 5 trucks</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Simulated trucks and staff keep working"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="summary">Day Summary</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+    <button type="button" role="tab" aria-selected="false" data-screen="trucks">Trucks</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="stock">Stock</button>
+  </div>
+</nav>
+
+<main>
+  <!-- DAY SUMMARY -->
+  <section class="screen" id="s-summary">
+    <div class="dayhead">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+      <button type="button" id="next" aria-label="Next day">›</button>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="profit" id="profit"><small id="profit-lbl">Profit so far (before tax)</small><b class="num" id="v-profit"></b><span class="crates num" id="v-crates"></span></div>
+        <div class="parts">
+          <div class="click" id="k-sales" role="button" tabindex="0"><small>Sales ›</small><b class="num" id="v-sales"></b></div>
+          <div class="click" id="k-margin" role="button" tabindex="0"><small>Gross margin ›</small><b class="num" id="v-margin"></b></div>
+          <div class="click" id="k-exp" role="button" tabindex="0"><small>Expenses ›</small><b class="num" id="v-exp"></b></div>
+        </div>
+        <div class="target">
+          <div class="lbl"><span id="t-left"></span><button type="button" id="t-set">Change target</button></div>
+          <div class="bar"><i id="t-bar"></i></div>
+          <div class="lbl"><span id="t-pct"></span><span id="t-of"></span></div>
+        </div>
+        <p class="note">Sales before VAT. Gross margin = sales − what the beer cost us. Profit = gross margin − approved expenses. Tap a number for detail.</p>
+      </div>
+      <div class="card" id="c-cash">
+        <h3>Cash and bank <small>with VAT</small></h3>
+        <div id="v-cash"></div>
+        <div class="gap" id="v-gap"></div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-week">
+        <h3>Last 7 days <small>Sales · tap a day</small></h3>
+        <div class="week" id="week"></div>
+      </div>
+      <div class="card" id="c-feed">
+        <h3>Happening now <small id="feed-state"></small></h3>
+        <div class="feed" id="feed"></div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card" id="c-trucks">
+        <h3>Sales by truck <small id="v-trucks-total"></small></h3>
+        <div id="v-trucks"></div>
+      </div>
+      <div class="card" id="c-products">
+        <h3>Top products</h3>
+        <div id="v-products"></div>
+      </div>
+      <div class="card" id="c-empties">
+        <h3>Empty crates</h3>
+        <div id="v-empties"></div>
+      </div>
+      <div class="card" id="c-sellers">
+        <h3>Cash still with sellers <small id="v-sellers-total"></small></h3>
+        <div id="v-sellers"></div>
+      </div>
+      <div class="card" id="c-brew">
+        <h3>Brewery target <small id="v-brew-day"></small></h3>
+        <div id="v-brew"></div>
+      </div>
+      <div class="card" id="c-credit">
+        <h3>Sold on credit <small id="v-credit-total"></small></h3>
+        <div id="v-credit"></div>
+      </div>
+      <div class="card" id="c-expenses">
+        <h3>Expenses approved <small id="v-exp-total"></small></h3>
+        <div id="v-explist"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Drivers and staff ask, you decide, from anywhere. Approve or reject, then watch <b>Day Summary</b> change.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+
+  <!-- TRUCKS -->
+  <section class="screen" id="s-trucks" hidden>
+    <p class="hint">Each truck sells to outlets all day. Tap <b>Record sale</b>, take empties back and choose how the outlet pays. Every sale gets a registered e-invoice number.</p>
+    <div class="trucks" id="trucks"></div>
+    <div class="card" style="margin-top:14px">
+      <h3>Today's invoices <small id="v-invcount"></small></h3>
+      <div id="invoices"></div>
+    </div>
+  </section>
+
+  <!-- STOCK -->
+  <section class="screen" id="s-stock" hidden>
+    <p class="hint">Receive beer from the brewery, load trucks and count the warehouse. The <b>Stock check</b> shows that every crate is accounted for.</p>
+    <div class="grid g2">
+      <div class="card" id="c-wh">
+        <h3>Warehouse <small id="v-wh-value"></small></h3>
+        <div id="v-wh"></div>
+        <div class="btnrow">
+          <button class="btn btn-gold" type="button" id="b-receive">📦 Receive from brewery</button>
+          <button class="btn btn-dark" type="button" id="b-load">🚚 Load truck</button>
+          <button class="btn btn-line" type="button" id="b-count">🔢 Stock count</button>
+        </div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="card" id="c-empties2">
+          <h3>Empty crates and kegs</h3>
+          <div id="v-empties2"></div>
+        </div>
+        <div class="card" id="c-purchases">
+          <h3>Received from brewery today <small id="v-purch-total"></small></h3>
+          <div id="v-purch"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card rec" id="c-rec" style="margin-top:14px">
+      <h3>Stock check <small>start + received = warehouse + on trucks + sold + promotion + count loss</small></h3>
+      <div id="v-rec"></div>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const fmt = n => Math.round(n).toLocaleString("en-US");
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const VAT = 0.15;
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  /* ---------- example business ---------- */
+  // prices per crate (or keg) before VAT; c = what it cost us from the brewery
+  const PRODUCTS = [
+    { id: "lager", n: "Lager 330ml ×24", s: "Lager", p: 1150, c: 980, low: 60 },
+    { id: "premium", n: "Premium lager 330ml ×24", s: "Premium lager", p: 1420, c: 1210, low: 40 },
+    { id: "keg", n: "Draught keg 30L", s: "Draught keg", p: 3600, c: 3050, low: 10 },
+    { id: "malt", n: "Malt drink 330ml ×24", s: "Malt drink", p: 980, c: 830, low: 30 },
+    { id: "soft", n: "Soft drink 300ml ×24", s: "Soft drink", p: 720, c: 600, low: 30 }
+  ];
+  const P = Object.fromEntries(PRODUCTS.map(p => [p.id, p]));
+  const IDS = PRODUCTS.map(p => p.id);
+  const zero = () => Object.fromEntries(IDS.map(id => [id, 0]));
+  const TRUCKS = [
+    { n: "Truck 1", seller: "Abel T.", area: "Bole" },
+    { n: "Truck 2", seller: "Mulugeta D.", area: "Piassa" },
+    { n: "Truck 3", seller: "Kalkidan S.", area: "Mercato" },
+    { n: "Truck 4", seller: "Bereket A.", area: "Kazanchis" },
+    { n: "Truck 5", seller: "Tsegaye M.", area: "CMC" }
+  ];
+  const OUTLETS = ["Bole Bar & Restaurant", "Selam Café", "Mercato Shop", "Piassa Grocery", "Kazanchis Lounge", "Sarbet Hotel", "CMC Supermarket", "Gerji Bar", "Megenagna Kiosk", "Ayat Bar & Grill", "Lideta Butchery & Bar", "Summit Mini Market"];
+  const METHODS = ["Cash", "telebirr", "CBE Birr", "Credit"];
+  const BANK = ["telebirr", "CBE Birr"];
+  const EXPENSES = [["Diesel for trucks", 9000, 16000], ["Loading crew daily pay", 3200, 4200], ["Truck tyre repair", 1800, 6500], ["Warehouse guard", 1500, 1500], ["Phone cards for sellers", 600, 900]];
+  const DAILY_TARGET = 1050000, BREW_TARGET = 30000;
+
+  /* ---------- sales and day summaries ---------- */
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  function priceLines(lines) {
+    const net = lines.reduce((t, l) => t + P[l.p].p * l.q, 0), cost = lines.reduce((t, l) => t + P[l.p].c * l.q, 0);
+    return { net, cost, gross: net * (1 + VAT), crates: lines.reduce((t, l) => t + l.q, 0) };
+  }
+  function randomLines(r, avail) {
+    const lines = [], k = 1 + (r() < 0.4 ? 1 : 0);
+    for (let j = 0; j < k; j++) {
+      const ids = IDS.filter(id => (avail ? avail[id] : 1) > 0 && !lines.find(l => l.p === id)); if (!ids.length) break;
+      const id = r() < 0.5 && ids.includes("lager") ? "lager" : pick(r, ids);
+      let q = id === "keg" ? 1 + Math.floor(r() * 2) : 3 + Math.floor(r() * 10);
+      if (avail) q = Math.min(q, avail[id]);
+      if (q > 0) lines.push({ p: id, q });
+    }
+    return lines;
+  }
+  const randomMethod = r => pick(r, ["Cash", "Cash", "Cash", "telebirr", "telebirr", "CBE Birr", "Credit"]);
+  function makePastDay(date) {
+    const r = rng(dayKey(date));
+    const day = { sales: [], expenses: [], deposits: [] };
+    const n = 78 + Math.floor(r() * 34);
+    for (let i = 0; i < n; i++) {
+      const lines = randomLines(r), pr = priceLines(lines);
+      day.sales.push({ truck: Math.floor(r() * 5), outlet: pick(r, OUTLETS), lines, ...pr, method: randomMethod(r), empties: Math.round(pr.crates * (0.75 + r() * 0.25)) });
+    }
+    const ne = 2 + Math.floor(r() * 3);
+    for (let i = 0; i < ne; i++) { const [nm, lo, hi] = pick(r, EXPENSES); day.expenses.push({ n: nm, amount: Math.round((lo + r() * (hi - lo)) / 50) * 50 }); }
+    TRUCKS.forEach((_, ti) => {
+      const cash = day.sales.filter(s => s.truck === ti && s.method === "Cash").reduce((t, s) => t + s.gross, 0);
+      if (cash > 0) day.deposits.push({ truck: ti, amount: Math.round(cash * (0.85 + r() * 0.15) / 100) * 100 });
+    });
+    return day;
+  }
+  function summarize(day) {
+    let net = 0, cost = 0, gross = 0, crates = 0, empties = 0, cash = 0, bank = 0, credit = 0;
+    day.sales.forEach(s => {
+      net += s.net; cost += s.cost; gross += s.gross; crates += s.crates; empties += s.empties;
+      if (s.method === "Cash") cash += s.gross; else if (s.method === "Credit") credit += s.gross; else bank += s.gross;
+    });
+    const exp = day.expenses.reduce((t, e) => t + e.amount, 0), deposited = day.deposits.reduce((t, d) => t + d.amount, 0);
+    return { net, cost, margin: net - cost, exp, profit: net - cost - exp, gross, crates, empties, cash, bank, credit, deposited };
+  }
+
+  /* ---------- today's state (stock, trucks, empties) ---------- */
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const STORE = "edel-demo-beer-v1";
+  let S;
+  let invSeq = 2000;
+  const newInv = () => "EDL-INV-" + String(++invSeq).padStart(6, "0");
+
+  function loadTruck(ti, qtys) {
+    const t = S.trucks[ti]; let moved = 0;
+    IDS.forEach(id => { const q = Math.max(0, Math.min(qtys[id] || 0, S.stock[id])); S.stock[id] -= q; t.load[id] += q; t.loaded[id] += q; moved += q; });
+    return moved;
+  }
+  function recordSale(ti, outlet, lines, method, empties) {
+    const t = S.trucks[ti];
+    lines = lines.filter(l => l.q > 0).map(l => ({ p: l.p, q: Math.min(l.q, t.load[l.p]) })).filter(l => l.q > 0);
+    if (!lines.length) return null;
+    const pr = priceLines(lines);
+    empties = Math.max(0, Math.min(empties, pr.crates));
+    lines.forEach(l => { t.load[l.p] -= l.q; t.sold[l.p] += l.q; S.sold[l.p] += l.q; });
+    S.empties.store += empties; S.empties.customers += pr.crates - empties; S.empties.inToday += empties; S.empties.outToday += pr.crates;
+    t.emptiesIn += empties;
+    if (method === "Cash") { t.cashOnHand += pr.gross; t.cashToday += pr.gross; }
+    const sale = { no: newInv(), truck: ti, outlet, lines, ...pr, method, empties, t: hhmm() };
+    S.today.sales.push(sale);
+    return sale;
+  }
+  function deposit(ti, amount) {
+    const t = S.trucks[ti]; amount = Math.min(amount, t.cashOnHand); if (amount <= 0) return 0;
+    t.cashOnHand -= amount; S.today.deposits.push({ truck: ti, amount }); return amount;
+  }
+  function returnUnsold(ti) {
+    const t = S.trucks[ti]; let n = 0;
+    IDS.forEach(id => { S.stock[id] += t.load[id]; t.returned[id] += t.load[id]; n += t.load[id]; t.load[id] = 0; });
+    return n;
+  }
+  function receive(qtys) {
+    const lines = IDS.filter(id => (qtys[id] || 0) > 0).map(id => ({ p: id, q: qtys[id] }));
+    if (!lines.length) return null;
+    let crates = 0, cost = 0;
+    lines.forEach(l => { S.stock[l.p] += l.q; S.received[l.p] += l.q; crates += l.q; cost += l.q * P[l.p].c; });
+    const sentBack = Math.min(S.empties.store, crates);
+    S.empties.store -= sentBack; S.empties.toBrewery += sentBack;
+    const pu = { lines, crates, cost, sentBack, t: hhmm() };
+    S.today.purchases.push(pu); S.alerted = {};
+    return pu;
+  }
+  function countStock(id, counted) {
+    const diff = counted - S.stock[id];
+    S.loss[id] -= diff; S.stock[id] = counted;
+    if (diff < 0) S.today.expenses.push({ n: `Stock count loss: ${-diff} × ${P[id].s}`, amount: -diff * P[id].c });
+    return diff;
+  }
+  function giveFree(id, q, outlet) {
+    q = Math.min(q, S.stock[id]); if (q <= 0) return 0;
+    S.stock[id] -= q; S.promo[id] += q;
+    S.today.expenses.push({ n: `Promotion: ${q} × ${P[id].s} to ${outlet}`, amount: q * P[id].c });
+    return q;
+  }
+  function stockCheck(id) {
+    const onTrucks = S.trucks.reduce((t, x) => t + x.load[id], 0);
+    const left = S.opening[id] + S.received[id], right = S.stock[id] + onTrucks + S.sold[id] + S.promo[id] + S.loss[id];
+    return { left, right, onTrucks, ok: left === right };
+  }
+
+  function freshState() {
+    invSeq = 2000;
+    const r = rng(dayKey(TODAY) + 11);
+    const stock = { lager: 640, premium: 300, keg: 52, malt: 190, soft: 210 };
+    S = {
+      target: DAILY_TARGET, opening: { ...stock }, stock: { ...stock },
+      received: zero(), sold: zero(), promo: zero(), loss: zero(),
+      empties: { store: 720, customers: 2480, inToday: 0, outToday: 0, toBrewery: 0 },
+      trucks: TRUCKS.map(() => ({ load: zero(), loaded: zero(), sold: zero(), returned: zero(), emptiesIn: 0, cashOnHand: Math.round((2000 + r() * 14000) / 100) * 100, cashToday: 0 })),
+      today: { sales: [], expenses: [], deposits: [], purchases: [] },
+      pending: [
+        { id: 1, k: "Fuel", who: "Mulugeta D. · Truck 2", what: "Diesel, 60 L", amount: 5580 },
+        { id: 2, k: "Promotion", who: "Abel T. · Truck 1", what: "5 × Lager free for Selam Café opening", amount: 5 * P.lager.c, promo: { p: "lager", q: 5, outlet: "Selam Café" } }
+      ],
+      decided: [], feed: [], apSeq: 2, alerted: {}, cashOpening: 0
+    };
+    S.trucks.forEach((t, ti) => loadTruck(ti, { lager: 80 + Math.floor(r() * 25), premium: 35 + Math.floor(r() * 15), keg: 6 + Math.floor(r() * 3), malt: 22 + Math.floor(r() * 10), soft: 25 + Math.floor(r() * 10) }));
+    S.cashOpening = S.trucks.reduce((a, t) => a + t.cashOnHand, 0);
+    for (let i = 0; i < 38; i++) {
+      const ti = Math.floor(r() * 5), lines = randomLines(r, S.trucks[ti].load);
+      if (!lines.length) continue;
+      const c = lines.reduce((a, l) => a + l.q, 0);
+      recordSale(ti, pick(r, OUTLETS), lines, randomMethod(r), Math.round(c * (0.75 + r() * 0.25)));
+    }
+    S.trucks.forEach((t, ti) => { if (r() < 0.5 && t.cashOnHand > 5000) deposit(ti, Math.round(t.cashOnHand * 0.7 / 100) * 100); });
+    S.today.expenses.push({ n: "Diesel for trucks", amount: 12600 }, { n: "Loading crew daily pay", amount: 3600 });
+    S.invSeq = invSeq;
+  }
+  function save() { try { S.invSeq = invSeq; localStorage.setItem(STORE, JSON.stringify({ ...S, savedDay: dayKey(TODAY) })); } catch (e) {} }
+  function load() {
+    try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.savedDay === dayKey(TODAY) && s.trucks) { S = s; invSeq = s.invSeq || invSeq; return true; } } catch (e) {}
+    return false;
+  }
+  if (!load()) freshState();
+
+  /* ---------- feed + live pop-ups ---------- */
+  function logEvent(icon, text, amount, pop, warn) {
+    S.feed.unshift({ icon, text, amount: amount || 0, t: hhmm() });
+    S.feed = S.feed.slice(0, 30);
+    if (pop) liveToast(`${icon} ${esc(text)}${amount ? " · <b>" + etb(amount) + "</b>" : ""}`, warn);
+  }
+  function liveToast(html, warn) {
+    const d = document.createElement("div"); d.innerHTML = html; if (warn) d.className = "w"; $("lt").prepend(d);
+    setTimeout(() => d.remove(), 4200);
+    while ($("lt").children.length > 3) $("lt").lastChild.remove();
+  }
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3200); }
+
+  /* ---------- screens ---------- */
+  const SCREENS = ["summary", "approvals", "trucks", "stock"];
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    SCREENS.forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "summary") { viewOffset = 0; renderSummary(true); }
+    if (name === "approvals") renderApprovals();
+    if (name === "trucks") renderTrucks();
+    if (name === "stock") renderStock();
+    window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- day summary ---------- */
+  let viewOffset = 0, lastFlash = null;
+  const dayFor = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return d; };
+  const curDay = () => viewOffset === 0 ? S.today : makePastDay(dayFor(viewOffset));
+  function list(el, rows, emptyText) { el.innerHTML = rows.length ? rows.join("") : `<div class="empty">${emptyText}</div>`; }
+  function renderSummary(flash) {
+    const date = dayFor(viewOffset), isToday = viewOffset === 0, day = curDay(), sm = summarize(day);
+    $("d-title").textContent = isToday ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(date).split(",")[0];
+    $("d-date").textContent = `${ethStr(date)} · ${gregStr(date)}`;
+    $("next").disabled = isToday;
+    $("profit-lbl").textContent = isToday ? "Profit so far (before tax)" : "Profit (before tax)";
+    $("v-profit").textContent = etb(sm.profit);
+    $("profit").classList.toggle("loss", sm.profit < 0);
+    $("v-crates").textContent = `${fmt(sm.crates)} crates sold · ${day.sales.length} sales`;
+    $("v-sales").textContent = etb(sm.net);
+    $("v-margin").textContent = etb(sm.margin);
+    $("v-exp").textContent = etb(sm.exp);
+    const pct = Math.min(100, Math.round(sm.net / S.target * 100));
+    $("t-bar").style.width = pct + "%";
+    $("t-pct").textContent = pct + "% of daily sales target";
+    $("t-of").textContent = "Target " + etb(S.target);
+    $("t-left").textContent = sm.net >= S.target ? "Target reached 🎉" : etb(S.target - sm.net) + " to go";
+
+    // cash and bank
+    $("v-cash").innerHTML = `<div class="row"><span>Sales with VAT</span><b class="num">${etb(sm.gross)}</b></div>
+      <div class="row"><span>Paid by telebirr / CBE Birr <span class="muted small">· straight to bank</span></span><b class="num">${etb(sm.bank)}</b></div>
+      <div class="row"><span>Cash collected by sellers</span><b class="num">${etb(sm.cash)}</b></div>
+      <div class="row"><span>Sold on credit</span><b class="num">${etb(sm.credit)}</b></div>
+      <div class="row"><span>Cash deposited to bank</span><b class="num">${etb(sm.deposited)}</b></div>`;
+    const gapAmt = sm.cash - sm.deposited;
+    $("v-gap").className = "gap" + (gapAmt <= 0 ? " ok" : "");
+    $("v-gap").innerHTML = gapAmt > 0 ? `<span>Collected but not yet in the bank</span><span class="num">${etb(gapAmt)}</span>` : `<span>All cash collected is in the bank</span><span>✓</span>`;
+
+    // trucks
+    const byT = TRUCKS.map(() => ({ c: 0, n: 0 }));
+    day.sales.forEach(s => { byT[s.truck].c += s.crates; byT[s.truck].n += s.net; });
+    $("v-trucks-total").textContent = fmt(sm.crates) + " crates";
+    const maxT = Math.max(1, ...byT.map(x => x.n));
+    list($("v-trucks"), byT.map((x, i) => ({ ...x, i })).sort((a, b) => b.n - a.n).map(x =>
+      `<div class="row"><span>${TRUCKS[x.i].n} <span class="muted small">· ${TRUCKS[x.i].seller} · ${x.c} crates</span></span><b class="num">${etb(x.n)}</b></div><div class="meter"><i style="width:${x.n / maxT * 100}%"></i></div>`), "No sales yet.");
+
+    // products
+    const byP = zero(), byPn = zero(); day.sales.forEach(s => s.lines.forEach(l => { byP[l.p] += l.q; byPn[l.p] += l.q * P[l.p].p; }));
+    list($("v-products"), IDS.filter(id => byP[id]).sort((a, b) => byPn[b] - byPn[a]).map(id =>
+      `<div class="row"><span>${P[id].s} <span class="muted small">· ${byP[id]} ${id === "keg" ? "kegs" : "crates"}</span></span><b class="num">${etb(byPn[id])}</b></div>`), "No sales yet.");
+
+    // empties
+    if (isToday) {
+      $("v-empties").innerHTML = `<div class="row"><span>Full crates given out today</span><b class="num">${fmt(S.empties.outToday)}</b></div>
+        <div class="row"><span>Empties taken back today</span><b class="num">${fmt(S.empties.inToday)}</b></div>
+        <div class="row warn"><span>Out with customers now</span><b class="num">${fmt(S.empties.customers)}</b></div>
+        <div class="row"><span>Empties in our store</span><b class="num">${fmt(S.empties.store)}</b></div>`;
+    } else {
+      $("v-empties").innerHTML = `<div class="row"><span>Full crates given out</span><b class="num">${fmt(sm.crates)}</b></div>
+        <div class="row"><span>Empties taken back</span><b class="num">${fmt(sm.empties)}</b></div>
+        <div class="row warn"><span>Left with customers that day</span><b class="num">${fmt(sm.crates - sm.empties)}</b></div>`;
+    }
+
+    // cash with sellers
+    if (isToday) {
+      const tot = S.trucks.reduce((t, x) => t + x.cashOnHand, 0);
+      $("v-sellers-total").textContent = etb(tot);
+      list($("v-sellers"), S.trucks.map((t, i) => ({ t, i })).filter(x => x.t.cashOnHand > 0).sort((a, b) => b.t.cashOnHand - a.t.cashOnHand).map(x =>
+        `<div class="row"><span>${TRUCKS[x.i].seller} <span class="muted small">· ${TRUCKS[x.i].n}</span></span><b class="num">${etb(x.t.cashOnHand)}</b></div>`), "Every seller has deposited.");
+    } else {
+      $("v-sellers-total").textContent = "";
+      $("v-sellers").innerHTML = `<div class="empty">Seller balances show for today. Open <b>Trucks</b> to deposit cash.</div>`;
+    }
+
+    // brewery target (Ethiopian month)
+    const e = toEth(date); let mCrates = 0, days = 0;
+    for (let off = viewOffset; ; off--) {
+      const d = dayFor(off); if (toEth(d).m !== e.m) break;
+      mCrates += summarize(off === 0 ? S.today : makePastDay(d)).crates; days++;
+    }
+    const want = BREW_TARGET * days / 30, bp = Math.min(100, mCrates / BREW_TARGET * 100);
+    $("v-brew-day").textContent = `${ETH_MONTHS[e.m - 1]} · day ${days} of 30`;
+    $("v-brew").innerHTML = `<div style="font-family:var(--display);font-size:24px" class="num">${fmt(mCrates)} <span class="muted small" style="font-family:var(--body)">of ${fmt(BREW_TARGET)} crates</span></div>
+      <div class="lbar"><i style="width:${bp}%"></i></div>
+      <div class="row"><span>Should be at by today</span><b class="num">${fmt(want)}</b></div>
+      <div class="row"><span>${mCrates >= want ? "Ahead of pace" : "Behind pace"}</span><b class="num ${mCrates >= want ? "ok-t" : "bad-t"}">${mCrates >= want ? "+" : "−"}${fmt(Math.abs(mCrates - want))} crates</b></div>`;
+
+    // credit
+    const cred = day.sales.filter(s => s.method === "Credit"), byO = {};
+    cred.forEach(s => byO[s.outlet] = (byO[s.outlet] || 0) + s.gross);
+    $("v-credit-total").textContent = etb(sm.credit);
+    list($("v-credit"), Object.entries(byO).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([o, v]) => `<div class="row"><span>${esc(o)}</span><b class="num">${etb(v)}</b></div>`), "Nothing sold on credit.");
+
+    // expenses
+    $("v-exp-total").textContent = etb(sm.exp);
+    list($("v-explist"), day.expenses.map(x => `<div class="row"><span>${esc(x.n)}</span><b class="num">${etb(x.amount)}</b></div>`), "No approved expense this day.");
+
+    renderWeek(); renderFeed(); renderBadge();
+    if (flash && lastFlash) { lastFlash.forEach(id => { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); lastFlash = null; }
+  }
+  function renderWeek() {
+    const vals = []; for (let off = -6; off <= 0; off++) { const d = dayFor(off); vals.push({ off, d, v: summarize(off === 0 ? S.today : makePastDay(d)).net }); }
+    const max = Math.max(...vals.map(x => x.v), S.target);
+    $("week").innerHTML = vals.map(x => `<button type="button" data-off="${x.off}" class="${x.off === 0 ? "today" : ""} ${x.off === viewOffset ? "sel" : ""}" aria-label="${gregStr(x.d)}: ${etb(x.v)}">
+      <span class="v">${x.v >= 1e6 ? (x.v / 1e6).toFixed(2) + "M" : Math.round(x.v / 1000) + "k"}</span><span class="track"><span class="b" style="height:${Math.max(4, x.v / max * 100)}%"></span></span><span class="d">${x.off === 0 ? "Today" : x.d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`).join("");
+  }
+  $("week").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; viewOffset = Number(b.dataset.off); renderSummary(); });
+  function renderFeed() {
+    const isToday = viewOffset === 0;
+    $("feed-state").textContent = isToday ? (liveOn ? "● live" : "paused") : "";
+    $("feed").innerHTML = !isToday ? `<div class="empty">Live activity shows for today. Tap <b>Today</b> in the chart.</div>`
+      : S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount ? etb(e.amount) : ""}</b></div>`).join("")
+      : `<div class="empty">Waiting for the next sale… (turn on <b>Live</b> at the top, or record a sale in <b>Trucks</b>)</div>`;
+  }
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  $("prev").addEventListener("click", () => { viewOffset--; renderSummary(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderSummary(); } });
+
+  /* ---------- sheet ---------- */
+  function openSheet(html, after) { stepCtx = null; $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("button,input,select"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+  const drill = (id, fn) => { const el = $(id); el.addEventListener("click", fn); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  function productTable(day, field) {
+    const q = zero(), v = zero();
+    day.sales.forEach(s => s.lines.forEach(l => { q[l.p] += l.q; v[l.p] += field === "sales" ? l.q * P[l.p].p : l.q * (P[l.p].p - P[l.p].c); }));
+    return IDS.filter(id => q[id]).sort((a, b) => v[b] - v[a]).map(id => `<div class="row"><span>${P[id].s} <span class="muted small">· ${q[id]} × ${etb(field === "sales" ? P[id].p : P[id].p - P[id].c)}</span></span><b class="num">${etb(v[id])}</b></div>`).join("") || '<div class="empty">No sales.</div>';
+  }
+  drill("k-sales", () => { const d = curDay(), sm = summarize(d);
+    openSheet(`<h2>Sales ${etb(sm.net)}</h2><p class="muted">Before VAT · ${fmt(sm.crates)} crates · ${gregStr(dayFor(viewOffset))}</p><div style="margin-top:12px">${productTable(d, "sales")}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-margin", () => { const d = curDay(), sm = summarize(d);
+    openSheet(`<h2>Gross margin ${etb(sm.margin)}</h2><p class="muted">Sales ${etb(sm.net)} − cost of beer ${etb(sm.cost)} · ${sm.net ? (sm.margin / sm.net * 100).toFixed(1) : 0}% margin</p><div style="margin-top:12px">${productTable(d, "margin")}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-exp", () => { const d = curDay();
+    openSheet(`<h2>Expenses ${etb(summarize(d).exp)}</h2><p class="muted">Approved expenses this day, before tax.</p><div style="margin-top:12px">${d.expenses.map(x => `<div class="row"><span>${esc(x.n)}</span><b class="num">${etb(x.amount)}</b></div>`).join("") || '<div class="empty">None.</div>'}</div>
+      ${viewOffset === 0 && S.pending.length ? `<div class="actions"><button class="btn btn-gold" id="go-ap">${S.pending.length} waiting for your approval →</button></div>` : ""}<div class="actions"><button class="btn btn-line" data-close>Close</button></div>`,
+      () => { const g = $("go-ap"); g && g.addEventListener("click", () => { closeSheet(); show("approvals"); }); }); });
+  $("t-set").addEventListener("click", () => openSheet(`<h2>Daily sales target</h2><p class="muted">Before VAT. Used for the bar on Day Summary.</p>
+    <input id="t-in" type="number" min="1000" step="10000" value="${S.target}" style="margin-top:12px">
+    <div class="actions"><button class="btn btn-gold" id="t-save">Save</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      $("t-save").addEventListener("click", () => { const v = Number($("t-in").value); if (v > 0) { S.target = v; save(); closeSheet(); renderSummary(); toast("Target saved"); } });
+    }));
+
+  /* ---------- approvals ---------- */
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? etb(S.pending.reduce((t, p) => t + p.amount, 0)) : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap" data-ap="${p.id}"><div><span class="k">${esc(p.k)}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)} · ${etb(p.amount)}</span></div>
+      <div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("")
+      : `<div class="empty">All done. New requests appear here${liveOn ? " while Live is on" : ""}.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${esc(p.k)} · ${p.ok ? "approved" : "rejected"} ${p.t}</span></span><b class="num" style="color:${p.ok ? "var(--green)" : "var(--red)"}">${etb(p.amount)}</b></div>`).join("")
+      : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    b.closest(".ap").classList.add("gone");
+    setTimeout(() => {
+      S.pending = S.pending.filter(x => x.id !== id);
+      let amount = p.amount, msg;
+      if (ok && p.promo) {
+        const q = giveFree(p.promo.p, p.promo.q, p.promo.outlet);
+        amount = q * P[p.promo.p].c;
+        msg = q ? `Approved. ${q} crates leave the warehouse; profit is now ${etb(summarize(S.today).profit)}.` : "Not enough stock in the warehouse for this promotion.";
+      } else if (ok) {
+        S.today.expenses.push({ n: p.what, amount: p.amount });
+        msg = `Approved. Profit is now ${etb(summarize(S.today).profit)}.`;
+      } else msg = "Rejected. The driver is told.";
+      S.decided.push({ ...p, amount, ok, t: hhmm() });
+      if (ok) lastFlash = ["c-money", "c-expenses"];
+      logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, amount, false);
+      save(); renderApprovals(); toast(msg);
+    }, 280);
+  });
+
+  /* ---------- trucks ---------- */
+  const sumQ = o => IDS.reduce((t, id) => t + o[id], 0);
+  function renderTrucks() {
+    $("trucks").innerHTML = S.trucks.map((t, i) => {
+      const on = sumQ(t.load), loaded = sumQ(t.loaded), sold = sumQ(t.sold), ret = sumQ(t.returned);
+      return `<div class="card truck" id="truck-${i}">
+        <h3>${TRUCKS[i].n} <small>${TRUCKS[i].area}</small></h3>
+        <div class="who">Seller: ${TRUCKS[i].seller}</div>
+        <div class="stats"><div><b class="num">${on}</b><small>on truck</small></div><div><b class="num">${sold}</b><small>sold</small></div><div><b class="num">${ret}</b><small>returned</small></div><div><b class="num">${t.emptiesIn}</b><small>empties in</small></div></div>
+        <div class="load" title="${on} of ${loaded} loaded crates still on the truck"><i style="width:${loaded ? on / loaded * 100 : 0}%"></i></div>
+        <div class="cash"><span class="muted">Cash collected today</span><b class="num">${etb(t.cashToday)}</b></div>
+        <div class="cash"><span class="muted">Cash with seller now</span><b class="num" style="color:${t.cashOnHand > 20000 ? "var(--red)" : "inherit"}">${etb(t.cashOnHand)}</b></div>
+        <div class="acts">
+          <button class="btn btn-gold" type="button" data-sale="${i}" ${on ? "" : "disabled"}>🍺 Record sale</button>
+          <button class="btn btn-dark" type="button" data-dep="${i}" ${t.cashOnHand > 0 ? "" : "disabled"}>🏦 Deposit cash</button>
+          <button class="btn btn-line" type="button" data-ret="${i}" ${on ? "" : "disabled"}>↩️ Return unsold</button>
+        </div></div>`;
+    }).join("");
+    const inv = S.today.sales.slice().reverse();
+    $("v-invcount").textContent = inv.length + " today";
+    $("invoices").innerHTML = inv.length ? inv.slice(0, 10).map(s => `<div class="row" style="align-items:center"><span><b class="num">${s.no}</b><br><span class="muted small">${esc(s.outlet)} · ${TRUCKS[s.truck].n} · ${s.lines.map(l => P[l.p].s + " × " + l.q).join(", ")} · ${s.method}</span></span><span style="text-align:right"><b class="num">${etb(s.gross)}</b><br><span class="tag">Registered</span></span></div>`).join("")
+      : `<div class="empty">No invoices yet.</div>`;
+  }
+  $("trucks").addEventListener("click", e => {
+    const s = e.target.closest("[data-sale]"), d = e.target.closest("[data-dep]"), r = e.target.closest("[data-ret]");
+    if (s) saleSheet(Number(s.dataset.sale));
+    if (d) depositSheet(Number(d.dataset.dep));
+    if (r) returnSheet(Number(r.dataset.ret));
+  });
+  function stepper(id, label, sub, max, val) {
+    return `<div class="step"><span><b>${label}</b><small>${sub}</small></span><span class="qty"><button type="button" data-st="${id}" data-d="-1" aria-label="One less ${label}">−</button><b class="num" id="q-${id}">${val || 0}</b><button type="button" data-st="${id}" data-d="1" aria-label="One more ${label}" data-max="${max}">+</button></span></div>`;
+  }
+  // one listener for every sheet; each sheet sets its own stepper context
+  let stepCtx = null;
+  function wireSteppers(q, onChange) { stepCtx = { q, onChange }; }
+  $("sheet").addEventListener("click", e => {
+    const b = e.target.closest("[data-st]"); if (!b || !stepCtx) return;
+    const { q, onChange } = stepCtx;
+    const id = b.dataset.st, max = Number($("sheet").querySelector(`[data-st="${id}"][data-d="1"]`).dataset.max);
+    q[id] = Math.max(0, Math.min(max, (q[id] || 0) + Number(b.dataset.d) * (e.shiftKey ? 10 : 1)));
+    $("q-" + id).textContent = q[id]; onChange && onChange();
+  });
+  function saleSheet(ti) {
+    const t = S.trucks[ti], q = zero(); let pm = "Cash";
+    openSheet(`<h2>Record sale · ${TRUCKS[ti].n}</h2><p class="muted">${TRUCKS[ti].seller} · prices before VAT</p>
+      <label class="f" for="s-out">Outlet</label><select id="s-out">${OUTLETS.map(o => `<option>${esc(o)}</option>`).join("")}</select>
+      <label class="f">Products</label><div>${IDS.filter(id => t.load[id] > 0).map(id => stepper(id, P[id].s, `${etb(P[id].p)} each · ${t.load[id]} on truck`, t.load[id], 0)).join("")}</div>
+      <label class="f" for="s-emp">Empty crates taken back</label><input id="s-emp" type="number" min="0" value="0">
+      <label class="f">Payment</label><div class="methods" id="s-pm">${METHODS.map(m => `<button type="button" aria-pressed="${m === pm}" data-m="${m}">${m}</button>`).join("")}</div>
+      <div class="row total"><span>Total with VAT</span><span class="num" id="s-total">ETB 0</span></div>
+      <div class="actions"><button class="btn btn-gold" id="s-go" disabled>Issue invoice</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      let empTouched = false;
+      const upd = () => {
+        const lines = IDS.map(id => ({ p: id, q: q[id] })).filter(l => l.q), pr = priceLines(lines);
+        if (!empTouched) $("s-emp").value = pr.crates;
+        $("s-emp").max = pr.crates;
+        $("s-total").textContent = etb(pr.gross); $("s-go").disabled = !lines.length;
+        $("s-go").textContent = lines.length ? `Issue invoice · ${etb(pr.gross)}` : "Issue invoice";
+      };
+      $("s-emp").addEventListener("input", () => { empTouched = true; });
+      wireSteppers(q, upd);
+      $("s-pm").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (!b) return; pm = b.dataset.m; $("s-pm").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+      $("s-go").addEventListener("click", () => {
+        const outlet = $("s-out").value, lines = IDS.map(id => ({ p: id, q: q[id] })).filter(l => l.q);
+        const sale = recordSale(ti, outlet, lines, pm, Math.max(0, Number($("s-emp").value) || 0));
+        if (!sale) return;
+        logEvent("🍺", `${TRUCKS[ti].n} sold to ${outlet} · ${pm}`, sale.gross, false);
+        lastFlash = ["c-money", "c-trucks", "c-cash", "c-empties", "c-products"].concat(pm === "Credit" ? ["c-credit"] : pm === "Cash" ? ["c-sellers"] : []);
+        save(); renderTrucks();
+        openSheet(`<h2>Sale recorded ✓</h2><p class="muted">${esc(outlet)} · ${pm}</p>
+          <div class="receipt"><b>TAX INVOICE</b>${sale.lines.map(l => `<div class="l"><span>${P[l.p].s} × ${l.q}</span><span>${fmt(P[l.p].p * l.q)}</span></div>`).join("")}
+          <div class="l"><span>VAT 15%</span><span>${fmt(sale.net * VAT)}</span></div>------------------------------
+          <div class="l"><b>TOTAL ETB</b><b>${fmt(sale.gross)}</b></div><div>Empties taken back: ${sale.empties} of ${sale.crates}</div><div>No ${sale.no}</div><span class="stamp">REGISTERED · ተመዝግቧል</span></div>
+          <p class="muted small" style="margin-top:8px">In the real system this invoice is registered with the Ministry of Revenues as the sale happens.</p>
+          <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Day Summary</button><button class="btn btn-line" data-close>Back to trucks</button></div>`,
+          () => $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+      });
+    });
+  }
+  function depositSheet(ti) {
+    const t = S.trucks[ti];
+    openSheet(`<h2>Deposit cash · ${TRUCKS[ti].seller}</h2><p class="muted">${TRUCKS[ti].n} has ${etb(t.cashOnHand)} in cash.</p>
+      <label class="f" for="d-amt">Amount deposited to the bank</label><input id="d-amt" type="number" min="1" max="${Math.round(t.cashOnHand)}" value="${Math.round(t.cashOnHand)}">
+      <div class="actions"><button class="btn btn-gold" id="d-go">Record deposit</button><button class="btn btn-line" data-close>Cancel</button></div>`, () =>
+      $("d-go").addEventListener("click", () => {
+        const amt = deposit(ti, Math.max(0, Number($("d-amt").value) || 0)); if (!amt) return;
+        logEvent("🏦", `${TRUCKS[ti].seller} deposited cash to the bank`, amt, false);
+        lastFlash = ["c-cash", "c-sellers"]; save(); renderTrucks(); closeSheet();
+        toast(`Deposit of <b>${etb(amt)}</b> recorded. ${TRUCKS[ti].seller} still holds ${etb(t.cashOnHand)}.`);
+      }));
+  }
+  function returnSheet(ti) {
+    const t = S.trucks[ti], n = sumQ(t.load);
+    openSheet(`<h2>Return unsold · ${TRUCKS[ti].n}</h2><p class="muted">${n} full crates go back into the warehouse at the end of the day.</p>
+      <div style="margin-top:10px">${IDS.filter(id => t.load[id]).map(id => `<div class="row"><span>${P[id].s}</span><b class="num">${t.load[id]}</b></div>`).join("")}</div>
+      <div class="actions"><button class="btn btn-gold" id="r-go">Return to warehouse</button><button class="btn btn-line" data-close>Cancel</button></div>`, () =>
+      $("r-go").addEventListener("click", () => { const k = returnUnsold(ti); logEvent("↩️", `${TRUCKS[ti].n} returned ${k} unsold crates`, 0, false); save(); renderTrucks(); closeSheet(); toast(`${k} crates are back in the warehouse.`); }));
+  }
+
+  /* ---------- stock ---------- */
+  function renderStock() {
+    let value = 0;
+    const rows = IDS.map(id => {
+      const on = S.trucks.reduce((t, x) => t + x.load[id], 0), v = S.stock[id] * P[id].c; value += v;
+      return `<div class="tr"><span><b>${P[id].s}</b><span class="muted small">${P[id].n.replace(P[id].s, "").trim() || "&nbsp;"}</span> ${S.stock[id] < P[id].low ? '<span class="low">Low</span>' : ""}</span><span class="num">${S.stock[id]}</span><span class="num">${on}</span><span class="num">${fmt(v)}</span></div>`;
+    }).join("");
+    $("v-wh").innerHTML = `<div class="tr h"><span>Product</span><span>In store</span><span>On trucks</span><span>Value (ETB)</span></div>${rows}`;
+    $("v-wh-value").textContent = etb(value) + " at cost";
+    $("v-empties2").innerHTML = `<div class="row"><span>In our store</span><b class="num">${fmt(S.empties.store)}</b></div>
+      <div class="row warn"><span>Out with customers</span><b class="num">${fmt(S.empties.customers)}</b></div>
+      <div class="row"><span>Taken back from outlets today</span><b class="num">${fmt(S.empties.inToday)}</b></div>
+      <div class="row"><span>Sent back to the brewery today</span><b class="num">${fmt(S.empties.toBrewery)}</b></div>`;
+    const pu = S.today.purchases;
+    $("v-purch-total").textContent = pu.length ? etb(pu.reduce((t, x) => t + x.cost, 0)) : "";
+    $("v-purch").innerHTML = pu.length ? pu.slice().reverse().map(x => `<div class="row"><span>${x.lines.map(l => P[l.p].s + " × " + l.q).join(", ")}<br><span class="muted small">${x.t} · ${x.sentBack} empties sent back</span></span><b class="num">${etb(x.cost)}</b></div>`).join("")
+      : `<div class="empty">Nothing received yet today.</div>`;
+    $("v-rec").innerHTML = `<div class="tr h"><span>Product</span><span>Start + received</span><span>Where it is now</span></div>` + IDS.map(id => {
+      const c = stockCheck(id);
+      return `<div class="tr"><span><b>${P[id].s}</b></span><span class="num">${S.opening[id]} + ${S.received[id]} = <b style="display:inline">${c.left}</b></span><span class="num">${S.stock[id]} + ${c.onTrucks} + ${S.sold[id]} + ${S.promo[id]} + ${S.loss[id]} = <b style="display:inline">${c.right}</b> <span class="${c.ok ? "ok-t" : "bad-t"}">${c.ok ? "✓" : "✗"}</span></span></div>`;
+    }).join("");
+  }
+  $("b-receive").addEventListener("click", () => {
+    const q = zero();
+    openSheet(`<h2>Receive from brewery</h2><p class="muted">Full crates arrive; the same number of empties go back to the brewery if we have them.</p>
+      <div style="margin-top:10px">${IDS.map(id => stepper(id, P[id].s, `${etb(P[id].c)} each from brewery · ${S.stock[id]} in store`, 2000, 0)).join("")}</div>
+      <p class="muted small" style="margin-top:6px">Tip: hold Shift to add 10 at a time.</p>
+      <div class="row total"><span>Purchase cost (before VAT)</span><span class="num" id="r-total">ETB 0</span></div>
+      <div class="actions"><button class="btn btn-gold" id="r-go" disabled>Receive into warehouse</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      wireSteppers(q, () => { const c = IDS.reduce((t, id) => t + q[id] * P[id].c, 0); $("r-total").textContent = etb(c); $("r-go").disabled = !c; });
+      $("r-go").addEventListener("click", () => {
+        const pu = receive(q); if (!pu) return;
+        logEvent("📦", `Received ${pu.crates} crates from the brewery`, pu.cost, false);
+        save(); renderStock(); closeSheet(); toast(`${pu.crates} crates received. ${pu.sentBack} empties went back to the brewery.`);
+      });
+    });
+  });
+  $("b-load").addEventListener("click", () => {
+    const q = zero();
+    openSheet(`<h2>Load truck</h2><p class="muted">Move full crates from the warehouse onto a truck.</p>
+      <label class="f" for="l-truck">Truck</label><select id="l-truck">${TRUCKS.map((t, i) => `<option value="${i}">${t.n} · ${t.seller} · ${sumQ(S.trucks[i].load)} on board</option>`).join("")}</select>
+      <div style="margin-top:10px">${IDS.map(id => stepper(id, P[id].s, `${S.stock[id]} in store`, S.stock[id], 0)).join("")}</div>
+      <div class="actions"><button class="btn btn-gold" id="l-go" disabled>Load</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      wireSteppers(q, () => { const n = sumQ(q); $("l-go").disabled = !n; $("l-go").textContent = n ? `Load ${n} crates` : "Load"; });
+      $("l-go").addEventListener("click", () => {
+        const ti = Number($("l-truck").value), n = loadTruck(ti, q); if (!n) return;
+        logEvent("🚚", `${TRUCKS[ti].n} loaded ${n} crates`, 0, false);
+        save(); renderStock(); closeSheet(); toast(`${n} crates loaded on ${TRUCKS[ti].n}.`);
+      });
+    });
+  });
+  $("b-count").addEventListener("click", () => {
+    openSheet(`<h2>Stock count</h2><p class="muted">Count the warehouse and enter what you found. Any difference is shown in Birr.</p>
+      <label class="f" for="c-prod">Product</label><select id="c-prod">${IDS.map(id => `<option value="${id}">${P[id].s} · system says ${S.stock[id]}</option>`).join("")}</select>
+      <label class="f" for="c-qty">Counted</label><input id="c-qty" type="number" min="0" value="${S.stock.lager}">
+      <div class="row total"><span>Difference</span><span class="num" id="c-diff">0</span></div>
+      <div class="actions"><button class="btn btn-gold" id="c-go">Save count</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+      const upd = () => { const id = $("c-prod").value, d = (Number($("c-qty").value) || 0) - S.stock[id];
+        $("c-diff").innerHTML = d === 0 ? "No difference ✓" : `<span class="${d < 0 ? "bad-t" : "ok-t"}">${d > 0 ? "+" : ""}${d} crates · ${d < 0 ? "loss" : "found"} ${etb(Math.abs(d) * P[id].c)}</span>`; };
+      $("c-prod").addEventListener("change", () => { $("c-qty").value = S.stock[$("c-prod").value]; upd(); });
+      $("c-qty").addEventListener("input", upd); upd();
+      $("c-go").addEventListener("click", () => {
+        const id = $("c-prod").value, counted = Math.max(0, Math.floor(Number($("c-qty").value) || 0)), d = countStock(id, counted);
+        logEvent("🔢", `Stock count ${P[id].s}: ${d === 0 ? "matches" : (d > 0 ? "+" : "") + d + " crates"}`, d < 0 ? -d * P[id].c : 0, false);
+        if (d < 0) lastFlash = ["c-money", "c-expenses"];
+        save(); renderStock(); closeSheet();
+        toast(d === 0 ? "Count matches the system ✓" : d < 0 ? `Loss of ${-d} crates (${etb(-d * P[id].c)}) recorded as an expense.` : `${d} extra crates found and added.`);
+      });
+    });
+  });
+
+  /* ---------- live simulation ---------- */
+  let liveOn = true, liveTimer = null;
+  const R = Math.random;
+  function liveSale() {
+    const ts = S.trucks.map((t, i) => i).filter(i => sumQ(S.trucks[i].load) > 0);
+    if (ts.length < 2 && sumQ(S.stock) > 40) {
+      const ti = S.trucks.findIndex(t => sumQ(t.load) === 0);
+      if (ti >= 0) {
+        const n = loadTruck(ti, { lager: 60, premium: 25, keg: 4, malt: 15, soft: 15 });
+        if (n) { logEvent("🚚", `${TRUCKS[ti].n} reloaded ${n} crates from the warehouse`, 0, true); return true; }
+      }
+    }
+    if (!ts.length) return false;
+    const ti = pick(R, ts), lines = randomLines(R, S.trucks[ti].load); if (!lines.length) return false;
+    const c = lines.reduce((a, l) => a + l.q, 0), m = randomMethod(R), outlet = pick(R, OUTLETS);
+    const s = recordSale(ti, outlet, lines, m, Math.round(c * (0.7 + R() * 0.3))); if (!s) return false;
+    logEvent("🍺", `${TRUCKS[ti].n} sold ${s.crates} crates to ${outlet} · ${m}`, s.gross, true);
+    lastFlash = ["c-money", "c-trucks", "c-cash", "c-empties", "c-products"];
+    return true;
+  }
+  function liveTick() {
+    if (document.hidden) return;
+    const x = R();
+    if (x < 0.58) liveSale();
+    else if (x < 0.72) {
+      const t = S.trucks.map((t, i) => i).filter(i => S.trucks[i].cashOnHand > 4000);
+      if (!t.length) liveSale(); else {
+        const ti = pick(R, t), amt = deposit(ti, Math.round(S.trucks[ti].cashOnHand * (0.6 + R() * 0.4) / 100) * 100);
+        logEvent("🏦", `${TRUCKS[ti].seller} deposited cash to the bank`, amt, true); lastFlash = ["c-cash", "c-sellers"];
+      }
+    } else if (x < 0.82) {
+      const low = IDS.find(id => S.stock[id] < P[id].low && !S.alerted[id]);
+      if (low) { S.alerted[low] = 1; logEvent("⚠️", `Low stock: ${P[low].s}, ${S.stock[low]} left in the warehouse`, 0, true, true); }
+      else liveSale();
+    } else if (x < 0.98) liveSale();
+    else {
+      if (S.pending.length >= 3) liveSale(); else {
+        const ti = Math.floor(R() * 5), opts = [["Fuel", `Diesel, ${40 + Math.floor(R() * 4) * 10} L`, 0], ["Repair", `Tyre puncture, ${TRUCKS[ti].n}`, 1400], ["Expense", "Parking and road fees", 450], ["Fuel", "Diesel top-up, 30 L", 2790]];
+        const [k, what, fixed] = pick(R, opts), amount = fixed || Number(what.match(/\d+/)[0]) * 93;
+        S.pending.push({ id: ++S.apSeq, k, who: `${TRUCKS[ti].seller} · ${TRUCKS[ti].n}`, what, amount });
+        logEvent(k === "Fuel" ? "⛽" : "📝", `${TRUCKS[ti].seller} asks you to approve: ${what}`, amount, true);
+        if (!$("s-approvals").hidden) renderApprovals();
+      }
+    }
+    save();
+    if (!$("s-summary").hidden && viewOffset === 0) renderSummary(true); else renderBadge();
+    if (!$("s-trucks").hidden) renderTrucks();
+    if (!$("s-stock").hidden) renderStock();
+  }
+  function setLive(on) {
+    liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(liveTimer);
+    if (on) liveTimer = setInterval(liveTick, 6000);
+    renderFeed();
+  }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: trucks and staff keep working" : "Live paused"); });
+
+  $("reset").addEventListener("click", () => {
+    try { localStorage.removeItem(STORE); } catch (e) {}
+    freshState(); $("lt").innerHTML = ""; save(); show("summary"); toast("Demo reset");
+  });
+
+  renderSummary(); renderBadge();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+})();
+</script>
+</body>
+</html>
