@@ -114,7 +114,9 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); bord
 .note { font-size: 14px; color: var(--muted); }
 
 /* footer */
-footer.site { background: var(--black); color: #B9BBBF; padding: 40px 0 30px; font-size: 15px; margin-top: 64px; }
+footer.site { background: var(--black); color: #B9BBBF; padding: 40px 0 30px; font-size: 15px; }
+.tibeb { height: 16px; margin-top: 64px; background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='16' viewBox='0 0 48 16'><rect width='48' height='16' fill='%230E0F10'/><path d='M0 1h48M0 15h48' stroke='%23D3A628' stroke-width='1'/><path d='M12 4l4 4-4 4-4-4z' fill='%23D3A628'/><path d='M36 4l4 4-4 4-4-4z' fill='none' stroke='%23D3A628' stroke-width='1.2'/><path d='M22 8h4M46 8h4M-2 8h4' stroke='%23D3A628' stroke-width='1.2'/><circle cx='24' cy='8' r='1.2' fill='%23F2C94C'/></svg>") repeat-x center / auto 16px; }
+.nav img, .foot-grid img { width: auto; }
 .foot-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 26px; }
 .foot-grid img { height: 34px; display: block; margin-bottom: 10px; }
 .foot-grid h4 { color: #fff; font-size: 14px; margin-bottom: 10px; font-family: var(--body); }

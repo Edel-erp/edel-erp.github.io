@@ -33,7 +33,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
 <style>
 :root {
   --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
@@ -357,13 +357,104 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   .marquee .track ul + ul { display: none; }
   .points div:hover .ic { animation: none; }
 }
+
+/* ================= creative upgrade ================= */
+.nav img, .foot-cols img { width: auto; }
+/* tibeb band */
+.tibeb { height: 16px; background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='16' viewBox='0 0 48 16'><rect width='48' height='16' fill='%230E0F10'/><path d='M0 1h48M0 15h48' stroke='%23D3A628' stroke-width='1'/><path d='M12 4l4 4-4 4-4-4z' fill='%23D3A628'/><path d='M36 4l4 4-4 4-4-4z' fill='none' stroke='%23D3A628' stroke-width='1.2'/><path d='M22 8h4M46 8h4M-2 8h4' stroke='%23D3A628' stroke-width='1.2'/><circle cx='24' cy='8' r='1.2' fill='%23F2C94C'/></svg>") repeat-x center / auto 16px; }
+.tibeb.light { filter: none; }
+
+/* hero question chips */
+.ask-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.ask-chips span { width: 100%; font-size: 13px; color: var(--muted); font-weight: 600; }
+.ask-chips a { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; transition: border-color .15s, transform .15s, background .15s; }
+.ask-chips a:hover { border-color: #25D366; transform: translateY(-1px); background: #F1FBF4; }
+.ask-chips a svg { width: 15px; height: 15px; color: #1DA851; }
+
+/* why switch: before/after + calculator */
+.why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; align-items: start; }
+@media (max-width: 900px) { .why-grid { grid-template-columns: 1fr; } }
+.ba { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: #fff; aspect-ratio: 4 / 4.4; user-select: none; touch-action: pan-y; }
+.ba-side { position: absolute; inset: 0; padding: 22px; display: grid; align-content: start; gap: 6px; }
+.ba-paper { background: repeating-linear-gradient(#FBF7EA 0 27px, #D9D2BC 27px 28px); font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive; color: #3B3A6B; }
+.ba-paper h4 { font: 700 18px "Segoe Print", "Bradley Hand", cursive; margin-bottom: 6px; transform: rotate(-1deg); }
+.ba-paper .ln { display: flex; justify-content: space-between; font-size: 15px; transform: rotate(-.6deg); }
+.ba-paper .ln s { color: #B3261E; }
+.ba-paper .smudge { position: absolute; right: 26px; bottom: 70px; width: 90px; height: 50px; background: radial-gradient(closest-side, rgba(90,70,40,.18), transparent); border-radius: 50%; }
+.ba-paper .note { color: #B3261E; font-size: 14px; margin-top: 10px; transform: rotate(-2deg); }
+.ba-new { background: #fff; font-family: var(--mono); font-size: 13px; color: var(--ink); clip-path: inset(0 0 0 var(--cut, 50%)); }
+.ba-new h4 { font: 700 15px var(--body); letter-spacing: .02em; }
+.ba-new .ln { display: flex; justify-content: space-between; border-bottom: 1px solid #F0EEE8; padding: 5px 0; }
+.ba-new .tot { display: flex; justify-content: space-between; background: var(--black); color: #fff; padding: 8px 10px; border-radius: 6px; font-weight: 700; margin-top: 6px; }
+.ba-new .reg { display: flex; gap: 10px; align-items: center; margin-top: 8px; color: var(--muted); font-size: 11.5px; }
+.ba-new .reg i { width: 52px; height: 52px; flex: none; background: conic-gradient(from 90deg, #0E0F10 25%, #fff 0 50%, #0E0F10 0 75%, #fff 0) 0 0 / 10px 10px; border: 3px solid #0E0F10; }
+.ba-new .reg b { color: var(--ink); }
+.ba-new .stamp2 { margin-left: auto; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 7px; font: 700 10px var(--body); letter-spacing: .1em; transform: rotate(-6deg); }
+.ba-handle { position: absolute; top: 0; bottom: 0; left: var(--cut, 50%); width: 3px; margin-left: -1.5px; background: var(--gold); pointer-events: none; }
+.ba-handle::after { content: "⟷"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--black); display: grid; place-items: center; font-weight: 700; box-shadow: 0 8px 20px -6px rgba(0,0,0,.4); }
+.ba input[type=range] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.ba-tag { position: absolute; bottom: 12px; font: 700 12px var(--body); padding: 5px 10px; border-radius: 999px; z-index: 2; pointer-events: none; }
+.ba-tag.l { left: 12px; background: #FBE7E5; color: #B3261E; } .ba-tag.r { right: 12px; background: var(--gold); color: var(--black); }
+.ba-caption { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; font-size: 14.5px; }
+.ba-caption div { color: var(--muted); } .ba-caption b { display: block; color: var(--ink); }
+
+.calc { background: var(--black); color: #fff; border-radius: 18px; padding: clamp(20px, 3vw, 28px); display: grid; gap: 14px; }
+.calc h3 { font-size: 22px; } .calc p.s { color: #B9BBBF; font-size: 15px; }
+.calc label { font: 700 13px var(--body); color: #D9DADC; display: block; margin-bottom: 6px; }
+.calc .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .calc .row2 { grid-template-columns: 1fr; } }
+.calc input[type=number], .calc select { width: 100%; font: inherit; padding: 11px 12px; border-radius: 10px; border: 1px solid #3A3C40; background: #17181A; color: #fff; }
+.calc input[type=range] { width: 100%; accent-color: var(--gold); }
+.calc .pct { color: var(--gold); font-weight: 700; }
+.calc .out { background: #17181A; border: 1px solid #2A2C30; border-radius: 14px; padding: 16px; display: grid; gap: 6px; }
+.calc .out small { color: #9C9EA2; }
+.odo { display: flex; align-items: baseline; gap: 2px; font: 700 clamp(30px, 6vw, 40px)/1 var(--display); color: var(--gold); overflow: hidden; }
+.odo .cur { font-size: .55em; margin-right: 8px; color: #D9DADC; }
+.odo .d { display: inline-block; height: 1em; overflow: hidden; }
+.odo .d span { display: flex; flex-direction: column; transition: transform .9s cubic-bezier(.2,.8,.2,1); }
+.odo .d span i { font-style: normal; height: 1em; line-height: 1; }
+.calc .equal { color: #D9DADC; font-size: 15px; }
+.calc .note { color: #8E9095; font-size: 12.5px; }
+
+/* desktop QR + contact preference */
+.qr-card { display: none; margin-top: 22px; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px; gap: 14px; align-items: center; grid-template-columns: 112px 1fr; }
+@media (min-width: 900px) and (hover: hover) { .qr-card { display: grid; } }
+.qr-card .qr { width: 112px; height: 112px; display: grid; place-items: center; background: var(--soft); border-radius: 10px; color: var(--muted); font-size: 12px; text-align: center; }
+.qr-card .qr img, .qr-card .qr svg { width: 112px; height: 112px; }
+.qr-card b { display: block; font-family: var(--display); font-size: 16px; }
+.qr-card span { color: var(--muted); font-size: 14px; }
+
+/* Fidel texture behind the dark ERP section */
+#erp { position: relative; overflow: hidden; isolation: isolate; }
+.fidel { position: absolute; inset: -10% -5%; z-index: -1; pointer-events: none; font: 600 clamp(60px, 9vw, 120px)/1.25 "Noto Sans Ethiopic", serif; color: rgba(211,166,40,.045); display: flex; flex-wrap: wrap; gap: .2em .6em; align-content: flex-start; animation: fidelDrift 60s linear infinite alternate; }
+@keyframes fidelDrift { to { transform: translate3d(-4%, -6%, 0); } }
+
+/* cursor spotlight on dark cards (mouse only) */
+@media (hover: hover) and (pointer: fine) {
+  .ind-panel, .ind-preview, .ind-features li { position: relative; }
+  .ind-panel::after, .ind-preview::after, .ind-features li::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .25s;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(211,166,40,.14), transparent 60%); }
+  .ind-panel:hover::after, .ind-preview:hover::after, .ind-features li:hover::after { opacity: 1; }
+  .ind-features li:hover { border-color: rgba(211,166,40,.45); }
+}
+
+/* Ethiopian time in the footer */
+.eth-clock { display: inline-flex; align-items: center; gap: 10px; color: #D9DADC; }
+.eth-clock svg { width: 34px; height: 34px; flex: none; }
+.eth-clock small { display: block; color: #9C9EA2; font-size: 12px; }
+
+/* data saver: no decorative motion */
+.save-data .marquee .track, .save-data .fidel, .save-data .flow .wire i, .save-data .slip-reg::before { animation: none !important; }
+.save-data .fidel { display: none; }
+@media (prefers-reduced-data: reduce) { .marquee .track, .fidel, .flow .wire i { animation: none !important; } .fidel { display: none; } }
+@media (prefers-reduced-motion: reduce) { .fidel { animation: none; } .odo .d span { transition: none; } }
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap nav">
-    <a href="#top" aria-label="Edel home"><img src="edel-logo-web.png" alt="Edel: e-invoicing software for Ethiopia"></a>
+    <a href="#top" aria-label="Edel home"><img src="edel-logo-web-360.webp" srcset="edel-logo-web-360.webp 360w, edel-logo-web.webp 720w" sizes="128px" width="720" height="338" alt="Edel: e-invoicing software for Ethiopia"></a>
     <nav aria-label="Main" id="main-nav">
       <a href="e-invoicing-ethiopia/">E-invoicing guide</a>
       <a href="#erp">ERP</a>
@@ -389,6 +480,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
           <a class="btn btn-gold" href="#request">Request e-invoice</a>
           <a class="btn btn-line" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp us</a>
         </div>
+        <div class="ask-chips"><span>Or ask us on WhatsApp:</span><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20is%20e-invoicing%20required%20for%20my%20business%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>Is e-invoicing required for me?</a><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20what%20would%20Edel%20cost%20for%20my%20business%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>What would it cost me?</a><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20a%20demo%20of%20Edel." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>Show me a demo</a><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%20already%20use%20other%20software.%20Can%20Edel%20work%20for%20me%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>I already use other software</a></div>
         <ul class="trust">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>Ministry approved</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7M7.5 5v1.5c0 3-2 5.5-4 6.5M5 9c1 2 3 3.5 6 4.5"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>Amharic &amp; English</li>
@@ -406,6 +498,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
     <div class="track"><ul><li>Pay by telebirr</li><li>CBE Birr</li><li>Cards</li><li>Bank transfer</li><li>Cash</li><li>Registered e-invoices</li><li>Amharic and English</li><li>Ethiopian calendar</li><li>Birr and VAT 15%</li><li>Keeps selling when the internet drops</li><li>Follow your business from anywhere</li></ul><ul aria-hidden="true"><li>Pay by telebirr</li><li>CBE Birr</li><li>Cards</li><li>Bank transfer</li><li>Cash</li><li>Registered e-invoices</li><li>Amharic and English</li><li>Ethiopian calendar</li><li>Birr and VAT 15%</li><li>Keeps selling when the internet drops</li><li>Follow your business from anywhere</li></ul></div>
   </div>
 
+  <div class="tibeb" aria-hidden="true"></div>
   <section class="band soft" id="einvoice">
     <div class="wrap">
       <h2 class="reveal">E-invoice</h2>
@@ -426,7 +519,65 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
     </div>
   </section>
 
+  <section class="band" id="why">
+    <div class="wrap">
+      <h2 class="reveal">From receipt book to registered e-invoice</h2>
+      <p class="intro">Drag the gold handle to see the difference. Then work out what unrecorded sales add up to in your business.</p>
+      <div class="why-grid">
+        <div>
+          <div class="ba" id="ba" style="--cut:50%">
+            <div class="ba-side ba-paper" aria-hidden="true">
+              <h4>Receipt No. 0347</h4>
+              <div class="ln"><span>Teff 25kg × 20</span><span>65,000</span></div>
+              <div class="ln"><span>Oil 5L × 36</span><span><s>41,280</s> 42,480</span></div>
+              <div class="ln"><span>Pasta × 15</span><span>20,100</span></div>
+              <div class="ln"><span>VAT?</span><span>…</span></div>
+              <div class="ln"><b>Total</b><b>~146,000</b></div>
+              <div class="note">No official number. Copy lost?</div>
+              <div class="smudge"></div>
+            </div>
+            <div class="ba-side ba-new" aria-hidden="true">
+              <h4>TAX INVOICE · የግብር ደረሰኝ</h4>
+              <div class="ln"><span>Teff flour 25kg × 20</span><span>65,000.00</span></div>
+              <div class="ln"><span>Sunflower oil 5L × 36</span><span>42,480.00</span></div>
+              <div class="ln"><span>Pasta 500g × 15</span><span>20,100.00</span></div>
+              <div class="ln"><span>VAT 15%</span><span>19,137.00</span></div>
+              <div class="tot"><span>TOTAL ETB</span><span>146,717.00</span></div>
+              <div class="reg"><i></i><span>Official no.<br><b>Registered with the Ministry</b></span><span class="stamp2">REGISTERED</span></div>
+            </div>
+            <div class="ba-handle" aria-hidden="true"></div>
+            <span class="ba-tag l">Receipt book</span><span class="ba-tag r">Edel e-invoice</span>
+            <label class="sr" for="ba-range" style="position:absolute;left:-9999px">Compare receipt book and e-invoice</label>
+            <input id="ba-range" type="range" min="0" max="100" value="50">
+          </div>
+          <div class="ba-caption">
+            <div><b>Receipt book</b>Totals by hand, no official number, easy to lose or rewrite.</div>
+            <div><b>Edel e-invoice</b>VAT worked out, official number and QR code, in your reports straight away.</div>
+          </div>
+        </div>
+        <div class="calc" id="calc">
+          <h3>Sales your books never see</h3>
+          <p class="s">If some sales go without a receipt or a record, they never reach your books. Here is what that adds up to.</p>
+          <div class="row2">
+            <div><label for="c-type">Your business</label><select id="c-type"><option>Hotel</option><option>Restaurant or café</option><option>Shop or supermarket</option><option>Distributor</option><option>Other business</option></select></div>
+            <div><label for="c-sales">Sales on a normal day (ETB)</label><input id="c-sales" type="number" min="0" step="1000" value="120000" inputmode="numeric"></div>
+          </div>
+          <div><label for="c-share">Share of sales with no receipt or record: <span class="pct" id="c-share-v">5%</span></label><input id="c-share" type="range" min="0" max="30" value="5"></div>
+          <div><label for="c-days">Days open per month</label><input id="c-days" type="number" min="1" max="31" value="26" inputmode="numeric"></div>
+          <div class="out" aria-live="polite">
+            <small>Unrecorded sales in a year</small>
+            <div class="odo" id="odo" role="img" aria-label="ETB 0"></div>
+            <div class="equal">That is <b id="c-month">ETB 0</b> a month, or about <b id="c-days-eq">0</b> full days of sales a year.</div>
+          </div>
+          <a class="btn btn-gold" id="c-wa" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%20would%20like%20every%20sale%20recorded%20with%20Edel." target="_blank" rel="noopener">Record every sale with Edel →</a>
+          <p class="note">An estimate from your own numbers. With Edel, every sale is a registered e-invoice and goes straight into your reports.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="band dark" id="erp">
+    <div class="fidel" aria-hidden="true"><span>ሀ</span><span>ለ</span><span>ሐ</span><span>መ</span><span>ሠ</span><span>ረ</span><span>ሰ</span><span>ሸ</span><span>ቀ</span><span>በ</span><span>ተ</span><span>ቸ</span><span>ኀ</span><span>ነ</span><span>ኘ</span><span>አ</span><span>ከ</span><span>ኸ</span><span>ወ</span><span>ዐ</span><span>ዘ</span><span>ዠ</span><span>የ</span><span>ደ</span><span>ጀ</span><span>ገ</span><span>ጠ</span><span>ጨ</span><span>ጰ</span><span>ጸ</span><span>ፀ</span><span>ፈ</span><span>ፐ</span><span>ሀ</span><span>ለ</span><span>ሐ</span><span>መ</span><span>ሠ</span><span>ረ</span><span>ሰ</span></div>
     <div class="wrap">
       <h2 class="reveal">ERP built for your industry</h2>
       <p class="intro">Accounts, stock, purchasing, sales and payroll in one system, connected to your e-invoices. Pick your industry to see what it does.</p>
@@ -439,7 +590,6 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         <button type="button" role="tab" id="t-farms" aria-controls="p-farms" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V9"/><path d="M12 13c-4 0-6-3-6-7 4 0 6 3 6 7z"/><path d="M12 10c3 0 5-2 5-5-3 0-5 2-5 5z"/></svg>Farms</button>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-hotels" aria-labelledby="t-hotels">
-        <figure class="ind-shot"><img src="dashboards/hotels.png" alt="Example hotel dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
         <div class="ind-head">
           <span class="ind-tag live">In use today</span>
           <h3>ERP for hotels</h3>
@@ -465,7 +615,6 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         </ol>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-beer" aria-labelledby="t-beer" hidden>
-        <figure class="ind-shot"><img src="dashboards/beer.png" alt="Example beer distribution dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
         <div class="ind-head">
           <span class="ind-tag live">In use today</span>
           <h3>ERP for beer distribution</h3>
@@ -491,7 +640,6 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         </ol>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-tours" aria-labelledby="t-tours" hidden>
-        <figure class="ind-shot"><img src="dashboards/tours.png" alt="Example tours and travel dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
         <div class="ind-head">
           <span class="ind-tag live">In use today</span>
           <h3>ERP for tours &amp; travel</h3>
@@ -517,7 +665,6 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         </ol>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-import" aria-labelledby="t-import" hidden>
-        <figure class="ind-shot"><img src="dashboards/import.png" alt="Example import and export dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
         <div class="ind-head">
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for import &amp; export</h3>
@@ -543,7 +690,6 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         </ol>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-manufacturing" aria-labelledby="t-manufacturing" hidden>
-        <figure class="ind-shot"><img src="dashboards/manufacturing.png" alt="Example manufacturing dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
         <div class="ind-head">
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for manufacturing</h3>
@@ -569,7 +715,6 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         </ol>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-farms" aria-labelledby="t-farms" hidden>
-        <figure class="ind-shot"><img src="dashboards/farms.png" alt="Example farm dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
         <div class="ind-head">
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for farms</h3>
@@ -611,7 +756,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
       <div class="phone-stage reveal" aria-label="Example owner dashboard on a phone">
         <div class="phone" id="phone">
           <div class="phone-notch"></div>
-          <div class="ph-toast" id="ph-toast" aria-hidden="true"><img src="edel-logo-web.png" alt=""><span><b id="ph-toast-t"></b><span id="ph-toast-s"></span></span></div>
+          <div class="ph-toast" id="ph-toast" aria-hidden="true"><img src="edel-logo-web-360.webp" width="720" height="338" alt="" loading="lazy"><span><b id="ph-toast-t"></b><span id="ph-toast-s"></span></span></div>
           <div class="ph-top"><span>Today</span><b id="ph-date"></b></div>
           <div class="ph-card ph-big"><small>Sales today</small><b id="ph-sales">ETB 284,650</b><span class="up">▲ 12% vs last week</span></div>
           <div class="ph-row">
@@ -653,6 +798,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
           <div><small>WhatsApp</small><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">+251 960 369445</a></div>
           <div><small>Office</small><b>Addis Ababa, Ethiopia</b></div>
         </div>
+        <div class="qr-card"><div class="qr" id="qr-box" data-url="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%20would%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business.">QR loading…</div><div><b>On a computer?</b><span>Scan with your phone's camera to start the WhatsApp chat there.</span></div></div>
       </div>
       <form id="req" novalidate action="#request">
         <div class="field"><label for="f-name">Full name</label><input id="f-name" required autocomplete="name"></div>
@@ -665,6 +811,8 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
             <option>Manufacturing</option><option>Farm</option><option>Tours &amp; travel</option>
             <option>Shop or supermarket</option><option>Restaurant or café</option><option>Other</option>
           </select></div>
+        <div class="field full"><label for="f-reach">How should we reach you?</label>
+          <select id="f-reach"><option>WhatsApp message</option><option>Call me in the morning</option><option>Call me in the afternoon</option><option>Call me in the evening</option></select></div>
         <div class="actions">
           <button class="btn btn-gold" type="submit">Send request on WhatsApp</button>
           <small id="msg" role="status" aria-live="polite">Your details open in WhatsApp, ready to send to +251 960 369445.</small>
@@ -674,16 +822,17 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   </section>
 </main>
 
+<div class="tibeb" aria-hidden="true"></div>
 <footer>
   <div class="wrap">
     <div class="foot-cols">
-      <div><img src="edel-logo-dark.png" alt="Edel Trading PLC"><p>E-invoicing and ERP for Ethiopian businesses · <span lang="am">ኤሌክትሮኒክ ደረሰኝ</span></p></div>
+      <div><img src="edel-logo-dark-360.webp" srcset="edel-logo-dark-360.webp 360w, edel-logo-dark.webp 720w" sizes="90px" width="720" height="338" alt="Edel Trading PLC" loading="lazy"><p>E-invoicing and ERP for Ethiopian businesses · <span lang="am">ኤሌክትሮኒክ ደረሰኝ</span></p></div>
       <div><h4>Industries</h4><ul><li><a href="hotel-software-ethiopia/">Hotels</a></li><li><a href="beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="farm-management-software-ethiopia/">Farms</a></li></ul></div>
       <div><h4>Free tools and guides</h4><ul><li><a href="e-invoicing-ethiopia/">E-invoicing guide</a></li><li><a href="e-invoicing-checker/">Does e-invoicing apply to me?</a></li><li><a href="vat-calculator-ethiopia/">VAT calculator (15%)</a></li><li><a href="invoice-template-ethiopia/">Free invoice template</a></li></ul></div>
       <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li></ul></div>
     </div>
     <div class="foot">
-      <span>© <span id="yr"></span> Edel Trading PLC</span><span lang="am">ግብር ይክፈሉ፣ ሀገር ይልማ።</span>
+      <span class="eth-clock"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15" fill="none" stroke="#D3A628" stroke-width="2"/><g id="eth-hand"><path d="M17 17V7" stroke="#D3A628" stroke-width="2.4" stroke-linecap="round"/></g><circle cx="17" cy="17" r="2" fill="#D3A628"/></svg><span id="eth-time" aria-live="off"></span></span><span>© <span id="yr"></span> Edel Trading PLC</span><span lang="am">ግብር ይክፈሉ፣ ሀገር ይልማ።</span>
     </div>
   </div>
 </footer>
@@ -806,7 +955,7 @@ document.documentElement.classList.add("js");
   // Request form: opens WhatsApp with the details filled in.
   // Fields have no name attribute, so a submit without JavaScript sends nothing anywhere.
   const f = document.getElementById("req"), msg = document.getElementById("msg");
-  const F = { name: "f-name", business: "f-biz", phone: "f-phone", email: "f-email", type: "f-type" };
+  const F = { name: "f-name", business: "f-biz", phone: "f-phone", email: "f-email", type: "f-type", reach: "f-reach" };
   const field = k => document.getElementById(F[k]);
   // Carry the industry from a demo or industry page: ?type=Hotel#request
   try { const t = new URLSearchParams(location.search).get("type"); if (t && [...field("type").options].some(o => o.value === t || o.text === t)) field("type").value = t; } catch (err) {}
@@ -818,7 +967,7 @@ document.documentElement.classList.add("js");
     if (missing) { say("Please add your name, business name and phone.", true); field(missing).focus(); return; }
     if (d.phone.replace(/\D/g, "").length < 9) { say("Please check the phone number.", true); field("phone").focus(); return; }
     if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { say("Please check the email address.", true); field("email").focus(); return; }
-    const text = `Hello Edel, I'd like to request e-invoice.\nName: ${d.name}\nBusiness: ${d.business}\nPhone: ${d.phone}\nEmail: ${d.email || "-"}\nBusiness type: ${d.type}`;
+    const text = `Hello Edel, I'd like to request e-invoice.\nName: ${d.name}\nBusiness: ${d.business}\nPhone: ${d.phone}\nEmail: ${d.email || "-"}\nBusiness type: ${d.type}\nReach me by: ${d.reach}`;
     const url = "https://wa.me/251960369445?text=" + encodeURIComponent(text);
     const w = window.open(url, "_blank");
     if (w) { try { w.opener = null; } catch (err) {} say("WhatsApp opened with your details. Press Send there to finish."); }
@@ -876,6 +1025,86 @@ document.documentElement.classList.add("js");
   if ("IntersectionObserver" in window) new IntersectionObserver(function (es) {
     live = es[0].isIntersecting; clearInterval(timer); if (live) { setTimeout(step, 700); timer = setInterval(step, 3200); }
   }, { threshold: 0.4 }).observe(phone);
+})();
+
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // data saver
+  try { if (navigator.connection && navigator.connection.saveData) document.documentElement.classList.add("save-data"); } catch (e) {}
+
+  // cursor spotlight
+  document.addEventListener("pointermove", function (e) {
+    var el = e.target.closest && e.target.closest(".ind-panel, .ind-preview, .ind-features li"); if (!el) return;
+    var r = el.getBoundingClientRect(); el.style.setProperty("--mx", (e.clientX - r.left) + "px"); el.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }, { passive: true });
+
+  // before / after slider
+  var ba = document.getElementById("ba"), baIn = document.getElementById("ba-range");
+  function setCut(v) { ba.style.setProperty("--cut", v + "%"); }
+  if (ba && baIn) {
+    baIn.addEventListener("input", function () { setCut(baIn.value); });
+    if (!reduce && "IntersectionObserver" in window) {
+      var hinted = false;
+      new IntersectionObserver(function (es) { if (es[0].isIntersecting && !hinted) { hinted = true; var t0 = performance.now();
+        (function anim(t) { var p = Math.min(1, (t - t0) / 1400); var v = 50 + Math.sin(p * Math.PI * 2) * 22 * (1 - p); setCut(v); baIn.value = v; if (p < 1) requestAnimationFrame(anim); })(t0); } }, { threshold: .5 }).observe(ba);
+    }
+  }
+
+  // "sales your books never see" calculator with odometer
+  var PRESET = { "Hotel": 120000, "Restaurant or café": 45000, "Shop or supermarket": 60000, "Distributor": 400000, "Other business": 50000 };
+  var cType = document.getElementById("c-type"), cSales = document.getElementById("c-sales"), cShare = document.getElementById("c-share"), cDays = document.getElementById("c-days");
+  var odo = document.getElementById("odo");
+  function num(v) { var x = Number(String(v).replace(/[,\s]/g, "")); return isFinite(x) && x >= 0 ? x : 0; }
+  function renderOdo(value) {
+    var str = Math.round(value).toLocaleString("en-US"), html = '<span class="cur">ETB</span>';
+    for (var i = 0; i < str.length; i++) {
+      var ch = str[i];
+      if (ch < "0" || ch > "9") { html += "<span>" + ch + "</span>"; continue; }
+      html += '<span class="d"><span style="transform:translateY(-' + Number(ch) + 'em)">' + "0123456789".split("").map(function (n) { return "<i>" + n + "</i>"; }).join("") + "</span></span>";
+    }
+    odo.innerHTML = html;
+    odo.setAttribute("aria-label", "ETB " + str);
+  }
+  function calc() {
+    var daily = num(cSales.value), share = num(cShare.value) / 100, days = num(cDays.value) || 26;
+    document.getElementById("c-share-v").textContent = Math.round(share * 100) + "%";
+    var year = daily * share * days * 12, month = year / 12;
+    // roll from zeros first so the digits travel
+    renderOdo(year);
+    document.getElementById("c-month").textContent = "ETB " + Math.round(month).toLocaleString("en-US");
+    document.getElementById("c-days-eq").textContent = daily ? Math.round(year / daily) : 0;
+    var msg = "Hello Edel, I used your calculator: daily sales ETB " + Math.round(daily).toLocaleString("en-US") + ", about " + Math.round(share * 100) + "% not recorded. I'd like every sale recorded with Edel.";
+    document.getElementById("c-wa").href = "https://wa.me/251960369445?text=" + encodeURIComponent(msg);
+  }
+  if (odo) {
+    cType.addEventListener("change", function () { cSales.value = PRESET[cType.value] || 50000; calc(); });
+    [cSales, cShare, cDays].forEach(function (el) { el.addEventListener("input", calc); });
+    renderOdo(0);
+    if ("IntersectionObserver" in window && !reduce) {
+      var done = false; new IntersectionObserver(function (es) { if (es[0].isIntersecting && !done) { done = true; setTimeout(calc, 150); } }, { threshold: .4 }).observe(odo);
+    } else calc();
+  }
+
+  // desktop QR code for the WhatsApp chat (loads a small script only on desktop, only when seen)
+  var qrBox = document.getElementById("qr-box");
+  if (qrBox && getComputedStyle(qrBox.parentNode).display !== "none" && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (es, o) { if (!es[0].isIntersecting) return; o.disconnect();
+      var s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
+      s.onload = function () { try { var q = qrcode(0, "M"); q.addData(qrBox.dataset.url); q.make(); qrBox.innerHTML = q.createSvgTag({ cellSize: 3, margin: 2, scalable: true }); } catch (e) {} };
+      document.head.appendChild(s); }).observe(qrBox);
+  }
+
+  // Ethiopian time (the day starts at 6 in the morning)
+  var ec = document.getElementById("eth-time");
+  function tickClock() {
+    var now = new Date(), utc = now.getTime() + now.getTimezoneOffset() * 60000, addis = new Date(utc + 3 * 3600000);
+    var h = addis.getHours(), m = addis.getMinutes(), mm = (m < 10 ? "0" : "") + m;
+    var eh = ((h - 6) % 12 + 12) % 12 || 12, part = (h >= 6 && h < 18) ? "day" : "night";
+    var h12 = h % 12 || 12, ampm = h < 12 ? "am" : "pm";
+    ec.innerHTML = "<b>" + eh + ":" + mm + " Ethiopian time (" + part + ")</b><small>" + h12 + ":" + mm + " " + ampm + " in Addis Ababa</small>";
+    var hand = document.getElementById("eth-hand"); if (hand) hand.setAttribute("transform", "rotate(" + ((eh % 12) * 30 + m / 2) + " 17 17)");
+  }
+  if (ec) { tickClock(); setInterval(tickClock, 30000); }
 })();
 </script>
 </body>

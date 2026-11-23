@@ -51,7 +51,7 @@ def head(title, desc, path, ld):
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 </head>
 <body>
@@ -62,7 +62,7 @@ def chrome_top(current=""):
     def cur(p): return ' aria-current="page"' if p == current else ""
     return f'''<header class="site">
   <div class="wrap nav">
-    <a href="../"><img src="../edel-logo-web.png" alt="Edel: e-invoicing software for Ethiopia"></a>
+    <a href="../"><img src="../edel-logo-web-360.webp" srcset="../edel-logo-web-360.webp 360w, ../edel-logo-web.webp 720w" sizes="128px" width="720" height="338" alt="Edel: e-invoicing software for Ethiopia"></a>
     <nav aria-label="Main" id="main-nav">
       <a href="../e-invoicing-ethiopia/"{cur("e-invoicing-ethiopia")}>E-invoicing guide</a>
       <a href="../#erp">Industries</a>
@@ -80,10 +80,11 @@ def chrome_top(current=""):
 def chrome_bottom():
     ind = "".join(f'<li><a href="../{p}/">{e(n)}</a></li>' for p, n, _ in INDUSTRY_LINKS)
     free = "".join(f'<li><a href="../{p}/">{e(n)}</a></li>' for p, n in FREE_LINKS)
-    return f'''<footer class="site">
+    return f'''<div class="tibeb" aria-hidden="true"></div>
+<footer class="site">
   <div class="wrap">
     <div class="foot-grid">
-      <div><img src="../edel-logo-dark.png" alt="Edel Trading PLC"><p>E-invoicing and ERP for Ethiopian businesses, approved by the Ministry of Revenues. Built and supported in Addis Ababa.</p><p lang="am" style="font-family:'Noto Sans Ethiopic',var(--body);margin-top:8px">ኤሌክትሮኒክ ደረሰኝ እና ኢአርፒ ለኢትዮጵያ ንግዶች</p></div>
+      <div><img src="../edel-logo-dark-360.webp" srcset="../edel-logo-dark-360.webp 360w, ../edel-logo-dark.webp 720w" sizes="90px" width="720" height="338" alt="Edel Trading PLC" loading="lazy"><p>E-invoicing and ERP for Ethiopian businesses, approved by the Ministry of Revenues. Built and supported in Addis Ababa.</p><p lang="am" style="font-family:'Noto Sans Ethiopic',var(--body);margin-top:8px">ኤሌክትሮኒክ ደረሰኝ እና ኢአርፒ ለኢትዮጵያ ንግዶች</p></div>
       <div><h4>Industries</h4><ul>{ind}</ul></div>
       <div><h4>Free tools and guides</h4><ul>{free}</ul></div>
       <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="{WA_LINK}" target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li><li><a href="../#request">Request e-invoice</a></li></ul></div>
