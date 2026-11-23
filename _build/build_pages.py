@@ -17,6 +17,8 @@ INDUSTRY_LINKS = [
     ("import-export-software-ethiopia", "Import & export", "Shipments, landed cost"),
     ("manufacturing-erp-ethiopia", "Manufacturing", "Recipes, runs, cost per unit"),
     ("farm-management-software-ethiopia", "Farms", "Fields, harvest, workers"),
+    ("pharmacy-software-ethiopia", "Pharmacies", "Batches, expiry, dispensing"),
+    ("supermarket-pos-software-ethiopia", "Supermarkets", "Tills, branches, cash close"),
     ("hr-payroll-software-ethiopia", "HR & Payroll", "Payroll, attendance, leave"),
 ]
 FREE_LINKS = [
@@ -126,9 +128,48 @@ def chrome_bottom():
 
 
 # ------------------------------------------------------------------ industries
-TYPES = {'hr': 'HR & Payroll', 'hotel': 'Hotel', 'beer': 'Beer distribution', 'tours': 'Tours & travel', 'import': 'Import & export', 'manufacturing': 'Manufacturing', 'farms': 'Farm'}
+TYPES = {'pharmacy': 'Pharmacy', 'supermarket': 'Supermarket or retail', 'hr': 'HR & Payroll', 'hotel': 'Hotel', 'beer': 'Beer distribution', 'tours': 'Tours & travel', 'import': 'Import & export', 'manufacturing': 'Manufacturing', 'farms': 'Farm'}
 
 PAGES = [
+
+ dict(path="pharmacy-software-ethiopia", demo="pharmacy", name="Pharmacies", label="pharmacies", live=False,
+  title="Pharmacy Software in Ethiopia: Batches, Expiry, Dispensing | Edel",
+  desc="Pharmacy software for Ethiopia: batch and expiry tracking, sell-oldest-first dispensing, expiry alerts, prescription check, clinic credit accounts and registered e-invoices.",
+  h1="Pharmacy software for Ethiopian pharmacies and medical suppliers",
+  am="ለፋርማሲዎች እና የህክምና እቃ አቅራቢዎች ሶፍትዌር",
+  lede="Every batch and expiry date under control. Edel picks the batch that expires first at the till, warns you before stock expires, and gives every sale a registered e-invoice.",
+  intro="In a pharmacy, money is lost on the shelf: boxes that expire unnoticed, the newest batch sold before the oldest, and stock that never matches the books. Edel tracks every box by batch and expiry from delivery to sale.",
+  feats=[("Batch and expiry tracking", "Every box belongs to a batch with its expiry date, from delivery to sale."),
+         ("Sell the oldest first", "The till picks the batch that expires first and warns before it is too late."),
+         ("Expiry alerts", "See what expires in 30, 60 and 90 days and its value, in time to act."),
+         ("Prescription check", "Prescription-only items ask the pharmacist to confirm before payment."),
+         ("Fast dispensing", "Search or scan, pick the batch, take payment and print the registered e-invoice."),
+         ("Clinic credit accounts", "Sell to clinics and companies on credit, with balances and statements."),
+         ("Supplier price comparison", "Compare suppliers' prices and reorder what is running low."),
+         ("Returns and stock counts", "Return near-expiry stock to suppliers and count stock with the loss in Birr.")],
+  demo_points=["Sell a box and watch the oldest batch go first", "See what expires in the next 30 days and its value", "Receive a delivery with a new batch and expiry"],
+  faq=[("Can Edel track expiry dates by batch?", "Yes. Every delivery is received as a batch with its expiry date, and stock is tracked per batch until it is sold, returned or written off."),
+       ("Does the till sell the oldest stock first?", "Yes. When you sell a product, Edel picks the batch that expires first and shows its expiry date, so older stock leaves the shelf before newer stock."),
+       ("Can we sell to clinics on credit?", "Yes. Clinics and companies get credit accounts with balances and statements, and each sale is still a registered e-invoice.")]),
+ dict(path="supermarket-pos-software-ethiopia", demo="supermarket", name="Supermarkets", label="supermarkets and retail", live=False,
+  title="Supermarket POS & Retail Software in Ethiopia | Edel",
+  desc="Supermarket and retail software for Ethiopia: fast tills that keep selling offline, weighed items, stock for every branch, transfers, reorders, cash close per shift and registered e-invoices.",
+  h1="Supermarket and retail software for Ethiopia",
+  am="ለሱፐርማርኬቶች እና ለችርቻሮ ሱቆች ሶፍትዌር",
+  lede="Fast tills that keep selling when the internet drops, stock for every branch, and a clean cash close every shift, with a registered e-invoice on every sale.",
+  intro="A supermarket lives on speed at the till and accuracy behind it: queues move only if the till never stops, and margins hold only if every branch's stock and every cashier's cash add up. Edel does both.",
+  feats=[("Fast tills", "Quick-add buttons, search and scanning, with a registered e-invoice for every sale."),
+         ("Keeps selling offline", "If the internet drops, sales continue and register as soon as it is back."),
+         ("Weighed items", "Fruit, vegetables and meat sold by the kilo, priced to the gram."),
+         ("Stock for every branch", "See stock in each branch and move it between branches in two taps."),
+         ("Reorder on time", "Low-stock lists and purchase orders before the shelf is empty."),
+         ("Cash close per shift", "Expected cash against counted cash for every cashier, with differences flagged."),
+         ("Prices and margins", "Change prices with approval and see the margin on every product."),
+         ("Owner dashboard", "Sales, baskets and margin for every branch, from your phone anywhere.")],
+  demo_points=["Turn the internet off and keep selling", "Sell tomatoes by the kilo", "Close a cashier's shift and see the difference"],
+  faq=[("What happens to the till when the internet goes down?", "The till keeps selling. Each sale waits in a queue and is registered as soon as the connection is back, so customers never wait."),
+       ("Can it manage several branches?", "Yes. Each branch has its own stock, tills and cashiers, stock can move between branches, and the owner sees every branch on one dashboard."),
+       ("Does it handle weighed items?", "Yes. Items sold by the kilo are priced by weight, to the gram, and stock is kept in kilos.")]),
 
  dict(path="hr-payroll-software-ethiopia", demo="hr", name="HR & Payroll", label="HR and payroll", live=True,
   title="HR & Payroll Software in Ethiopia: Attendance, Tax, Pension | Edel",

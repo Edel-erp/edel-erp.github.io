@@ -756,6 +756,8 @@ footer { background: #050506; }
         <button type="button" role="tab" id="t-import" aria-controls="p-import" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="11" rx="1"/><path d="M7 7v11M11 7v11M15 7v11M19 7v11"/><path d="M12 3v4"/></svg>Import &amp; export</button>
         <button type="button" role="tab" id="t-manufacturing" aria-controls="p-manufacturing" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V10l6 4V10l6 4V5h6v16z"/><path d="M7 17h2M13 17h2"/></svg>Manufacturing</button>
         <button type="button" role="tab" id="t-farms" aria-controls="p-farms" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V9"/><path d="M12 13c-4 0-6-3-6-7 4 0 6 3 6 7z"/><path d="M12 10c3 0 5-2 5-5-3 0-5 2-5 5z"/></svg>Farms</button>
+        <button type="button" role="tab" id="t-pharmacy" aria-controls="p-pharmacy" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7z"/><path d="M7 7l7 7"/></svg>Pharmacies</button>
+        <button type="button" role="tab" id="t-supermarket" aria-controls="p-supermarket" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.7a1.5 1.5 0 0 0 1.5-1.1L21 8H6"/></svg>Supermarkets</button>
         <button type="button" role="tab" id="t-hr" aria-controls="p-hr" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.5-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.8c1.6.8 2.7 2.6 3 5.2"/></svg>HR &amp; Payroll</button>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-hotels" aria-labelledby="t-hotels">
@@ -908,6 +910,56 @@ footer { background: #050506; }
           <li><b>Traceability</b><span>Trace each lot back to its plot, and keep buyer and certification records ready.</span></li>
         </ol>
       </div>
+      <div class="ind-panel" role="tabpanel" id="p-pharmacy" aria-labelledby="t-pharmacy" hidden>
+        <div class="ind-head">
+          <span class="ind-tag">Set up for your business</span>
+          <h3>ERP for pharmacies</h3>
+          <p>Every batch and expiry date under control, with fast dispensing and a registered e-invoice on every sale.</p>
+          <a class="ind-more" href="pharmacy-software-ethiopia/">Everything Edel does for pharmacies →</a>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/pharmacy.html">Try the pharmacy demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Pharmacies">Ask about this</a></div>
+          <a class="ind-preview" href="demo/pharmacy.html" aria-label="Open the Demo Pharmacy demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Pharmacy · example</span>
+            <span class="pv-tiles"><div><small>Sales today</small><b class="num" data-count="86400" data-pre="ETB " data-suf="" data-dec="0">ETB 0</b></div><div><small>Expiring in 30 days</small><b class="num" data-count="14" data-pre="" data-suf=" batches" data-dec="0">0 batches</b></div><div><small>Prescriptions</small><b class="num" data-count="63" data-pre="" data-suf="" data-dec="0">0</b></div></span>
+            <span class="pv-trend"><small>Sales, last 7 days</small><svg class="spark" data-seed="88" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Batch and expiry tracking</b><span>Every box belongs to a batch with its expiry date, from delivery to sale.</span></li>
+          <li><b>Sell the oldest first</b><span>The till picks the batch that expires first and warns before it is too late.</span></li>
+          <li><b>Expiry alerts</b><span>See what expires in 30, 60 and 90 days and its value, in time to act.</span></li>
+          <li><b>Prescription check</b><span>Prescription-only items ask the pharmacist to confirm before payment.</span></li>
+          <li><b>Fast dispensing</b><span>Search or scan, pick the batch, take payment and print the registered e-invoice.</span></li>
+          <li><b>Clinic credit accounts</b><span>Sell to clinics and companies on credit, with balances and statements.</span></li>
+          <li><b>Supplier price comparison</b><span>Compare suppliers&#x27; prices and reorder what is running low.</span></li>
+          <li><b>Returns and stock counts</b><span>Return near-expiry stock to suppliers and count stock with the loss in Birr.</span></li>
+        </ol>
+      </div>
+      <div class="ind-panel" role="tabpanel" id="p-supermarket" aria-labelledby="t-supermarket" hidden>
+        <div class="ind-head">
+          <span class="ind-tag">Set up for your business</span>
+          <h3>ERP for supermarkets and retail</h3>
+          <p>Fast tills that keep selling when the internet drops, stock for every branch, and a clean cash close every shift.</p>
+          <a class="ind-more" href="supermarket-pos-software-ethiopia/">Everything Edel does for supermarkets →</a>
+          <div class="ind-btns"><a class="btn btn-gold" href="demo/supermarket.html">Try the supermarket demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Supermarkets">Ask about this</a></div>
+          <a class="ind-preview" href="demo/supermarket.html" aria-label="Open the Demo Supermarket demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Supermarket · example</span>
+            <span class="pv-tiles"><div><small>Sales today</small><b class="num" data-count="412750" data-pre="ETB " data-suf="" data-dec="0">ETB 0</b></div><div><small>Baskets</small><b class="num" data-count="1284" data-pre="" data-suf="" data-dec="0">0</b></div><div><small>Waiting to register</small><b class="num" data-count="0" data-pre="" data-suf="" data-dec="0">0</b></div></span>
+            <span class="pv-trend"><small>Sales, last 7 days</small><svg class="spark" data-seed="121" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Fast tills</b><span>Quick-add buttons, search and scanning, with a registered e-invoice for every sale.</span></li>
+          <li><b>Keeps selling offline</b><span>If the internet drops, sales continue and register as soon as it is back.</span></li>
+          <li><b>Weighed items</b><span>Fruit, vegetables and meat sold by the kilo, priced to the gram.</span></li>
+          <li><b>Stock for every branch</b><span>See stock in each branch and move it between branches in two taps.</span></li>
+          <li><b>Reorder on time</b><span>Low-stock lists and purchase orders before the shelf is empty.</span></li>
+          <li><b>Cash close per shift</b><span>Expected cash against counted cash for every cashier, with differences flagged.</span></li>
+          <li><b>Prices and margins</b><span>Change prices with approval and see the margin on every product.</span></li>
+          <li><b>Owner dashboard</b><span>Sales, baskets and margin for every branch, from your phone anywhere.</span></li>
+        </ol>
+      </div>
       <div class="ind-panel" role="tabpanel" id="p-hr" aria-labelledby="t-hr" hidden>
         <div class="ind-head">
           <span class="ind-tag live">In use today</span>
@@ -1006,7 +1058,7 @@ footer { background: #050506; }
           <select id="f-type">
             <option>Hotel</option><option>Beer distribution</option><option>Import &amp; export</option>
             <option>Manufacturing</option><option>Farm</option><option>Tours &amp; travel</option>
-            <option>Shop or supermarket</option><option>Restaurant or café</option><option>HR &amp; Payroll</option><option>Other</option>
+            <option>Supermarket or retail</option><option>Pharmacy</option><option>Restaurant or café</option><option>HR &amp; Payroll</option><option>Other</option>
           </select></div>
         <div class="field full"><label for="f-reach">How should we reach you?</label>
           <select id="f-reach"><option>WhatsApp message</option><option>Call me in the morning</option><option>Call me in the afternoon</option><option>Call me in the evening</option></select></div>
@@ -1024,7 +1076,7 @@ footer { background: #050506; }
   <div class="wrap">
     <div class="foot-cols">
       <div><img src="edel-logo-dark-360.webp" srcset="edel-logo-dark-360.webp 360w, edel-logo-dark.webp 720w" sizes="90px" width="720" height="338" alt="Edel Trading PLC" loading="lazy"><p>E-invoicing and ERP for Ethiopian businesses · <span lang="am">ኤሌክትሮኒክ ደረሰኝ</span></p></div>
-      <div><h4>Industries</h4><ul><li><a href="hotel-software-ethiopia/">Hotels</a></li><li><a href="beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="farm-management-software-ethiopia/">Farms</a></li><li><a href="hr-payroll-software-ethiopia/">HR &amp; Payroll</a></li></ul></div>
+      <div><h4>Industries</h4><ul><li><a href="hotel-software-ethiopia/">Hotels</a></li><li><a href="beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="farm-management-software-ethiopia/">Farms</a></li><li><a href="pharmacy-software-ethiopia/">Pharmacies</a></li><li><a href="supermarket-pos-software-ethiopia/">Supermarkets</a></li><li><a href="hr-payroll-software-ethiopia/">HR &amp; Payroll</a></li></ul></div>
       <div><h4>Free tools and guides</h4><ul><li><a href="e-invoicing-ethiopia/">E-invoicing guide</a></li><li><a href="e-invoicing-checker/">Does e-invoicing apply to me?</a></li><li><a href="vat-calculator-ethiopia/">VAT calculator (15%)</a></li><li><a href="invoice-template-ethiopia/">Free invoice template</a></li></ul></div>
       <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li></ul></div>
     </div>
@@ -1144,7 +1196,7 @@ document.documentElement.classList.add("js");
   });
   // "Ask about this" fills the business type in the request form
   const typeMap = { "Hotels": "Hotel", "Beer distribution": "Beer distribution", "Tours & travel": "Tours & travel",
-    "Import & export": "Import & export", "Manufacturing": "Manufacturing", "Farms": "Farm", "HR & Payroll": "HR & Payroll" };
+    "Import & export": "Import & export", "Manufacturing": "Manufacturing", "Farms": "Farm", "HR & Payroll": "HR & Payroll", "Pharmacies": "Pharmacy", "Supermarkets": "Supermarket or retail" };
   document.querySelectorAll("[data-type]").forEach(a => a.addEventListener("click", () => {
     const sel = document.getElementById("f-type"); if (typeMap[a.dataset.type]) sel.value = typeMap[a.dataset.type];
   }));

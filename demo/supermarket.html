@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supermarket Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's supermarket system with example data: tills that keep selling offline, stock across branches, cash close and registered e-invoices.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/supermarket.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9; --blue: #2B6CB0; --blue-soft: #E4EEF9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 12px; }
+.top img { height: 34px; width: auto; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+@media (max-width: 640px) { .top .cta { display: none; } .top .app small { display: none; } .top { gap: 8px; } }
+
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; min-width: 0; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); } .small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; align-items: center; }
+.row:first-of-type { border-top: 0; }
+.row > span:first-child { min-width: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--gold); }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.t-green { background: var(--green-soft); color: var(--green); } .t-amber { background: var(--amber-soft); color: var(--amber); } .t-red { background: var(--red-soft); color: var(--red); } .t-blue { background: var(--blue-soft); color: var(--blue); }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; } .dayhead .when b { font-family: var(--display); font-size: 20px; display: block; } .dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+
+.money { background: var(--black); color: #fff; border: 0; }
+.money .big small { color: #9C9EA2; font-size: 13px; } .money .big b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; } .money .parts b { font-size: 16px; }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+.click { cursor: pointer; } .click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.waitbox { margin-top: 12px; border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
+.waitbox.ok { background: rgba(95,213,140,.12); color: #5FD58C; } .waitbox.wait { background: rgba(242,163,58,.16); color: #F2A33A; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; height: 100%; padding: 0; min-width: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease; min-height: 6px; }
+.week button.today .b { background: var(--gold); } .week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d, .week .v { font-size: 11px; color: var(--muted); text-align: center; }
+.feed { display: grid; gap: 2px; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; } .ev b.num { font-size: 13.5px; white-space: nowrap; }
+
+/* till */
+.till { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 900px) { .till { grid-template-columns: 1fr; } }
+.netbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 14px; }
+.branches { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; }
+.branches button { border: 0; background: none; padding: 8px 13px; border-radius: 999px; font-weight: 700; font-size: 13.5px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.branches button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.branches .dot { width: 8px; height: 8px; border-radius: 50%; background: #5FD58C; }
+.branches .dot.off { background: #E5484D; }
+.netswitch { display: inline-flex; align-items: center; gap: 12px; border: 0; border-radius: 16px; padding: 10px 16px; font-weight: 800; font-size: 15px; transition: background .3s, color .3s; }
+.netswitch[aria-checked="true"] { background: var(--green-soft); color: var(--green); }
+.netswitch[aria-checked="false"] { background: #E5484D; color: #fff; animation: offPulse 1.6s infinite; }
+@keyframes offPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(229,72,77,.5); } 50% { box-shadow: 0 0 0 8px rgba(229,72,77,0); } }
+.netswitch .knob { width: 46px; height: 26px; border-radius: 999px; background: rgba(0,0,0,.12); position: relative; flex: none; }
+.netswitch .knob::after { content: ""; position: absolute; top: 3px; left: 23px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: left .25s; box-shadow: 0 2px 4px rgba(0,0,0,.25); }
+.netswitch[aria-checked="false"] .knob { background: rgba(255,255,255,.3); }
+.netswitch[aria-checked="false"] .knob::after { left: 3px; }
+.netswitch small { display: block; font-weight: 600; font-size: 12px; opacity: .85; }
+.search { width: 100%; font: inherit; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 12px; margin-bottom: 10px; background: #fff; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 10px; }
+.item { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 10px 11px; text-align: left; display: grid; gap: 4px; transition: border-color .12s, transform .12s; }
+.item:hover { border-color: var(--gold); transform: translateY(-2px); }
+.item b { font-size: 14px; line-height: 1.25; } .item .p { font-weight: 700; color: var(--gold-deep); font-size: 13.5px; }
+.item .bc { height: 18px; background: repeating-linear-gradient(90deg, #17181A 0 1px, transparent 1px 3px, #17181A 3px 5px, transparent 5px 6px, #17181A 6px 7px, transparent 7px 10px); opacity: .55; border-radius: 2px; }
+.item .code { font: 500 10px var(--mono); color: var(--muted); }
+.item .kg { font-size: 11px; font-weight: 700; color: var(--blue); }
+.cart { position: sticky; top: 112px; }
+.cart-line { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.qty { display: inline-flex; align-items: center; gap: 6px; }
+.qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-weight: 700; }
+.methods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
+@media (max-width: 420px) { .methods { grid-template-columns: repeat(2, 1fr); } }
+.methods button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 10px; padding: 8px 4px; font-size: 12.5px; font-weight: 600; }
+.methods button[aria-pressed="true"] { border-color: var(--black); background: var(--black); color: #fff; }
+.btn { border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); } .btn-dark { background: var(--black); color: #fff; } .btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn:disabled { opacity: .4; cursor: default; } .btn.wide { width: 100%; } .btn.sm { padding: 8px 12px; font-size: 13px; }
+.queue-card { margin-top: 14px; }
+.queue-card.wait { border-color: #E5484D; box-shadow: 0 0 0 3px rgba(229,72,77,.12); }
+.qcount { display: flex; align-items: baseline; gap: 10px; }
+.qcount b { font: 700 40px/1 var(--display); color: #E5484D; } .qcount b.zero { color: var(--green); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chip { font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; animation: evIn .35s ease; }
+.chip.wait { background: var(--amber-soft); color: var(--amber); }
+.chip.wait::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+.chip.ok { background: var(--green-soft); color: var(--green); }
+.orders .row { align-items: center; }
+
+/* stock */
+.tablewrap { overflow-x: auto; }
+table.st { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+table.st th { text-align: right; font-size: 11.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+table.st th:first-child, table.st td:first-child { text-align: left; }
+table.st td { text-align: right; padding: 7px 8px; border-bottom: 1px solid #F0EEE8; white-space: nowrap; }
+table.st td.low { color: var(--red); font-weight: 700; background: var(--red-soft); }
+.form { display: grid; gap: 10px; }
+.form .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+label { font-weight: 700; font-size: 13px; display: block; margin-bottom: 4px; }
+select, input[type=number], input[type=text] { font: inherit; padding: 9px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; min-width: 0; }
+
+/* cash close */
+.shift { border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 8px; }
+.diff { font: 700 20px var(--display); }
+.diff.neg { color: var(--red); } .diff.pos { color: var(--amber); } .diff.zero { color: var(--green); }
+
+/* approvals */
+.ap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ap .ok-b { background: var(--green); color: #fff; } .ap .no-b { background: var(--red-soft); color: var(--red); }
+
+/* sheet, toast, pop-ups */
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.receipt .l { display: flex; justify-content: space-between; gap: 10px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.stamp.wait { border-color: var(--amber); color: var(--amber); }
+.kgpad { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.kgpad button { border: 1.5px solid var(--line); background: #fff; border-radius: 10px; padding: 8px 12px; font-weight: 700; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; box-shadow: 0 14px 30px -10px rgba(0,0,0,.5); max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; } .toast b { color: var(--gold); }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../?type=Supermarket%20or%20retail#request">Get this for your supermarket →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web-360.webp" width="720" height="338" alt="Edel home"></a>
+    <div class="app">Demo Supermarket<small>3 branches · Bole, Piassa, CMC</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Simulated customers and staff keep working"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../?type=Supermarket%20or%20retail#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="summary">Day Summary</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="till">Till</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="stock">Stock &amp; branches</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="cash">Cash close</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+  </div>
+</nav>
+
+<main>
+  <!-- DAY SUMMARY -->
+  <section class="screen" id="s-summary">
+    <div class="dayhead">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+      <button type="button" id="next" aria-label="Next day">›</button>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="big"><small id="m-label">Sales so far (before VAT)</small><b class="num" id="v-sales"></b></div>
+        <div class="parts">
+          <div class="click" id="k-margin" role="button" tabindex="0"><small>Gross margin ›</small><b class="num" id="v-margin"></b></div>
+          <div class="click" id="k-tx" role="button" tabindex="0"><small>Transactions ›</small><b class="num" id="v-tx"></b></div>
+          <div><small>Average basket</small><b class="num" id="v-basket"></b></div>
+        </div>
+        <div class="waitbox ok" id="v-wait" aria-live="polite"></div>
+        <p class="note">Sales before VAT. Gross margin = sales − what the goods cost. Tap a number for detail.</p>
+      </div>
+      <div class="card" id="c-branch">
+        <h3>Sales by branch <small id="v-branch-total"></small></h3>
+        <div id="v-branch"></div>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-week"><h3>Last 7 days <small>Sales · tap a day</small></h3><div class="week" id="week"></div></div>
+      <div class="card" id="c-feed"><h3>Happening now <small id="feed-state"></small></h3><div class="feed" id="feed"></div></div>
+    </div>
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card" id="c-methods"><h3>Money by method <small id="v-methods-total"></small></h3><div id="v-methods"></div><p class="muted small" style="margin-top:8px">With VAT, as paid.</p></div>
+      <div class="card" id="c-top"><h3>Top products</h3><div id="v-top"></div></div>
+      <div class="card" id="c-low"><h3>Low stock <small id="v-low-n"></small></h3><div id="v-low"></div></div>
+      <div class="card" id="c-cashdiff"><h3>Cash close today</h3><div id="v-cashdiff"></div></div>
+    </div>
+  </section>
+
+  <!-- TILL -->
+  <section class="screen" id="s-till" hidden>
+    <p class="hint">Sell as a cashier. Then switch the <b>internet off</b>: the till keeps selling and the invoices wait. Switch it back on and watch them register.</p>
+    <div class="netbar">
+      <div class="branches" role="group" aria-label="Branch" id="branches"></div>
+      <button type="button" class="netswitch" id="netswitch" role="switch" aria-checked="true"><span class="knob" aria-hidden="true"></span><span><span id="net-label">Internet: online</span><small id="net-sub">Invoices register as you sell</small></span></button>
+    </div>
+    <div class="till">
+      <div>
+        <input class="search" id="search" type="text" placeholder="Search or scan a product…" aria-label="Search products">
+        <div class="items" id="items"></div>
+      </div>
+      <div>
+        <div class="card cart">
+          <h3>Sale <small id="v-cartcount"></small></h3>
+          <div id="cart"></div>
+          <div class="row" style="font-weight:700"><span>Total with VAT</span><span class="num" id="v-carttotal">ETB 0.00</span></div>
+          <div class="methods" id="methods"></div>
+          <button class="btn btn-gold wide" type="button" id="pay" disabled>Pay</button>
+        </div>
+        <div class="card queue-card" id="queue-card">
+          <h3>Invoices waiting to register <small id="q-branch"></small></h3>
+          <div class="qcount"><b class="num zero" id="q-count">0</b><span class="muted" id="q-text">Nothing waiting. Every sale is registered.</span></div>
+          <div class="chips" id="q-chips"></div>
+        </div>
+        <div class="card orders" style="margin-top:14px"><h3>Recent sales <small id="v-recent-n"></small></h3><div id="recent"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STOCK -->
+  <section class="screen" id="s-stock" hidden>
+    <p class="hint">Stock in every branch. Red means below the reorder level. Move stock between branches or order more.</p>
+    <div class="card"><h3>Stock by branch <small>units, or kg for weighed items</small></h3><div class="tablewrap"><table class="st" id="stock-table"></table></div></div>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card"><h3>Transfer between branches</h3>
+        <div class="form">
+          <div><label for="tr-p">Product</label><select id="tr-p"></select></div>
+          <div class="two"><div><label for="tr-from">From</label><select id="tr-from"></select></div><div><label for="tr-to">To</label><select id="tr-to"></select></div></div>
+          <div><label for="tr-q">Quantity</label><input id="tr-q" type="number" min="0" step="1" value="10"></div>
+          <button class="btn btn-dark" type="button" id="tr-go">Move stock</button>
+        </div>
+      </div>
+      <div class="card"><h3>Purchase orders</h3>
+        <div class="form">
+          <div class="two"><div><label for="po-p">Product</label><select id="po-p"></select></div><div><label for="po-b">Branch</label><select id="po-b"></select></div></div>
+          <div><label for="po-q">Quantity</label><input id="po-q" type="number" min="1" step="1" value="40"></div>
+          <button class="btn btn-gold" type="button" id="po-go">Send for approval</button>
+        </div>
+        <div id="po-list" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASH CLOSE -->
+  <section class="screen" id="s-cash" hidden>
+    <p class="hint">At the end of a shift the cashier counts the drawer. Edel knows how much cash should be there.</p>
+    <div class="grid g3" id="shifts"></div>
+    <div class="card" style="margin-top:14px"><h3>Closed shifts today</h3><div id="closed"></div></div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your managers ask, you decide, from anywhere. Approve or reject.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const r2 = n => Math.round(n * 100) / 100;
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const etb2 = n => "ETB " + r2(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const VAT = 0.15;
+  const ETH_MONTHS = ["መስከረም","ጥቅምት","ኅዳር","ታኅሣሥ","ጥር","የካቲት","መጋቢት","ሚያዝያ","ግንቦት","ሰኔ","ሐምሌ","ነሐሴ","ጳጉሜ"];
+  function toEth(d) { const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856; const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460); return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 }; }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  /* ---------- example business ---------- */
+  const BR = ["Bole", "Piassa", "CMC"];
+  const P = [
+    { id: "teff", n: "Teff 5 kg", price: 900, cost: 760, code: "2001", re: 10, base: 40 },
+    { id: "rice", n: "Rice 5 kg", price: 620, cost: 500, code: "2002", re: 8, base: 30 },
+    { id: "sugar", n: "Sugar 1 kg", price: 140, cost: 112, code: "2003", re: 20, base: 80 },
+    { id: "oil", n: "Cooking oil 3 L", price: 780, cost: 640, code: "2004", re: 8, base: 30 },
+    { id: "pasta", n: "Pasta 500 g", price: 75, cost: 58, code: "2005", re: 30, base: 120 },
+    { id: "milk", n: "Milk 1 L", price: 85, cost: 68, code: "2006", re: 20, base: 60 },
+    { id: "bread", n: "Bread (loaf)", price: 45, cost: 32, code: "2007", re: 20, base: 70 },
+    { id: "eggs", n: "Eggs (tray of 30)", price: 390, cost: 320, code: "2008", re: 6, base: 24 },
+    { id: "banana", n: "Bananas", price: 60, cost: 42, code: "W101", re: 10, base: 45, kg: true },
+    { id: "tomato", n: "Tomatoes", price: 55, cost: 38, code: "W102", re: 10, base: 50, kg: true },
+    { id: "soap", n: "Soap bar", price: 40, cost: 29, code: "2009", re: 30, base: 100 },
+    { id: "deterg", n: "Detergent 1 kg", price: 165, cost: 128, code: "2010", re: 12, base: 40 },
+    { id: "water", n: "Water 2 L", price: 35, cost: 24, code: "2011", re: 30, base: 120 },
+    { id: "soda", n: "Soft drink 1 L", price: 60, cost: 44, code: "2012", re: 24, base: 90 }
+  ];
+  const PM = Object.fromEntries(P.map(p => [p.id, p]));
+  const METHODS = ["Cash", "telebirr", "CBE Birr", "Card"];
+  const CASHIERS = ["Meron A.", "Yonas B.", "Liya W.", "Samuel G.", "Tigist N.", "Daniel F.", "Ruth H.", "Kebede A."];
+  const SUPPLIERS = ["Addis Food Wholesale", "Sheger Distributors", "Merkato Trading"];
+  const fmtQ = (p, q) => PM[p].kg ? (r2(q).toFixed(2) + " kg") : String(Math.round(q));
+
+  /* ---------- deterministic past days ---------- */
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  function makeDay(date) {
+    const r = rng(dayKey(date) * 7 + 3), out = { net: 0, cost: 0, tx: 0, byBranch: { Bole: 0, Piassa: 0, CMC: 0 }, methods: {}, top: {} };
+    const tx = 100 + Math.floor(r() * 45);
+    for (let i = 0; i < tx; i++) {
+      const b = r() < .45 ? "Bole" : r() < .6 ? "Piassa" : "CMC", k = 1 + Math.floor(r() * 4); let net = 0, cost = 0;
+      for (let j = 0; j < k; j++) { const p = pick(r, P), q = p.kg ? r2(.5 + r() * 2) : 1 + Math.floor(r() * 3); net += p.price * q; cost += p.cost * q; out.top[p.id] = (out.top[p.id] || 0) + p.price * q; }
+      net = r2(net); out.net += net; out.cost += cost; out.byBranch[b] += net; const m = pick(r, ["Cash", "Cash", "telebirr", "telebirr", "CBE Birr", "Card"]); out.methods[m] = (out.methods[m] || 0) + r2(net * (1 + VAT));
+    }
+    out.tx = tx; return out;
+  }
+
+  /* ---------- state ---------- */
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const STORE = "edel-demo-supermarket-v1";
+  let S;
+  function fresh() {
+    const r = rng(dayKey(TODAY) + 11);
+    const st = {};
+    BR.forEach((b, bi) => { st[b] = {}; P.forEach(p => { st[b][p.id] = p.kg ? r2(p.base * (bi === 1 ? .8 : 1)) : Math.round(p.base * (bi === 1 ? .8 : 1)); }); });
+    st.Piassa.oil = 12; st.CMC.eggs = 9; // will dip below reorder after the morning
+    const s = { stock: st, sales: [], invSeq: 1000, saleSeq: 0, online: { Bole: true, Piassa: true, CMC: true }, drop: null,
+      shifts: {}, closed: [], shiftSeq: 0, pos: [], poSeq: 0, pending: [], decided: [], apSeq: 2, feed: [], writeoffs: [], recentReg: [] };
+    BR.forEach((b, i) => { s.shifts[b] = { id: "S" + (++s.shiftSeq), branch: b, cashier: CASHIERS[i], float: 2000, opened: "07:00" }; });
+    S = s;
+    // the morning so far: real sales, so stock, cash and totals all agree
+    for (let i = 0; i < 60; i++) {
+      const b = r() < .45 ? "Bole" : r() < .6 ? "Piassa" : "CMC", k = 1 + Math.floor(r() * 3), lines = [];
+      for (let j = 0; j < k; j++) { const p = pick(r, P); const q = p.kg ? r2(.5 + Math.floor(r() * 6) * .25) : 1 + Math.floor(r() * 2); const ex = lines.find(l => l.p === p.id); ex ? ex.q = r2(ex.q + q) : lines.push({ p: p.id, q }); }
+      makeSale(b, lines, pick(r, ["Cash", "Cash", "telebirr", "CBE Birr", "Card"]), { quiet: true, t: String(7 + Math.floor(i / 12)).padStart(2, "0") + ":" + String((i * 7) % 60).padStart(2, "0") });
+    }
+    s.pending = [
+      { id: 1, k: "Price change", who: "Purchasing", what: "Cooking oil 3 L: ETB 780 → 820 (supplier price went up)", amount: 0, data: { p: "oil", price: 820 } },
+      { id: 2, k: "Transfer", who: "Piassa manager", what: "Sugar 1 kg × 20 from Bole to Piassa", amount: 0, data: { p: "sugar", from: "Bole", to: "Piassa", q: 20 } }
+    ];
+    return s;
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify({ ...S, day: dayKey(TODAY) })); } catch (e) {} }
+  function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.day === dayKey(TODAY)) return s; } catch (e) {} return null; }
+
+  /* ---------- core actions ---------- */
+  function linesNet(lines) { return r2(lines.reduce((t, l) => t + r2(PM[l.p].price * l.q), 0)); }
+  function linesCost(lines) { return r2(lines.reduce((t, l) => t + PM[l.p].cost * l.q, 0)); }
+  function register(sale) { sale.status = "registered"; sale.no = "EDL-INV-" + String(++S.invSeq).padStart(6, "0"); sale.reg = hhmm(); }
+  function makeSale(branch, lines, method, opt = {}) {
+    for (const l of lines) if ((S.stock[branch][l.p] || 0) < l.q - 1e-9) return { error: `Only ${fmtQ(l.p, S.stock[branch][l.p])} of ${PM[l.p].n} left at ${branch}` };
+    lines.forEach(l => { S.stock[branch][l.p] = PM[l.p].kg ? r2(S.stock[branch][l.p] - l.q) : S.stock[branch][l.p] - l.q; });
+    const net = linesNet(lines), vat = r2(net * VAT);
+    const sale = { id: ++S.saleSeq, branch, lines, method, net, vat, gross: r2(net + vat), cost: linesCost(lines), shift: S.shifts[branch].id, t: opt.t || hhmm(), status: "queued", no: "" };
+    if (S.online[branch]) register(sale);
+    S.sales.push(sale);
+    return { sale };
+  }
+
+  /* ---------- feed / pop-ups / toast / sheet ---------- */
+  function logEvent(icon, text, amount, pop) { S.feed.unshift({ icon, text, amount: amount || 0, t: hhmm() }); S.feed = S.feed.slice(0, 30); if (pop) liveToast(`${icon} ${esc(text)}${amount ? " · <b>" + etb(amount) + "</b>" : ""}`); }
+  function liveToast(html) { const d = document.createElement("div"); d.innerHTML = html; $("lt").prepend(d); setTimeout(() => d.remove(), 4200); while ($("lt").children.length > 3) $("lt").lastChild.remove(); }
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3400); }
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("input,button"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+  function flash(ids) { ids.forEach(id => { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); }
+
+  /* ---------- screens ---------- */
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  let screen = "summary";
+  function show(name) {
+    screen = name;
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    ["summary", "till", "stock", "cash", "approvals"].forEach(n => $("s-" + n).hidden = n !== name);
+    render(); window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+  function render() {
+    renderBadge();
+    if (screen === "summary") renderSummary();
+    if (screen === "till") renderTill();
+    if (screen === "stock") renderStock();
+    if (screen === "cash") renderCash();
+    if (screen === "approvals") renderApprovals();
+  }
+
+  /* ---------- day summary ---------- */
+  let viewOffset = 0;
+  const dayFor = off => { const d = new Date(TODAY); d.setDate(d.getDate() + off); return d; };
+  function today() {
+    const out = { net: 0, cost: 0, tx: S.sales.length, byBranch: { Bole: 0, Piassa: 0, CMC: 0 }, methods: {}, top: {} };
+    S.sales.forEach(s => { out.net += s.net; out.cost += s.cost; out.byBranch[s.branch] += s.net; out.methods[s.method] = (out.methods[s.method] || 0) + s.gross; s.lines.forEach(l => { out.top[l.p] = (out.top[l.p] || 0) + r2(PM[l.p].price * l.q); }); });
+    out.net = r2(out.net); out.cost = r2(out.cost); return out;
+  }
+  const dayData = off => off === 0 ? today() : makeDay(dayFor(off));
+  function list(el, rows, emptyText) { el.innerHTML = rows.length ? rows.join("") : `<div class="empty">${emptyText}</div>`; }
+  function lowItems() { const o = []; BR.forEach(b => P.forEach(p => { if (S.stock[b][p.id] <= p.re) o.push({ b, p: p.id, q: S.stock[b][p.id] }); })); return o; }
+  function renderSummary() {
+    const date = dayFor(viewOffset), isToday = viewOffset === 0, d = dayData(viewOffset);
+    $("d-title").textContent = isToday ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(date).split(",")[0];
+    $("d-date").textContent = `${ethStr(date)} · ${gregStr(date)}`;
+    $("next").disabled = isToday;
+    $("m-label").textContent = isToday ? "Sales so far (before VAT)" : "Sales (before VAT)";
+    $("v-sales").textContent = etb(d.net);
+    $("v-margin").textContent = etb(d.net - d.cost);
+    $("v-tx").textContent = d.tx.toLocaleString("en-US");
+    const grossAll = Object.values(d.methods).reduce((a, b) => a + b, 0);
+    $("v-basket").textContent = etb(d.tx ? grossAll / d.tx : 0);
+    const waiting = isToday ? S.sales.filter(s => s.status === "queued").length : 0;
+    $("v-wait").className = "waitbox " + (waiting ? "wait" : "ok");
+    $("v-wait").textContent = waiting ? `⏳ ${waiting} invoice${waiting > 1 ? "s" : ""} waiting to register (a branch is offline)` : "✓ Every invoice registered with the Ministry";
+    $("v-branch-total").textContent = etb(d.net);
+    list($("v-branch"), BR.map(b => `<div class="row"><span>${b}${isToday && !S.online[b] ? ' <span class="tag t-red">offline</span>' : ""}</span><b class="num">${etb(d.byBranch[b])}</b></div><div class="meter"><i style="width:${d.net ? d.byBranch[b] / d.net * 100 : 0}%"></i></div>`), "No sales.");
+    $("v-methods-total").textContent = etb(grossAll);
+    list($("v-methods"), Object.entries(d.methods).sort((a, b) => b[1] - a[1]).map(([m, v]) => `<div class="row"><span>${m}</span><b class="num">${etb(v)}</b></div><div class="meter"><i style="width:${v / grossAll * 100}%"></i></div>`), "No money received.");
+    list($("v-top"), Object.entries(d.top).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([p, v]) => `<div class="row"><span>${PM[p].n}</span><b class="num">${etb(v)}</b></div>`), "No sales yet.");
+    if (isToday) {
+      const low = lowItems(); $("v-low-n").textContent = low.length ? low.length + " items" : "";
+      list($("v-low"), low.map(x => `<div class="row"><span>${PM[x.p].n} <span class="muted small">· ${x.b}</span></span><span class="tag t-red">${fmtQ(x.p, x.q)} left</span></div>`), "Everything above its reorder level.");
+      const short = S.closed.filter(c => c.diff < 0).reduce((t, c) => t + c.diff, 0), over = S.closed.filter(c => c.diff > 0).reduce((t, c) => t + c.diff, 0);
+      $("v-cashdiff").innerHTML = S.closed.length ? `<div class="row"><span>Shifts closed</span><b>${S.closed.length}</b></div><div class="row"><span>Shortages</span><b class="num" style="color:var(--red)">${etb2(short)}</b></div><div class="row"><span>Overages</span><b class="num" style="color:var(--amber)">${etb2(over)}</b></div><div class="row"><span>Written off</span><b class="num">${etb2(S.writeoffs.reduce((t, w) => t + w, 0))}</b></div>`
+        : `<div class="empty">No shift closed yet. Try <b>Cash close</b>.</div>`;
+    } else { $("v-low-n").textContent = ""; $("v-low").innerHTML = `<div class="empty">Shown for today.</div>`; $("v-cashdiff").innerHTML = `<div class="empty">Shown for today.</div>`; }
+    renderWeek(); renderFeed();
+  }
+  function renderWeek() {
+    const vals = []; for (let off = -6; off <= 0; off++) vals.push({ off, d: dayFor(off), v: dayData(off).net });
+    const max = Math.max(...vals.map(x => x.v), 1);
+    $("week").innerHTML = vals.map(x => `<button type="button" data-off="${x.off}" class="${x.off === 0 ? "today" : ""} ${x.off === viewOffset ? "sel" : ""}" aria-label="${gregStr(x.d)}: ${etb(x.v)}"><span class="v">${Math.round(x.v / 1000)}k</span><span class="track"><span class="b" style="height:${Math.max(4, x.v / max * 100)}%"></span></span><span class="d">${x.off === 0 ? "Today" : x.d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`).join("");
+  }
+  $("week").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; viewOffset = Number(b.dataset.off); renderSummary(); });
+  $("prev").addEventListener("click", () => { viewOffset--; renderSummary(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderSummary(); } });
+  function renderFeed() {
+    $("feed-state").textContent = viewOffset === 0 ? (liveOn ? "● live" : "paused") : "";
+    $("feed").innerHTML = viewOffset !== 0 ? `<div class="empty">Live activity shows for today.</div>`
+      : S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount ? etb(e.amount) : ""}</b></div>`).join("")
+      : `<div class="empty">Waiting for the next sale… (turn on <b>Live</b>, or sell something on the Till)</div>`;
+  }
+  const drill = (id, fn) => { const el = $(id); el.addEventListener("click", fn); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  drill("k-margin", () => { const d = dayData(viewOffset);
+    openSheet(`<h2>Gross margin ${etb(d.net - d.cost)}</h2><p class="muted">Sales ${etb(d.net)} − cost of goods ${etb(d.cost)} = ${d.net ? Math.round((d.net - d.cost) / d.net * 100) : 0}% margin.</p>
+      <div style="margin-top:12px">${BR.map(b => `<div class="row"><span>${b}</span><b class="num">${etb(d.byBranch[b])}</b></div>`).join("")}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-tx", () => { if (viewOffset !== 0) { openSheet(`<h2>${dayData(viewOffset).tx} transactions</h2><p class="muted">Detail is kept for every sale; the demo lists today's.</p><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); return; }
+    openSheet(`<h2>${S.sales.length} transactions today</h2><div style="margin-top:12px">${S.sales.slice().reverse().slice(0, 15).map(s => `<div class="row"><span>${s.t} · ${s.branch} · ${s.method}<br><span class="muted small">${s.status === "registered" ? s.no : "waiting to register"}</span></span><b class="num">${etb2(s.gross)}</b></div>`).join("")}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+
+  /* ---------- till ---------- */
+  let branch = "Bole", cart = [], pm = "Cash", filter = "";
+  function renderBranches() {
+    $("branches").innerHTML = BR.map(b => `<button type="button" aria-pressed="${b === branch}" data-b="${b}"><span class="dot ${S.online[b] ? "" : "off"}"></span>${b}</button>`).join("");
+  }
+  $("branches").addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (!b) return; branch = b.dataset.b; cart = []; renderTill(); });
+  function renderNet() {
+    const on = S.online[branch];
+    $("netswitch").setAttribute("aria-checked", on);
+    $("net-label").textContent = on ? `Internet: online · ${branch}` : `Internet: OFFLINE · ${branch}`;
+    $("net-sub").textContent = on ? "Invoices register as you sell" : "Keep selling. Invoices wait and register when it's back";
+  }
+  $("netswitch").addEventListener("click", () => {
+    S.online[branch] = !S.online[branch];
+    if (S.drop && S.drop.b === branch) S.drop = null;
+    logEvent(S.online[branch] ? "📶" : "📴", S.online[branch] ? `${branch}: internet back, registering waiting invoices` : `${branch}: internet down, till keeps selling`, 0, false);
+    toast(S.online[branch] ? "Back online. <b>Waiting invoices register now.</b>" : "Offline. <b>Keep selling</b>: each invoice will wait and register later.");
+    save(); render();
+  });
+  function renderItems() {
+    const f = filter.trim().toLowerCase();
+    $("items").innerHTML = P.filter(p => !f || p.n.toLowerCase().includes(f) || p.code.includes(f)).map(p => `<button type="button" class="item" data-add="${p.id}"><span class="bc" aria-hidden="true"></span><span class="code">${p.code}</span><b>${p.n}</b><span class="p">${etb(p.price)}${p.kg ? " / kg" : ""}</span>${p.kg ? '<span class="kg">⚖ weighed</span>' : ""}<span class="muted small">${fmtQ(p.id, S.stock[branch][p.id])} in stock</span></button>`).join("") || `<div class="empty">No product matches “${esc(filter)}”.</div>`;
+  }
+  $("search").addEventListener("input", e => { filter = e.target.value; renderItems(); });
+  $("search").addEventListener("keydown", e => { if (e.key === "Enter") { const p = P.find(x => x.code === filter.trim()); if (p) { addToCart(p.id); filter = ""; e.target.value = ""; renderItems(); } } });
+  function inCart(p) { return cart.filter(l => l.p === p).reduce((t, l) => t + l.q, 0); }
+  function addToCart(id) {
+    const p = PM[id];
+    if (p.kg) {
+      openSheet(`<h2>${p.n}</h2><p class="muted">${etb(p.price)} per kg before VAT · ${fmtQ(id, S.stock[branch][id])} in stock</p>
+        <label for="kg-in" style="margin-top:12px">Weight on the scale (kg)</label><input id="kg-in" type="number" min="0.05" step="0.05" value="1.25" inputmode="decimal">
+        <div class="kgpad">${[.5, 1, 1.25, 1.5, 2].map(k => `<button type="button" data-kg="${k}">${k} kg</button>`).join("")}</div>
+        <p class="muted small" id="kg-price" style="margin-top:8px"></p>
+        <div class="actions"><button class="btn btn-gold" id="kg-add">Add to sale</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => {
+        const upd = () => { const k = Number($("kg-in").value); $("kg-price").textContent = k > 0 ? `${r2(k).toFixed(2)} kg × ${etb2(p.price)} = ${etb2(r2(p.price * k))} before VAT` : "Enter a weight"; };
+        $("kg-in").addEventListener("input", upd); upd();
+        $("sheet").querySelectorAll("[data-kg]").forEach(b => b.addEventListener("click", () => { $("kg-in").value = b.dataset.kg; upd(); }));
+        $("kg-add").addEventListener("click", () => { const k = r2(Number($("kg-in").value)); if (!(k > 0)) return; if (inCart(id) + k > S.stock[branch][id] + 1e-9) { toast(`Only <b>${fmtQ(id, S.stock[branch][id])}</b> left`); return; } cart.push({ p: id, q: k }); closeSheet(); renderCart(); });
+      });
+      return;
+    }
+    if (inCart(id) + 1 > S.stock[branch][id]) { toast(`Only <b>${fmtQ(id, S.stock[branch][id])}</b> of ${esc(p.n)} left at ${branch}`); return; }
+    const ex = cart.find(l => l.p === id); ex ? ex.q++ : cart.push({ p: id, q: 1 }); renderCart();
+  }
+  $("items").addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (b) addToCart(b.dataset.add); });
+  $("methods").innerHTML = METHODS.map(m => `<button type="button" aria-pressed="${m === pm}" data-m="${m}">${m}</button>`).join("");
+  $("methods").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (!b) return; pm = b.dataset.m; $("methods").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  function renderCart() {
+    const net = linesNet(cart), gross = r2(net + r2(net * VAT));
+    $("cart").innerHTML = cart.length ? cart.map((l, i) => `<div class="cart-line"><span>${PM[l.p].n}${PM[l.p].kg ? `<br><span class="muted small">${l.q.toFixed(2)} kg × ${etb2(PM[l.p].price)}</span>` : ""}</span>${PM[l.p].kg ? `<button type="button" class="btn btn-line sm" data-rm="${i}" aria-label="Remove">✕</button>` : `<span class="qty"><button type="button" data-q="${i}" data-d="-1" aria-label="One less">−</button><b>${l.q}</b><button type="button" data-q="${i}" data-d="1" aria-label="One more">+</button></span>`}<span class="num">${etb2(r2(PM[l.p].price * l.q))}</span></div>`).join("")
+      : `<div class="empty">Tap a product, or type its code and press Enter.</div>`;
+    $("v-carttotal").textContent = etb2(gross);
+    $("v-cartcount").textContent = cart.length ? cart.length + " lines" : "";
+    $("pay").disabled = !cart.length;
+    $("pay").textContent = cart.length ? `Pay ${etb2(gross)}` : "Pay";
+  }
+  $("cart").addEventListener("click", e => {
+    const q = e.target.closest("[data-q]"), rm = e.target.closest("[data-rm]");
+    if (q) { const l = cart[q.dataset.q], d = Number(q.dataset.d); if (d > 0 && inCart(l.p) + 1 > S.stock[branch][l.p]) { toast("Not enough stock"); return; } l.q += d; if (l.q <= 0) cart.splice(q.dataset.q, 1); renderCart(); }
+    if (rm) { cart.splice(rm.dataset.rm, 1); renderCart(); }
+  });
+  function receipt(sale) {
+    return `<div class="receipt"><b>TAX INVOICE · ${sale.branch}</b><br>${sale.lines.map(l => `<div class="l"><span>${esc(PM[l.p].n)} ${PM[l.p].kg ? l.q.toFixed(2) + " kg" : "× " + l.q}</span><span>${r2(PM[l.p].price * l.q).toFixed(2)}</span></div>`).join("")}
+      <div class="l"><span>VAT 15%</span><span>${sale.vat.toFixed(2)}</span></div>------------------------------<div class="l"><b>TOTAL ETB</b><b>${sale.gross.toLocaleString("en-US", { minimumFractionDigits: 2 })}</b></div>Paid: ${esc(sale.method)}<br>
+      ${sale.status === "registered" ? `No ${sale.no}<br><span class="stamp">REGISTERED · ተመዝግቧል</span>` : `<span class="stamp wait">WAITING TO REGISTER</span><br><span class="muted">Registers automatically when the internet is back.</span>`}</div>`;
+  }
+  $("pay").addEventListener("click", () => {
+    if (!cart.length) return;
+    const res = makeSale(branch, cart.map(l => ({ ...l })), pm);
+    if (res.error) { toast(esc(res.error)); return; }
+    const s = res.sale; cart = [];
+    logEvent(s.status === "registered" ? "🧾" : "⏳", `${branch} till · ${s.lines.length} item${s.lines.length > 1 ? "s" : ""} · ${s.method}${s.status === "queued" ? " · waiting to register" : ""}`, s.gross, false);
+    save(); render();
+    openSheet(`<h2>${s.status === "registered" ? "Paid ✓" : "Paid ✓, invoice waiting"}</h2><p class="muted">${branch} · ${s.method}</p>${receipt(s)}
+      <div class="actions"><button class="btn btn-dark" data-close>Next customer</button></div>`);
+  });
+  function renderQueue() {
+    const q = S.sales.filter(s => s.status === "queued" && s.branch === branch), all = S.sales.filter(s => s.status === "queued").length;
+    $("q-branch").textContent = branch + (all > q.length ? ` · ${all} across branches` : "");
+    $("q-count").textContent = q.length; $("q-count").classList.toggle("zero", !q.length);
+    $("q-text").textContent = q.length ? (S.online[branch] ? "Registering now…" : "Selling continues. These register when the internet is back.") : "Nothing waiting. Every sale is registered.";
+    $("queue-card").classList.toggle("wait", !!q.length);
+    const recent = S.recentReg.filter(x => x.b === branch && Date.now() - x.at < 7000);
+    $("q-chips").innerHTML = q.map(s => `<span class="chip wait">${s.t} · ${etb2(s.gross)}</span>`).join("") + recent.map(x => `<span class="chip ok">Registered ✓ ${x.no}</span>`).join("");
+  }
+  function renderTill() {
+    renderBranches(); renderNet(); renderItems(); renderCart(); renderQueue();
+    const mine = S.sales.filter(s => s.branch === branch).slice().reverse().slice(0, 6);
+    $("v-recent-n").textContent = S.sales.filter(s => s.branch === branch).length + " today";
+    $("recent").innerHTML = mine.map(s => `<div class="row"><span><b class="num">${s.status === "registered" ? s.no : "Not yet registered"}</b><br><span class="muted small">${s.t} · ${s.method}</span></span><span style="text-align:right"><b class="num">${etb2(s.gross)}</b><br><span class="tag ${s.status === "registered" ? "t-green" : "t-amber"}">${s.status === "registered" ? "Registered" : "Waiting"}</span></span></div>`).join("") || `<div class="empty">No sales yet at ${branch}.</div>`;
+  }
+
+  /* ---------- registration of queued invoices, one by one ---------- */
+  setInterval(() => {
+    let did = false;
+    BR.forEach(b => {
+      if (!S.online[b]) return;
+      const s = S.sales.find(x => x.status === "queued" && x.branch === b); if (!s) return;
+      register(s); did = true; S.recentReg.push({ b, no: s.no, at: Date.now() }); S.recentReg = S.recentReg.slice(-12);
+      logEvent("✅", `${b}: invoice registered after outage · ${s.no}`, s.gross, false);
+    });
+    if (did) { save(); if (screen === "till") { renderQueue(); renderTill(); } if (screen === "summary") { renderSummary(); flash(["c-money"]); } }
+  }, 900);
+
+  /* ---------- stock ---------- */
+  function fillSelect(el, opts, val) { el.innerHTML = opts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join(""); if (val) el.value = val; }
+  function renderStock() {
+    $("stock-table").innerHTML = `<thead><tr><th>Product</th>${BR.map(b => `<th>${b}</th>`).join("")}<th>Reorder at</th></tr></thead><tbody>${P.map(p => `<tr><td>${p.n}</td>${BR.map(b => `<td class="${S.stock[b][p.id] <= p.re ? "low" : ""}">${fmtQ(p.id, S.stock[b][p.id])}</td>`).join("")}<td>${p.re}${p.kg ? " kg" : ""}</td></tr>`).join("")}</tbody>`;
+    if (!$("tr-p").options.length) {
+      fillSelect($("tr-p"), P.map(p => [p.id, p.n])); fillSelect($("po-p"), P.map(p => [p.id, p.n]), "oil");
+      fillSelect($("tr-from"), BR.map(b => [b, b]), "Bole"); fillSelect($("tr-to"), BR.map(b => [b, b]), "Piassa"); fillSelect($("po-b"), BR.map(b => [b, b]), "Piassa");
+    }
+    $("po-list").innerHTML = S.pos.length ? S.pos.slice().reverse().map(o => `<div class="row"><span>${o.no} · ${PM[o.p].n} × ${o.q} → ${o.b}<br><span class="muted small">${esc(o.sup)} · ${etb(o.q * PM[o.p].cost)}</span></span>${o.st === "approved" ? `<button type="button" class="btn btn-dark sm" data-rcv="${o.no}">Receive</button>` : `<span class="tag ${o.st === "received" ? "t-green" : o.st === "rejected" ? "t-red" : "t-amber"}">${o.st === "waiting" ? "Waiting approval" : o.st}</span>`}</div>`).join("") : `<div class="empty">No purchase orders yet.</div>`;
+  }
+  function doTransfer(p, from, to, q, who) {
+    if (from === to) return "Pick two different branches.";
+    if (!(q > 0)) return "Enter a quantity.";
+    if (S.stock[from][p] < q - 1e-9) return `Only ${fmtQ(p, S.stock[from][p])} at ${from}.`;
+    S.stock[from][p] = PM[p].kg ? r2(S.stock[from][p] - q) : S.stock[from][p] - q;
+    S.stock[to][p] = PM[p].kg ? r2(S.stock[to][p] + q) : S.stock[to][p] + q;
+    logEvent("🚚", `${who || "You"} moved ${PM[p].n} × ${fmtQ(p, q)} from ${from} to ${to}`, 0, false);
+    return null;
+  }
+  $("tr-go").addEventListener("click", () => {
+    const p = $("tr-p").value, q = PM[p].kg ? r2(Number($("tr-q").value)) : Math.round(Number($("tr-q").value));
+    const err = doTransfer(p, $("tr-from").value, $("tr-to").value, q);
+    if (err) { toast(esc(err)); return; }
+    save(); renderStock(); toast(`Moved. <b>${$("tr-from").value}</b> and <b>${$("tr-to").value}</b> are both updated.`);
+  });
+  $("po-go").addEventListener("click", () => {
+    const p = $("po-p").value, b = $("po-b").value, q = Math.round(Number($("po-q").value)); if (!(q > 0)) { toast("Enter a quantity"); return; }
+    const o = { no: "PO-" + String(++S.poSeq).padStart(4, "0"), p, b, q, sup: pick(Math.random, SUPPLIERS), st: "waiting" };
+    S.pos.push(o); S.pending.push({ id: ++S.apSeq, k: "Purchase order", who: b + " manager", what: `${o.no}: ${PM[p].n} × ${q} for ${b}`, amount: q * PM[p].cost, data: { po: o.no } });
+    logEvent("📝", `${b} asks you to approve ${o.no}`, q * PM[p].cost, false);
+    save(); renderStock(); renderBadge(); toast("Sent to <b>Approvals</b>.");
+  });
+  $("po-list").addEventListener("click", e => { const b = e.target.closest("[data-rcv]"); if (!b) return; const o = S.pos.find(x => x.no === b.dataset.rcv); if (!o || o.st !== "approved") return;
+    S.stock[o.b][o.p] = PM[o.p].kg ? r2(S.stock[o.b][o.p] + o.q) : S.stock[o.b][o.p] + o.q; o.st = "received";
+    logEvent("📦", `${o.b} received ${PM[o.p].n} × ${o.q} (${o.no})`, 0, false); save(); renderStock(); toast(`Received. <b>${o.b}</b> stock is up.`); });
+
+  /* ---------- cash close ---------- */
+  const cashSales = id => r2(S.sales.filter(s => s.shift === id && s.method === "Cash").reduce((t, s) => t + s.gross, 0));
+  function renderCash() {
+    $("shifts").innerHTML = BR.map(b => { const sh = S.shifts[b], cs = cashSales(sh.id), exp = r2(sh.float + cs), n = S.sales.filter(s => s.shift === sh.id && s.method === "Cash").length;
+      return `<div class="shift card" data-branch="${b}"><h3>${b} <small>${esc(sh.cashier)} · since ${sh.opened}</small></h3>
+        <div class="row"><span>Opening float</span><b class="num">${etb2(sh.float)}</b></div>
+        <div class="row"><span>Cash sales <span class="muted small">· ${n}</span></span><b class="num">${etb2(cs)}</b></div>
+        <div class="row"><span><b>Expected in drawer</b></span><b class="num">${etb2(exp)}</b></div>
+        <label for="cnt-${b}">Counted by cashier (ETB)</label><input id="cnt-${b}" type="number" min="0" step="0.01" inputmode="decimal" value="${(exp - (b === "Piassa" ? 150 : 0)).toFixed(2)}" data-exp="${exp}">
+        <div class="row"><span>Difference</span><span class="diff" id="df-${b}"></span></div>
+        <button class="btn btn-dark" type="button" data-close-shift="${b}">Close shift</button></div>`; }).join("");
+    BR.forEach(b => { const i = $("cnt-" + b); const upd = () => { const d = r2(Number(i.value) - Number(i.dataset.exp)); const el = $("df-" + b); el.textContent = (d > 0 ? "+" : "") + etb2(d); el.className = "diff " + (d < 0 ? "neg" : d > 0 ? "pos" : "zero"); }; i.addEventListener("input", upd); upd(); });
+    $("closed").innerHTML = S.closed.length ? S.closed.slice().reverse().map(c => `<div class="row"><span>${c.branch} · ${esc(c.cashier)} · closed ${c.t}<br><span class="muted small">Expected ${etb2(c.expected)} · counted ${etb2(c.counted)}</span></span><b class="num" style="color:${c.diff < 0 ? "var(--red)" : c.diff > 0 ? "var(--amber)" : "var(--green)"}">${c.diff > 0 ? "+" : ""}${etb2(c.diff)}</b></div>`).join("") : `<div class="empty">No shift closed yet today.</div>`;
+  }
+  $("shifts").addEventListener("click", e => {
+    const b = e.target.closest("[data-close-shift]"); if (!b) return; const br = b.dataset.closeShift, sh = S.shifts[br];
+    const exp = r2(sh.float + cashSales(sh.id)), counted = r2(Number($("cnt-" + br).value)); if (!(counted >= 0)) { toast("Enter the counted cash"); return; }
+    const diff = r2(counted - exp);
+    S.closed.push({ branch: br, cashier: sh.cashier, shift: sh.id, expected: exp, counted, diff, t: hhmm() });
+    if (diff < 0) S.pending.push({ id: ++S.apSeq, k: "Cash shortage", who: br + " supervisor", what: `Write off ${etb2(-diff)} short in ${sh.cashier}'s drawer`, amount: -diff, data: { wo: -diff } });
+    logEvent(diff < 0 ? "⚠️" : "💵", `${br}: ${sh.cashier} closed shift · ${diff === 0 ? "drawer balanced" : (diff < 0 ? "short " : "over ") + etb2(Math.abs(diff))}`, 0, true);
+    const used = Object.values(S.shifts).map(x => x.cashier);
+    S.shifts[br] = { id: "S" + (++S.shiftSeq), branch: br, cashier: CASHIERS.find(c => !used.includes(c) && !S.closed.some(x => x.cashier === c)) || "Cashier " + S.shiftSeq, float: 2000, opened: hhmm() };
+    save(); renderCash(); renderBadge(); toast(diff < 0 ? `Shift closed <b>${etb2(diff)}</b> short. Sent to Approvals.` : diff > 0 ? `Shift closed <b>+${etb2(diff)}</b> over.` : "Shift closed. <b>Drawer balanced.</b>");
+  });
+
+  /* ---------- approvals ---------- */
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? S.pending.length + " waiting" : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap" data-ap="${p.id}"><div><span class="k">${esc(p.k)}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)}${p.amount ? " · " + etb(p.amount) : ""}</span></div><div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("")
+      : `<div class="empty">All done. New requests appear here.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${esc(p.k)} · ${p.ok ? "approved" : "rejected"} ${p.t}</span></span><span class="tag ${p.ok ? "t-green" : "t-red"}">${p.ok ? "Approved" : "Rejected"}</span></div>`).join("") : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    let msg = ok ? "Approved." : "Rejected. The manager is told.";
+    if (ok && p.data.price) { PM[p.data.p].price = p.data.price; S.priceOverrides = S.priceOverrides || {}; S.priceOverrides[p.data.p] = p.data.price; msg = `Approved. New price for <b>${esc(PM[p.data.p].n)}</b> on every till.`; }
+    if (ok && p.data.from) { const err = doTransfer(p.data.p, p.data.from, p.data.to, p.data.q, p.who); msg = err ? esc(err) : `Approved. Stock moved to <b>${p.data.to}</b>.`; }
+    if (p.data.po) { const o = S.pos.find(x => x.no === p.data.po); if (o) o.st = ok ? "approved" : "rejected"; if (ok) msg = "Approved. Receive it under <b>Stock</b> when it arrives."; }
+    if (ok && p.data.wo) { S.writeoffs.push(p.data.wo); msg = `Approved. <b>${etb2(p.data.wo)}</b> written off.`; }
+    S.pending = S.pending.filter(x => x.id !== id); S.decided.push({ ...p, ok, t: hhmm() });
+    logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, p.amount, false);
+    save(); renderApprovals(); toast(msg);
+  });
+
+  /* ---------- live ---------- */
+  let liveOn = true, timer = null; const R = Math.random;
+  function liveTick() {
+    if (document.hidden) return;
+    if (S.drop) { S.drop.left--; if (S.drop.left <= 0) { S.online[S.drop.b] = true; logEvent("📶", `${S.drop.b}: internet back, registering waiting invoices`, 0, true); S.drop = null; } }
+    const x = R();
+    if (x < .74) {
+      const b = pick(R, ["Bole", "Bole", "Piassa", "CMC"]), lines = [], k = 1 + Math.floor(R() * 3);
+      for (let j = 0; j < k; j++) { const p = pick(R, P); if (S.stock[b][p.id] < 3) continue; const q = p.kg ? r2(.5 + Math.floor(R() * 6) * .25) : 1 + Math.floor(R() * 2); if (lines.some(l => l.p === p.id)) continue; lines.push({ p: p.id, q }); }
+      if (!lines.length) return;
+      const res = makeSale(b, lines, pick(R, ["Cash", "Cash", "telebirr", "CBE Birr", "Card"])); if (res.error) return;
+      const s = res.sale; logEvent(s.status === "registered" ? "🛒" : "⏳", `${b} till · ${s.lines.map(l => PM[l.p].n).join(", ")}${s.status === "queued" ? " · waiting to register" : ""}`, s.gross, true);
+    } else if (x < .84) {
+      if (!S.drop && BR.every(b => S.online[b])) { const b = pick(R, BR); S.online[b] = false; S.drop = { b, left: 3 }; logEvent("📴", `${b}: internet dropped. Till keeps selling`, 0, true); }
+    } else if (x < .9) {
+      const low = lowItems(); if (low.length) { const l = pick(R, low); logEvent("📉", `Low stock: ${PM[l.p].n} at ${l.b} (${fmtQ(l.p, l.q)} left)`, 0, true); }
+    } else if (x >= .98 && S.pending.length < 3) {
+      const opts = [
+        () => ({ k: "Price change", who: "Purchasing", what: "Soft drink 1 L: ETB 60 → 65", amount: 0, data: { p: "soda", price: 65 } }),
+        () => ({ k: "Transfer", who: "CMC manager", what: "Water 2 L × 24 from Bole to CMC", amount: 0, data: { p: "water", from: "Bole", to: "CMC", q: 24 } }),
+        () => { const o = { no: "PO-" + String(++S.poSeq).padStart(4, "0"), p: "eggs", b: "CMC", q: 20, sup: pick(R, SUPPLIERS), st: "waiting" }; S.pos.push(o); return { k: "Purchase order", who: "CMC manager", what: `${o.no}: Eggs (tray of 30) × 20 for CMC`, amount: 20 * PM.eggs.cost, data: { po: o.no } }; }
+      ];
+      const a = pick(R, opts)(); a.id = ++S.apSeq; S.pending.push(a); logEvent("📝", `${a.who} asks you to approve: ${a.what}`, a.amount, true);
+    }
+    save(); render();
+    if (screen === "summary") flash(["c-money", "c-branch"]);
+  }
+  function setLive(on) { liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(timer); if (on) timer = setInterval(liveTick, 5000); if (screen === "summary") renderFeed(); }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: customers keep shopping" : "Live paused"); });
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} P.forEach(p => p.price = BASE_PRICE[p.id]); S = fresh(); cart = []; $("lt").innerHTML = ""; show("summary"); toast("Demo reset"); });
+
+  /* ---------- start ---------- */
+  const BASE_PRICE = Object.fromEntries(P.map(p => [p.id, p.price]));
+  S = load() || fresh();
+  if (S.priceOverrides) Object.entries(S.priceOverrides).forEach(([k, v]) => { if (PM[k]) PM[k].price = v; });
+  save(); render();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+  window.__edelSuper = { get S() { return S; }, PM, BR, linesNet, cashSales };
+})();
+</script>
+</body>
+</html>

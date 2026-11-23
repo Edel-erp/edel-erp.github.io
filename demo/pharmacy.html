@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pharmacy Demo | Edel ERP</title>
+<meta name="description" content="Try Edel's pharmacy system with example data: dispense by first-expiry batch, prescription check, expiry tracking, purchasing and registered e-invoices.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/pharmacy.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9; --blue: #2B6CB0; --blue-soft: #E4EEF9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 12px; }
+.top img { height: 34px; width: auto; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; min-width: 0; }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 600px) { .top .cta, .top .app small { display: none; } .top .app { font-size: 14px; } }
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; min-width: 0; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } }
+.muted { color: var(--muted); } .small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; align-items: center; }
+.row:first-of-type { border-top: 0; }
+.row > span:first-child { min-width: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+.dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.dayhead .when { text-align: center; } .dayhead .when b { font-family: var(--display); font-size: 20px; display: block; } .dayhead .when span { color: var(--muted); font-size: 13px; }
+.dayhead button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; }
+.dayhead button:disabled { opacity: .35; cursor: default; }
+.money { background: var(--black); color: #fff; border: 0; }
+.money .profit small { color: #9C9EA2; font-size: 13px; } .money .profit b { font-family: var(--display); font-size: clamp(30px, 6vw, 40px); display: block; }
+.money .profit.loss b { color: #FF8A80; }
+.money .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.money .parts div { background: #1A1B1E; border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.money .parts small { color: #9C9EA2; font-size: 12px; display: block; } .money .parts b { font-size: 16px; }
+.click { cursor: pointer; } .click:hover { outline: 2px solid var(--gold); outline-offset: -2px; }
+.money .note { color: #9C9EA2; font-size: 12px; margin-top: 10px; }
+.exp3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.exp3 button { border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-align: left; background: var(--paper); }
+.exp3 button b { display: block; font-family: var(--display); font-size: 17px; }
+.exp3 button small { color: var(--muted); font-size: 12px; }
+.exp3 .r { border-color: #F3C3BE; background: var(--red-soft); } .exp3 .a { border-color: #F5D9A8; background: var(--amber-soft); } .exp3 .y { background: #FFF9E8; }
+.seg { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 8px; flex-wrap: wrap; }
+.seg button { border: 0; background: none; padding: 6px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 4px; } .meter i { display: block; height: 100%; background: var(--gold); }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 10px; }
+.week button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%; padding: 0; min-width: 0; }
+.week .track { flex: 1; display: flex; align-items: flex-end; min-height: 0; }
+.week .b { width: 100%; background: #E8E3D3; border-radius: 8px 8px 4px 4px; transition: height .4s ease; min-height: 6px; }
+.week button.today .b { background: var(--gold); } .week button.sel .b { outline: 2px solid var(--black); outline-offset: 2px; }
+.week .d, .week .v { font-size: 11px; color: var(--muted); text-align: center; }
+.feed { display: grid; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } }
+.ev .i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; background: var(--bg); }
+.ev small { color: var(--muted); font-size: 12px; } .ev b.num { font-size: 13.5px; white-space: nowrap; }
+.tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.t-green { background: var(--green-soft); color: var(--green); } .t-amber { background: var(--amber-soft); color: var(--amber); } .t-red { background: var(--red-soft); color: var(--red); } .t-blue { background: var(--blue-soft); color: var(--blue); } .t-grey { background: #EEEDE8; color: var(--muted); }
+/* dispense */
+.pos { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .pos { grid-template-columns: 1fr; } }
+.fefo { border-radius: 16px; padding: 14px 16px; margin-bottom: 14px; border: 1.5px solid var(--line); background: var(--paper); display: grid; gap: 4px; transition: border-color .3s, background .3s; }
+.fefo.on { border-color: #F5C26B; background: var(--amber-soft); }
+.fefo.ok { border-color: #A8DDBD; background: var(--green-soft); }
+.fefo b { font-family: var(--display); font-size: 16px; } .fefo .bline { font-family: var(--mono); font-size: 13.5px; }
+.search { width: 100%; font: inherit; padding: 11px 14px; border: 1.5px solid var(--line); border-radius: 12px; margin-bottom: 10px; background: #fff; }
+.menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.item { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 12px; text-align: left; transition: border-color .12s, transform .12s; display: grid; gap: 3px; min-width: 0; }
+.item:hover { border-color: var(--gold); transform: translateY(-2px); }
+.item b { font-size: 14px; } .item small { color: var(--muted); font-size: 12px; }
+.item .p { font-weight: 700; color: var(--gold-deep); font-size: 13.5px; }
+.cart { position: sticky; top: 112px; }
+.cline { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; padding: 9px 0; border-top: 1px solid #F0EEE8; }
+.cline .bt { grid-column: 1 / -1; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.qty { display: inline-flex; align-items: center; gap: 6px; }
+.qty button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-weight: 700; }
+.rx { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; background: var(--red-soft); color: var(--red); border-radius: 10px; padding: 7px 10px; font-size: 13px; font-weight: 600; }
+.rx.ok { background: var(--green-soft); color: var(--green); }
+.rx input { width: 18px; height: 18px; accent-color: var(--green); }
+.methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; }
+.methods button { border: 1.5px solid var(--line); background: var(--paper); border-radius: 10px; padding: 8px 4px; font-size: 12.5px; font-weight: 600; }
+.methods button[aria-pressed="true"] { border-color: var(--black); background: var(--black); color: #fff; }
+select, input[type=number], input[type=text] { font: inherit; padding: 9px 10px; border: 1.5px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.btn { border: 0; border-radius: 999px; padding: 12px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); } .btn-dark { background: var(--black); color: #fff; } .btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn-sm { padding: 7px 12px; font-size: 13px; }
+.btn:disabled { opacity: .4; cursor: default; } .btn.wide { width: 100%; }
+/* stock */
+.prod { border-top: 1px solid #F0EEE8; padding: 12px 0; } .prod:first-child { border-top: 0; }
+.prod h4 { font-size: 15px; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.batch { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 8px 10px; margin-top: 6px; border-radius: 10px; background: var(--bg); align-items: center; }
+.batch .acts { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; }
+.batch .bn { font-family: var(--mono); font-size: 12.5px; }
+/* approvals */
+.ap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.ap:first-of-type { border-top: 0; }
+.ap .k { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-right: 6px; }
+.ap .btns { display: flex; gap: 6px; }
+.ap .btns button { border-radius: 999px; padding: 8px 14px; font-weight: 700; border: 0; font-size: 13px; }
+.ok-b { background: var(--green); color: #fff; } .no-b { background: var(--red-soft); color: var(--red); }
+.sup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+.sup span { border: 1px solid var(--line); border-radius: 10px; padding: 6px 8px; font-size: 12.5px; }
+.sup span.best { border-color: var(--green); background: var(--green-soft); color: var(--green); font-weight: 700; }
+/* sheet, toasts */
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; animation: up .2s ease; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+@keyframes up { from { transform: translateY(30px); opacity: 0; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.receipt { font-family: var(--mono); font-size: 12.5px; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; margin-top: 12px; }
+.receipt .rr { display: flex; justify-content: space-between; gap: 10px; }
+.stamp { display: inline-block; border: 2px solid var(--gold-deep); color: var(--gold-deep); border-radius: 6px; padding: 3px 8px; font-weight: 700; font-size: 11px; letter-spacing: .08em; transform: rotate(-4deg); margin-top: 8px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; } .toast b { color: var(--gold); }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } }
+@media (prefers-reduced-motion: reduce) { .ev, .flash, .sheet, .lt div { animation: none; } .live[aria-pressed="true"] .pulse { animation: none; } }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../?type=Pharmacy#request">Get this for your pharmacy →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-web-360.webp" width="720" height="338" alt="Edel home"></a>
+    <div class="app">Demo Pharmacy<small>Retail and clinic supply</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true" title="Example customers and staff keep working"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../?type=Pharmacy#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="false" data-screen="summary">Day Summary</button>
+    <button type="button" role="tab" aria-selected="true" data-screen="pos">Dispense</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="stock">Stock &amp; expiry</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="buy">Purchasing</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+  </div>
+</nav>
+
+<main>
+  <!-- DAY SUMMARY -->
+  <section class="screen" id="s-summary" hidden>
+    <div class="dayhead">
+      <button type="button" id="prev" aria-label="Previous day">‹</button>
+      <div class="when"><b id="d-title">Today</b><span id="d-date"></span></div>
+      <button type="button" id="next" aria-label="Next day">›</button>
+    </div>
+    <div class="grid g2">
+      <div class="card money" id="c-money">
+        <div class="profit" id="profit"><small>Profit so far (before tax)</small><b class="num" id="v-profit"></b></div>
+        <div class="parts">
+          <div class="click" id="k-sales" role="button" tabindex="0"><small>Sales ›</small><b class="num" id="v-sales"></b></div>
+          <div class="click" id="k-margin" role="button" tabindex="0"><small>Gross margin ›</small><b class="num" id="v-margin"></b></div>
+          <div class="click" id="k-exp" role="button" tabindex="0"><small>Expenses ›</small><b class="num" id="v-exp"></b></div>
+        </div>
+        <p class="note">Sales before VAT. Gross margin = sales − what the medicines cost us. Profit = gross margin − approved expenses. Tap a number for detail.</p>
+      </div>
+      <div class="card" id="c-expiry">
+        <h3>Expiring stock <small id="v-stockval"></small></h3>
+        <div class="exp3" id="exp3"></div>
+        <div class="row" style="margin-top:10px"><span>Prescriptions dispensed</span><b class="num" id="v-rx"></b></div>
+        <div class="row"><span>Invoices issued</span><b class="num" id="v-inv"></b></div>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card" id="c-week"><h3>Last 7 days <small>Sales · tap a day</small></h3><div class="week" id="week"></div></div>
+      <div class="card" id="c-feed"><h3>Happening now <small id="feed-state"></small></h3><div class="feed" id="feed"></div></div>
+    </div>
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card" id="c-recv"><h3>Money received <small id="v-recv-total"></small></h3><div id="v-recv"></div><p class="muted small" style="margin-top:8px">With VAT. Clinic credit is not money yet.</p></div>
+      <div class="card" id="c-top"><h3>Top products</h3><div id="v-top"></div></div>
+      <div class="card" id="c-credit"><h3>Clinic credit <small id="v-credit-total"></small></h3><div id="v-credit"></div></div>
+    </div>
+  </section>
+
+  <!-- DISPENSE -->
+  <section class="screen" id="s-pos">
+    <div class="fefo" id="fefo" aria-live="polite">
+      <b>Tap a product. Edel picks the batch that expires first.</b>
+      <span class="muted small">First expiry, first out: the oldest stock leaves the shelf before it can expire.</span>
+    </div>
+    <div class="pos">
+      <div>
+        <label class="small muted" for="q" style="display:block;margin-bottom:4px">Search or scan</label>
+        <input class="search" id="q" type="search" placeholder="Search medicines…" autocomplete="off">
+        <div class="menu" id="menu"></div>
+      </div>
+      <div class="card cart">
+        <h3>Sale <small id="v-cartcount"></small></h3>
+        <div id="cart"></div>
+        <div class="row" style="font-weight:700"><span>Total (with VAT)</span><span class="num" id="v-carttotal">ETB 0</span></div>
+        <div class="methods" id="methods"></div>
+        <div id="m-extra"></div>
+        <button class="btn btn-gold wide" type="button" id="pay" disabled>Pay</button>
+        <p class="muted small" id="pay-why" style="margin-top:8px"></p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3>Today's invoices <small id="v-ordercount"></small></h3><div id="orders"></div></div>
+  </section>
+
+  <!-- STOCK & EXPIRY -->
+  <section class="screen" id="s-stock" hidden>
+    <p class="hint">Every batch with its expiry. Return near-expiry stock to the supplier, discount it to clear, or count the shelf.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Batches <small id="v-batchcount"></small></h3><div id="stock"></div></div>
+      <div>
+        <div class="card"><h3>Low stock</h3><div id="low"></div></div>
+        <div class="card" style="margin-top:14px"><h3>Stock count</h3>
+          <label class="small muted" for="cnt-p">Product</label><select id="cnt-p"></select>
+          <div class="row"><span>On the system</span><b class="num" id="cnt-sys">0</b></div>
+          <label class="small muted" for="cnt-n">Counted on the shelf</label><input id="cnt-n" type="number" min="0" inputmode="numeric">
+          <div class="row"><span>Difference</span><b class="num" id="cnt-var">—</b></div>
+          <button class="btn btn-dark wide" type="button" id="cnt-save" style="margin-top:8px">Save count</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PURCHASING -->
+  <section class="screen" id="s-buy" hidden>
+    <p class="hint">Edel suggests what to reorder, compares supplier prices, and adds a new batch with its expiry when the delivery arrives.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Reorder suggestions</h3><div id="reorder"></div></div>
+      <div class="card"><h3>Purchase orders</h3><div id="pos-list"></div></div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your staff ask, you decide, from anywhere.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you <small id="ap-total"></small></h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- helpers ---------- */
+  const $ = id => document.getElementById(id);
+  const etb = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const etb2 = n => "ETB " + (Math.round(n * 100) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const VAT = 0.15, DAY = 86400000;
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) { const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY) + 2440588, E = 1723856, r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 }; }
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  const shortDate = d => d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const pick = (r, a) => a[Math.floor(r() * a.length)];
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  /* ---------- example business ---------- */
+  const TODAY = new Date(); TODAY.setHours(12, 0, 0, 0);
+  const dayKey = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const inDays = n => new Date(TODAY.getTime() + n * DAY).toISOString().slice(0, 10);
+  const daysTo = iso => Math.round((new Date(iso + "T12:00:00") - TODAY) / DAY);
+  // price = selling price before VAT, cost = purchase cost per unit, min = reorder level
+  const PRODUCTS = [
+    { id: "para", n: "Paracetamol 500 mg", u: "strip of 10", rx: false, price: 35, cost: 18, min: 80 },
+    { id: "amox", n: "Amoxicillin 500 mg", u: "pack of 21 caps", rx: true, price: 180, cost: 110, min: 30 },
+    { id: "ors", n: "ORS sachets", u: "box of 10", rx: false, price: 90, cost: 52, min: 25 },
+    { id: "vitc", n: "Vitamin C 1000 mg", u: "tube of 20", rx: false, price: 260, cost: 160, min: 15 },
+    { id: "omep", n: "Omeprazole 20 mg", u: "pack of 14 caps", rx: true, price: 210, cost: 125, min: 20 },
+    { id: "metf", n: "Metformin 500 mg", u: "pack of 30 tabs", rx: true, price: 150, cost: 88, min: 25 },
+    { id: "salb", n: "Salbutamol inhaler", u: "1 inhaler", rx: true, price: 420, cost: 265, min: 10 },
+    { id: "gauze", n: "Gauze and bandages", u: "pack", rx: false, price: 75, cost: 40, min: 30 },
+    { id: "sani", n: "Hand sanitiser 500 ml", u: "bottle", rx: false, price: 190, cost: 115, min: 15 },
+    { id: "ibu", n: "Ibuprofen 400 mg", u: "strip of 10", rx: false, price: 55, cost: 30, min: 50 },
+    { id: "cipro", n: "Ciprofloxacin 500 mg", u: "pack of 10 tabs", rx: true, price: 140, cost: 82, min: 20 },
+    { id: "zinc", n: "Zinc tablets 20 mg", u: "strip of 10", rx: false, price: 60, cost: 32, min: 30 }
+  ];
+  const P = Object.fromEntries(PRODUCTS.map(p => [p.id, p]));
+  const SUPPLIERS = ["Supplier A", "Supplier B", "Supplier C"];
+  const CLINICS = ["Example Health Centre", "Example Children's Clinic", "Example Dental Clinic"];
+  const METHODS = ["Cash", "telebirr", "CBE Birr", "Card", "Clinic credit"];
+
+  /* ---------- state ---------- */
+  const STORE = "edel-demo-pharmacy-v1";
+  let S, invSeq = 3100, batchSeq = 2300;
+  function freshState() {
+    invSeq = 3100; batchSeq = 2300;
+    const r = rng(dayKey(TODAY) + 41);
+    const batches = [];
+    // two or three batches per product; a few near expiry so FEFO has something to show
+    const NEAR = { amox: 28, vitc: 45, ors: 75, omep: 19, gauze: 62 };
+    PRODUCTS.forEach((p, i) => {
+      const n = 2 + (i % 2);
+      for (let k = 0; k < n; k++) {
+        const exp = k === 0 && NEAR[p.id] ? NEAR[p.id] : 120 + Math.floor(r() * 500) + k * 90;
+        const qty = Math.round((p.min * (0.6 + r() * 1.2)) / 5) * 5 + 5;
+        batches.push({ id: "B-" + (++batchSeq), pid: p.id, exp: inDays(exp), qtyIn: qty, sold: 0, adj: 0, ret: 0, cost: p.cost, disc: 0, supplier: pick(r, SUPPLIERS) });
+      }
+    });
+    const st = { batches, sales: [], expenses: [{ n: "Cold chain fridge repair", amount: 1800 }, { n: "Delivery motorbike fuel", amount: 650 }],
+      credit: { [CLINICS[0]]: 6400, [CLINICS[1]]: 2850 }, pending: [], decided: [], feed: [], pos: [], counts: [], target: 18000, apSeq: 0 };
+    S = st;
+    // morning sales so far
+    for (let i = 0; i < 14; i++) {
+      const lines = [], k = 1 + Math.floor(r() * 3);
+      for (let j = 0; j < k; j++) { const p = pick(r, PRODUCTS); if (!lines.find(l => l.pid === p.id)) lines.push({ pid: p.id, q: 1 + Math.floor(r() * 2) }); }
+      sell(lines, pick(r, ["Cash", "Cash", "telebirr", "CBE Birr", "Card"]), null, false);
+    }
+    sell([{ pid: "para", q: 20 }, { pid: "ors", q: 10 }, { pid: "gauze", q: 6 }], "Clinic credit", CLINICS[2], false);
+    st.pending = [
+      { id: ++st.apSeq, k: "Purchase order", who: "Pharmacist", what: "Paracetamol 500 mg × 200 from Supplier B", amount: 200 * 17, pid: "para", qty: 200, supplier: "Supplier B", unit: 17 },
+      { id: ++st.apSeq, k: "Expense", who: "Store keeper", what: "Shelf labels and printer paper", amount: 950 }
+    ];
+    st.decided = []; st.feed = [];
+    return st;
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify({ ...S, savedDay: dayKey(TODAY), invSeq, batchSeq })); } catch (e) {} }
+  function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.savedDay === dayKey(TODAY)) { invSeq = s.invSeq; batchSeq = s.batchSeq; return s; } } catch (e) {} return null; }
+
+  /* ---------- stock helpers ---------- */
+  const left = b => b.qtyIn - b.sold - b.adj - b.ret;
+  const stockOf = pid => S.batches.filter(b => b.pid === pid).reduce((t, b) => t + left(b), 0);
+  const fefoBatches = pid => S.batches.filter(b => b.pid === pid && left(b) > 0).sort((a, b) => a.exp.localeCompare(b.exp));
+  const unitPrice = b => P[b.pid].price * (1 - (b.disc || 0));
+  // split a quantity over batches, first expiry first
+  function allocate(pid, q, reserved) {
+    const out = []; let need = q;
+    for (const b of fefoBatches(pid)) {
+      const free = left(b) - (reserved[b.id] || 0); if (free <= 0) continue;
+      const take = Math.min(free, need); out.push({ bid: b.id, q: take }); need -= take; if (!need) break;
+    }
+    return need ? null : out;
+  }
+  function sell(lines, method, who, live) {
+    const items = [], reserved = {};
+    for (const l of lines) {
+      const a = allocate(l.pid, l.q, reserved); if (!a) continue;
+      a.forEach(x => { reserved[x.bid] = (reserved[x.bid] || 0) + x.q; const b = S.batches.find(z => z.id === x.bid);
+        items.push({ pid: l.pid, bid: b.id, exp: b.exp, q: x.q, price: unitPrice(b), cost: b.cost }); });
+    }
+    if (!items.length) return null;
+    items.forEach(it => { S.batches.find(b => b.id === it.bid).sold += it.q; });
+    const net = items.reduce((t, i) => t + i.price * i.q, 0), cost = items.reduce((t, i) => t + i.cost * i.q, 0);
+    const sale = { no: "EDL-INV-" + String(++invSeq).padStart(6, "0"), items, method, who: who || null, net, vat: net * VAT, gross: net * (1 + VAT), cost,
+      rx: items.filter(i => P[i.pid].rx).length, t: live ? hhmm() : null };
+    S.sales.push(sale);
+    if (method === "Clinic credit") S.credit[who] = (S.credit[who] || 0) + sale.gross;
+    return sale;
+  }
+
+  /* ---------- day maths ---------- */
+  function todaySummary() {
+    const sales = S.sales.reduce((t, s) => t + s.net, 0), cogs = S.sales.reduce((t, s) => t + s.cost, 0), exp = S.expenses.reduce((t, e) => t + e.amount, 0);
+    const recv = {}; S.sales.filter(s => s.method !== "Clinic credit").forEach(s => recv[s.method] = (recv[s.method] || 0) + s.gross);
+    const top = {}; S.sales.forEach(s => s.items.forEach(i => top[i.pid] = (top[i.pid] || 0) + i.price * i.q));
+    return { sales, cogs, margin: sales - cogs, exp, profit: sales - cogs - exp, rx: S.sales.reduce((t, s) => t + s.rx, 0), inv: S.sales.length, recv, top };
+  }
+  function pastSummary(d) {
+    const r = rng(dayKey(d) * 7 + 3), sales = 15000 + r() * 9000, cogs = sales * (0.58 + r() * .06), exp = 800 + Math.round(r() * 30) * 100;
+    const recv = {}; let rest = sales * (1 + VAT) * (0.88 + r() * .08); ["Cash", "telebirr", "CBE Birr", "Card"].forEach((m, i) => { const v = i === 3 ? rest : rest * (0.25 + r() * .25); recv[m] = v; rest -= v; });
+    const top = {}; PRODUCTS.forEach(p => top[p.id] = r() * sales / 5);
+    return { sales, cogs, margin: sales - cogs, exp, profit: sales - cogs - exp, rx: 8 + Math.floor(r() * 14), inv: 30 + Math.floor(r() * 25), recv, top };
+  }
+  function expiryBuckets() {
+    const out = [{ n: 0, v: 0, list: [] }, { n: 0, v: 0, list: [] }, { n: 0, v: 0, list: [] }];
+    S.batches.forEach(b => { const d = daysTo(b.exp), q = left(b); if (q <= 0) return; const k = d <= 30 ? 0 : d <= 60 ? 1 : d <= 90 ? 2 : -1;
+      if (k >= 0) { out[k].n += q; out[k].v += q * b.cost; out[k].list.push(b); } });
+    return out;
+  }
+  const stockValue = () => S.batches.reduce((t, b) => t + Math.max(0, left(b)) * b.cost, 0);
+
+  /* ---------- screens ---------- */
+  S = load() || freshState();
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
+    ["summary", "pos", "stock", "buy", "approvals"].forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "summary") { viewOffset = 0; renderSummary(true); }
+    if (name === "stock") renderStock();
+    if (name === "buy") renderBuy();
+    if (name === "approvals") renderApprovals();
+    window.scrollTo({ top: 0 });
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- feed + live toasts ---------- */
+  function logEvent(icon, text, amount, pop) {
+    S.feed.unshift({ icon, text, amount: amount || 0, t: hhmm() }); S.feed = S.feed.slice(0, 30);
+    if (pop) { const d = document.createElement("div"); d.innerHTML = `${icon} ${esc(text)}${amount ? " · <b>" + etb(amount) + "</b>" : ""}`; $("lt").prepend(d); setTimeout(() => d.remove(), 4200); while ($("lt").children.length > 3) $("lt").lastChild.remove(); }
+  }
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3200); }
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("button,input,select"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+  let lastFlash = null;
+  function flash() { if (!lastFlash) return; lastFlash.forEach(id => { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }); lastFlash = null; }
+
+  /* ---------- day summary ---------- */
+  let viewOffset = 0;
+  const dayFor = off => new Date(TODAY.getTime() + off * DAY);
+  function list(el, rows, empty) { el.innerHTML = rows.length ? rows.join("") : `<div class="empty">${empty}</div>`; }
+  function renderSummary(fl) {
+    const isToday = viewOffset === 0, d = dayFor(viewOffset), sm = isToday ? todaySummary() : pastSummary(d);
+    $("d-title").textContent = isToday ? "Today, so far" : viewOffset === -1 ? "Yesterday" : gregStr(d).split(",")[0];
+    $("d-date").textContent = `${ethStr(d)} · ${gregStr(d)}`; $("next").disabled = isToday;
+    $("v-profit").textContent = etb(sm.profit); $("profit").classList.toggle("loss", sm.profit < 0);
+    $("profit").querySelector("small").textContent = isToday ? "Profit so far (before tax)" : "Profit (before tax)";
+    $("v-sales").textContent = etb(sm.sales); $("v-margin").textContent = etb(sm.margin); $("v-exp").textContent = etb(sm.exp);
+    const eb = expiryBuckets();
+    $("exp3").innerHTML = [["r", "≤ 30 days"], ["a", "31–60 days"], ["y", "61–90 days"]].map(([c, l], i) =>
+      `<button type="button" class="${c}" data-bucket="${i}"><small>${l}</small><b class="num">${etb(eb[i].v)}</b><small>${eb[i].n} units</small></button>`).join("");
+    $("v-stockval").textContent = "Stock value " + etb(stockValue());
+    $("v-rx").textContent = sm.rx; $("v-inv").textContent = sm.inv;
+    const tot = Object.values(sm.recv).reduce((a, b) => a + b, 0);
+    $("v-recv-total").textContent = etb(tot);
+    list($("v-recv"), Object.entries(sm.recv).sort((a, b) => b[1] - a[1]).map(([m, v]) => `<div class="row"><span>${esc(m)}</span><b class="num">${etb(v)}</b></div><div class="meter"><i style="width:${tot ? v / tot * 100 : 0}%"></i></div>`), "No money received yet.");
+    list($("v-top"), Object.entries(sm.top).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([id, v]) => `<div class="row"><span>${esc(P[id].n)}</span><b class="num">${etb(v)}</b></div>`), "No sales yet.");
+    const ct = Object.values(S.credit).reduce((a, b) => a + b, 0);
+    $("v-credit-total").textContent = etb(ct);
+    list($("v-credit"), Object.entries(S.credit).filter(([, v]) => v > 0).map(([c, v]) => `<div class="row"><span>${esc(c)}</span><b class="num">${etb(v)}</b></div>`), "No clinic owes you.");
+    renderWeek(); renderFeed(); renderBadge(); if (fl) flash();
+  }
+  function renderWeek() {
+    const vals = []; for (let off = -6; off <= 0; off++) { const d = dayFor(off); vals.push({ off, d, v: off === 0 ? todaySummary().sales : pastSummary(d).sales }); }
+    const max = Math.max(...vals.map(x => x.v), 1);
+    $("week").innerHTML = vals.map(x => `<button type="button" data-off="${x.off}" class="${x.off === 0 ? "today" : ""} ${x.off === viewOffset ? "sel" : ""}" aria-label="${gregStr(x.d)}: ${etb(x.v)}"><span class="v">${Math.round(x.v / 1000)}k</span><span class="track"><span class="b" style="height:${Math.max(4, x.v / max * 100)}%"></span></span><span class="d">${x.off === 0 ? "Today" : x.d.toLocaleDateString("en-GB", { weekday: "short" })}</span></button>`).join("");
+  }
+  $("week").addEventListener("click", e => { const b = e.target.closest("[data-off]"); if (!b) return; viewOffset = Number(b.dataset.off); renderSummary(); });
+  $("prev").addEventListener("click", () => { viewOffset--; renderSummary(); });
+  $("next").addEventListener("click", () => { if (viewOffset < 0) { viewOffset++; renderSummary(); } });
+  function renderFeed() {
+    $("feed-state").textContent = viewOffset === 0 ? (liveOn ? "● live" : "paused") : "";
+    $("feed").innerHTML = viewOffset !== 0 ? `<div class="empty">Live activity shows for today.</div>` : S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}<br><small>${e.t}</small></span><b class="num">${e.amount ? etb(e.amount) : ""}</b></div>`).join("") : `<div class="empty">Waiting for the next sale… (turn on <b>Live</b>, or dispense something yourself)</div>`;
+  }
+  function renderBadge() { const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n; }
+  const drill = (id, fn) => { $(id).addEventListener("click", fn); $(id).addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }); };
+  drill("k-sales", () => { const sm = viewOffset === 0 ? todaySummary() : pastSummary(dayFor(viewOffset));
+    openSheet(`<h2>Sales ${etb(sm.sales)}</h2><p class="muted">Before VAT, by product.</p><div style="margin-top:10px">${Object.entries(sm.top).sort((a, b) => b[1] - a[1]).map(([id, v]) => `<div class="row"><span>${esc(P[id].n)}</span><b class="num">${etb(v)}</b></div>`).join("")}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-margin", () => { if (viewOffset !== 0) { toast("Margin detail shows for today"); return; } const m = {};
+    S.sales.forEach(s => s.items.forEach(i => { m[i.pid] = m[i.pid] || { s: 0, c: 0 }; m[i.pid].s += i.price * i.q; m[i.pid].c += i.cost * i.q; }));
+    openSheet(`<h2>Gross margin ${etb(todaySummary().margin)}</h2><p class="muted">Sales minus what each medicine cost us.</p><div style="margin-top:10px">${Object.entries(m).sort((a, b) => (b[1].s - b[1].c) - (a[1].s - a[1].c)).map(([id, v]) => `<div class="row"><span>${esc(P[id].n)} <span class="muted small">· ${Math.round((v.s - v.c) / v.s * 100)}%</span></span><b class="num">${etb(v.s - v.c)}</b></div>`).join("")}</div><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`); });
+  drill("k-exp", () => { openSheet(`<h2>Expenses ${etb(todaySummary().exp)}</h2><p class="muted">Approved expenses today, before tax.</p><div style="margin-top:10px">${S.expenses.map(e => `<div class="row"><span>${esc(e.n)}</span><b class="num">${etb(e.amount)}</b></div>`).join("")}</div>${S.pending.length ? `<div class="actions"><button class="btn btn-gold" id="go-ap">${S.pending.length} waiting for your approval →</button></div>` : ""}<div class="actions"><button class="btn btn-line" data-close>Close</button></div>`,
+    () => { const g = $("go-ap"); g && g.addEventListener("click", () => { closeSheet(); show("approvals"); }); }); });
+  $("exp3").addEventListener("click", e => { const b = e.target.closest("[data-bucket]"); if (!b) return; const eb = expiryBuckets()[Number(b.dataset.bucket)];
+    openSheet(`<h2>${["Expiring within 30 days", "Expiring in 31–60 days", "Expiring in 61–90 days"][b.dataset.bucket]}</h2><p class="muted">${etb(eb.v)} at cost · ${eb.n} units</p><div style="margin-top:10px">${eb.list.sort((a, b) => a.exp.localeCompare(b.exp)).map(x => `<div class="row"><span>${esc(P[x.pid].n)}<br><span class="muted small">${x.id} · ${left(x)} left · expires ${shortDate(new Date(x.exp))}</span></span><b class="num">${etb(left(x) * x.cost)}</b></div>`).join("") || '<div class="empty">None.</div>'}</div>
+      <div class="actions"><button class="btn btn-dark" id="go-stock">Open Stock &amp; expiry</button><button class="btn btn-line" data-close>Close</button></div>`, () => $("go-stock").addEventListener("click", () => { closeSheet(); show("stock"); })); });
+
+  /* ---------- dispense ---------- */
+  let cart = [], pm = "Cash", lastPid = null; // cart: [{pid, q, rxOk}]
+  function renderMenu() {
+    const q = $("q").value.trim().toLowerCase();
+    $("menu").innerHTML = PRODUCTS.filter(p => !q || p.n.toLowerCase().includes(q)).map(p => {
+      const st = stockOf(p.id), b = fefoBatches(p.id)[0], d = b ? daysTo(b.exp) : null;
+      return `<button type="button" class="item" data-add="${p.id}" ${st <= 0 ? "disabled" : ""}><b>${esc(p.n)}</b><small>${esc(p.u)}${p.rx ? " · Rx" : ""}</small><span class="p">${etb(p.price * (1 + VAT))}</span><small>${st} in stock${d !== null && d <= 90 ? ` · <span class="tag ${d <= 30 ? "t-red" : "t-amber"}">${d} days</span>` : ""}</small></button>`;
+    }).join("") || `<div class="empty">No medicine matches.</div>`;
+  }
+  $("q").addEventListener("input", renderMenu);
+  $("menu").addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (!b) return; addToCart(b.dataset.add); });
+  function cartAlloc() { const reserved = {}, out = [];
+    for (const c of cart) { const a = allocate(c.pid, c.q, reserved); if (!a) return null; a.forEach(x => reserved[x.bid] = (reserved[x.bid] || 0) + x.q); out.push({ c, a }); }
+    return out; }
+  function addToCart(pid) {
+    const ex = cart.find(c => c.pid === pid);
+    if (ex) ex.q++; else cart.push({ pid, q: 1, rxOk: false });
+    if (!cartAlloc()) { if (ex) ex.q--; else cart.pop(); toast("Not enough stock"); return; }
+    lastPid = pid; renderCart(); showFefo(pid);
+  }
+  function showFefo(pid) {
+    const al = cartAlloc(), line = al && al.find(x => x.c.pid === pid);
+    const bid = line ? line.a[line.a.length - 1].bid : null, b = S.batches.find(z => z.id === bid);
+    if (!b) return;
+    const d = daysTo(b.exp), near = d <= 90, p = P[pid];
+    $("fefo").className = "fefo " + (near ? "on" : "ok");
+    $("fefo").innerHTML = `<b>${esc(p.n)}</b><span class="bline">Batch ${b.id} · expires in ${d} days${near ? " · sell this first" : ""}</span><span class="muted small">${near ? "Edel picked the batch that expires first, before newer stock." : "Earliest expiry on the shelf. Newer batches stay behind it."}${p.rx ? " · <b style=\"color:var(--red)\">Prescription needed</b>" : ""}</span>`;
+  }
+  function renderCart() {
+    const al = cartAlloc() || [];
+    const total = al.reduce((t, x) => t + x.a.reduce((u, y) => u + unitPrice(S.batches.find(b => b.id === y.bid)) * y.q, 0), 0);
+    $("cart").innerHTML = al.length ? al.map(({ c, a }) => { const p = P[c.pid];
+      const amt = a.reduce((u, y) => u + unitPrice(S.batches.find(b => b.id === y.bid)) * y.q, 0) * (1 + VAT);
+      return `<div class="cline"><span><b>${esc(p.n)}</b></span><span class="qty"><button type="button" data-q="${c.pid}" data-d="-1" aria-label="One less">−</button><b>${c.q}</b><button type="button" data-q="${c.pid}" data-d="1" aria-label="One more">+</button></span>
+        <span class="bt">${a.map(y => { const b = S.batches.find(z => z.id === y.bid); return `${b.id} × ${y.q} · exp ${shortDate(new Date(b.exp))}`; }).join(" · ")}</span>
+        ${p.rx ? `<label class="rx ${c.rxOk ? "ok" : ""}"><input type="checkbox" data-rx="${c.pid}" ${c.rxOk ? "checked" : ""}>${c.rxOk ? "Prescription seen" : "Prescription needed: tick when you have seen it (your pharmacy policy)"}</label>` : ""}
+        <span class="muted small">${etb(amt)}</span></div>`; }).join("") : `<div class="empty">Tap a medicine to start a sale.</div>`;
+    $("v-carttotal").textContent = etb(total * (1 + VAT));
+    $("v-cartcount").textContent = cart.length ? cart.reduce((t, c) => t + c.q, 0) + " items" : "";
+    const rxMissing = cart.some(c => P[c.pid].rx && !c.rxOk);
+    $("pay").disabled = !cart.length || rxMissing;
+    $("pay").textContent = cart.length ? `Pay ${etb(total * (1 + VAT))}` : "Pay";
+    $("pay-why").textContent = rxMissing ? "Confirm the prescription to continue." : "";
+    $("m-extra").innerHTML = pm === "Clinic credit" ? `<select id="m-clinic" aria-label="Clinic account">${CLINICS.map(c => `<option>${esc(c)}</option>`).join("")}</select><div style="height:10px"></div>` : "";
+  }
+  $("cart").addEventListener("click", e => { const b = e.target.closest("[data-q]"); if (!b) return; const c = cart.find(x => x.pid === b.dataset.q); c.q += Number(b.dataset.d);
+    if (c.q <= 0) cart = cart.filter(x => x !== c); else if (!cartAlloc()) { c.q--; toast("Not enough stock"); } renderCart(); if (cart.find(x => x.pid === c.pid)) showFefo(c.pid); });
+  $("cart").addEventListener("change", e => { const x = e.target.closest("[data-rx]"); if (!x) return; cart.find(c => c.pid === x.dataset.rx).rxOk = x.checked; renderCart(); });
+  $("methods").innerHTML = METHODS.map(m => `<button type="button" aria-pressed="${m === pm}" data-m="${m}">${m}</button>`).join("");
+  $("methods").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (!b) return; pm = b.dataset.m; $("methods").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderCart(); });
+  $("pay").addEventListener("click", () => {
+    if (!cart.length || cart.some(c => P[c.pid].rx && !c.rxOk)) return;
+    const who = pm === "Clinic credit" ? $("m-clinic").value : null;
+    const sale = sell(cart.map(c => ({ pid: c.pid, q: c.q })), pm, who, true); if (!sale) { toast("Not enough stock"); return; }
+    logEvent("💊", `Dispensed ${sale.items.map(i => P[i.pid].n + " × " + i.q).join(", ")} · ${pm}`, sale.gross, false);
+    cart = []; save(); renderCart(); renderMenu(); renderOrders(); lastFlash = ["c-money", "c-expiry", pm === "Clinic credit" ? "c-credit" : "c-recv", "c-top"];
+    $("fefo").className = "fefo"; $("fefo").innerHTML = `<b>Tap a product. Edel picks the batch that expires first.</b><span class="muted small">First expiry, first out: the oldest stock leaves the shelf before it can expire.</span>`;
+    openSheet(`<h2>Paid ✓</h2><p class="muted">${who ? esc(who) + " · " : ""}${esc(pm)}${sale.rx ? " · prescription seen" : ""}</p>
+      <div class="receipt"><b>TAX INVOICE</b>${sale.items.map(i => `<div class="rr"><span>${esc(P[i.pid].n)} × ${i.q}<br><span class="muted">${i.bid} · exp ${shortDate(new Date(i.exp))}</span></span><span>${etb2(i.price * i.q)}</span></div>`).join("")}
+      <div class="rr"><span>VAT 15%</span><span>${etb2(sale.vat)}</span></div><hr style="border:0;border-top:1px dashed var(--line);margin:6px 0"><div class="rr"><b>TOTAL ETB</b><b>${etb2(sale.gross)}</b></div>
+      <div>No ${sale.no}</div><span class="stamp">REGISTERED · ተመዝግቧል</span></div>
+      <p class="muted small" style="margin-top:8px">In the real system this invoice is registered with the Ministry of Revenues as the sale happens.</p>
+      <div class="actions"><button class="btn btn-dark" id="go-sum">See it in Day Summary</button><button class="btn btn-line" data-close>New sale</button></div>`, () => $("go-sum").addEventListener("click", () => { closeSheet(); show("summary"); }));
+  });
+  function renderOrders() {
+    const live = S.sales.filter(s => s.t).slice().reverse();
+    $("v-ordercount").textContent = S.sales.length + " today";
+    $("orders").innerHTML = live.length ? live.slice(0, 8).map(s => `<div class="row"><span><b class="num">${s.no}</b><br><span class="muted small">${esc(s.items.map(i => P[i.pid].n + " × " + i.q).join(", "))} · ${esc(s.method)}</span></span><span style="text-align:right"><b class="num">${etb(s.gross)}</b><br><span class="tag t-green">Registered</span></span></div>`).join("") : `<div class="empty">Sales you make appear here, each with its e-invoice number.</div>`;
+  }
+
+  /* ---------- stock & expiry ---------- */
+  function expTag(iso) { const d = daysTo(iso); return `<span class="tag ${d <= 30 ? "t-red" : d <= 90 ? "t-amber" : "t-green"}">${d <= 0 ? "expired" : d + " days"}</span>`; }
+  function renderStock() {
+    $("v-batchcount").textContent = S.batches.filter(b => left(b) > 0).length + " batches";
+    $("stock").innerHTML = PRODUCTS.map(p => { const bs = S.batches.filter(b => b.pid === p.id && left(b) > 0).sort((a, b) => a.exp.localeCompare(b.exp));
+      return `<div class="prod"><h4><span>${esc(p.n)}</span><span class="muted small">${stockOf(p.id)} in stock</span></h4>${bs.map(b => { const d = daysTo(b.exp);
+        return `<div class="batch"><span><span class="bn">${b.id}</span> · ${left(b)} × ${etb(b.cost)} · exp ${shortDate(new Date(b.exp))}${b.disc ? ` · <span class="tag t-blue">${Math.round(b.disc * 100)}% off</span>` : ""}</span>${expTag(b.exp)}
+          ${d <= 90 ? `<div class="acts"><button type="button" class="btn btn-line btn-sm" data-ret="${b.id}">Return to supplier</button>${b.disc ? "" : `<button type="button" class="btn btn-line btn-sm" data-disc="${b.id}">Discount 20% to clear</button>`}</div>` : ""}</div>`; }).join("") || '<div class="empty">Out of stock.</div>'}</div>`; }).join("");
+    const low = PRODUCTS.filter(p => stockOf(p.id) < p.min);
+    $("low").innerHTML = low.length ? low.map(p => `<div class="row"><span>${esc(p.n)}<br><span class="muted small">${stockOf(p.id)} left · reorder below ${p.min}</span></span><button type="button" class="btn btn-gold btn-sm" data-goorder="${p.id}">Reorder</button></div>`).join("") : `<div class="empty">Nothing is low.</div>`;
+    $("cnt-p").innerHTML = PRODUCTS.map(p => `<option value="${p.id}">${esc(p.n)}</option>`).join(""); cntUpdate();
+  }
+  $("stock").addEventListener("click", e => {
+    const r = e.target.closest("[data-ret]"), d = e.target.closest("[data-disc]");
+    if (r) { const b = S.batches.find(x => x.id === r.dataset.ret);
+      if (S.pending.some(x => x.bid === b.id)) { toast("Already waiting for your approval"); return; }
+      S.pending.push({ id: ++S.apSeq, k: "Supplier return", who: "Pharmacist", what: `Return ${P[b.pid].n}, ${b.id} × ${left(b)} to ${b.supplier}`, amount: left(b) * b.cost, bid: b.id });
+      logEvent("↩️", `Return of ${b.id} sent for your approval`, left(b) * b.cost, false); save(); renderBadge(); toast("Sent to <b>Approvals</b>"); }
+    if (d) { const b = S.batches.find(x => x.id === d.dataset.disc); b.disc = 0.2; logEvent("🏷️", `${P[b.pid].n} ${b.id} discounted 20% to clear`, 0, false); save(); renderStock(); renderMenu(); toast("Discount set. It applies when this batch is sold."); }
+  });
+  $("low").addEventListener("click", e => { const b = e.target.closest("[data-goorder]"); if (b) show("buy"); });
+  function cntUpdate() { const pid = $("cnt-p").value, sys = stockOf(pid); $("cnt-sys").textContent = sys;
+    const n = $("cnt-n").value === "" ? null : Number($("cnt-n").value);
+    $("cnt-var").textContent = n === null || !isFinite(n) || n < 0 ? "—" : `${n - sys} (${etb((n - sys) * P[pid].cost)})`; }
+  $("cnt-p").addEventListener("change", () => { $("cnt-n").value = ""; cntUpdate(); });
+  $("cnt-n").addEventListener("input", cntUpdate);
+  $("cnt-save").addEventListener("click", () => {
+    const pid = $("cnt-p").value, sys = stockOf(pid), n = Number($("cnt-n").value);
+    if ($("cnt-n").value === "" || !isFinite(n) || n < 0) { toast("Enter the counted quantity"); return; }
+    let diff = sys - n; // positive = missing
+    if (diff > 0) { for (const b of fefoBatches(pid)) { const take = Math.min(left(b), diff); b.adj += take; diff -= take; if (!diff) break; } }
+    else if (diff < 0) { const b = fefoBatches(pid).slice(-1)[0] || S.batches.find(x => x.pid === pid); b.adj += diff; }
+    const loss = (sys - n) * P[pid].cost;
+    if (loss > 0) S.expenses.push({ n: `Stock count loss: ${P[pid].n}`, amount: loss });
+    logEvent("📋", `Count saved: ${P[pid].n} ${n} on shelf (${n - sys >= 0 ? "+" : ""}${n - sys})`, Math.abs(loss), false);
+    $("cnt-n").value = ""; save(); renderStock(); renderMenu(); toast(loss > 0 ? `Saved. Loss of <b>${etb(loss)}</b> booked.` : "Saved.");
+  });
+
+  /* ---------- purchasing ---------- */
+  const supplierPrices = p => SUPPLIERS.map((s, i) => ({ s, unit: Math.round(p.cost * [0.97, 0.93, 1.02][(i + p.id.length) % 3]) }));
+  function renderBuy() {
+    const low = PRODUCTS.filter(p => stockOf(p.id) < p.min * 1.2);
+    $("reorder").innerHTML = low.length ? low.map(p => { const sp = supplierPrices(p), best = sp.reduce((a, b) => b.unit < a.unit ? b : a), qty = Math.max(10, Math.round((p.min * 2 - stockOf(p.id)) / 10) * 10);
+      return `<div class="prod"><h4><span>${esc(p.n)}</span><span class="muted small">${stockOf(p.id)} left · min ${p.min}</span></h4>
+        <div class="sup">${sp.map(x => `<span class="${x === best ? "best" : ""}">${x.s}<br>${etb(x.unit)}</span>`).join("")}</div>
+        <div class="row"><span class="small">Suggested: <b>${qty}</b> from ${best.s} · ${etb(qty * best.unit)}</span><button type="button" class="btn btn-gold btn-sm" data-po="${p.id}" data-qty="${qty}" data-sup="${best.s}" data-unit="${best.unit}">Create PO</button></div></div>`; }).join("") : `<div class="empty">Stock levels are fine.</div>`;
+    $("pos-list").innerHTML = S.pos.length ? S.pos.slice().reverse().map(o => `<div class="row"><span>${esc(P[o.pid].n)} × ${o.qty}<br><span class="muted small">${esc(o.supplier)} · ${etb(o.qty * o.unit)}</span></span>${o.status === "approved" ? `<button type="button" class="btn btn-dark btn-sm" data-recv="${o.id}">Receive</button>` : `<span class="tag t-green">Received ${o.bid}</span>`}</div>`).join("") : `<div class="empty">Approved purchase orders appear here, ready to receive.</div>`;
+  }
+  $("reorder").addEventListener("click", e => { const b = e.target.closest("[data-po]"); if (!b) return; const p = P[b.dataset.po], qty = Number(b.dataset.qty), unit = Number(b.dataset.unit);
+    S.pending.push({ id: ++S.apSeq, k: "Purchase order", who: "Pharmacist", what: `${p.n} × ${qty} from ${b.dataset.sup}`, amount: qty * unit, pid: p.id, qty, supplier: b.dataset.sup, unit });
+    logEvent("📝", `Purchase order for ${p.n} waiting for your approval`, qty * unit, false); save(); renderBadge(); toast("Purchase order sent to <b>Approvals</b>"); });
+  $("pos-list").addEventListener("click", e => { const b = e.target.closest("[data-recv]"); if (b) receive(Number(b.dataset.recv)); });
+  function receive(id) {
+    const o = S.pos.find(x => x.id === id); if (!o || o.status !== "approved") return;
+    const nb = { id: "B-" + (++batchSeq), pid: o.pid, exp: inDays(365 + Math.floor(Math.random() * 365)), qtyIn: o.qty, sold: 0, adj: 0, ret: 0, cost: o.unit, disc: 0, supplier: o.supplier };
+    S.batches.push(nb); o.status = "received"; o.bid = nb.id;
+    logEvent("📦", `Received ${P[o.pid].n} × ${o.qty} · new batch ${nb.id}, expires ${shortDate(new Date(nb.exp))}`, o.qty * o.unit, true);
+    save(); renderBuy(); renderMenu(); if (!$("s-stock").hidden) renderStock(); toast(`New batch <b>${nb.id}</b> added`);
+    return nb;
+  }
+
+  /* ---------- approvals ---------- */
+  function renderApprovals() {
+    $("ap-total").textContent = S.pending.length ? etb(S.pending.reduce((t, p) => t + p.amount, 0)) : "";
+    $("ap-list").innerHTML = S.pending.length ? S.pending.map(p => `<div class="ap"><div><span class="k">${p.k}</span><b>${esc(p.what)}</b><br><span class="muted small">Asked by ${esc(p.who)} · ${etb(p.amount)}</span></div><div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`).join("") : `<div class="empty">All done.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(p.what)}<br><span class="muted small">${p.k} · ${p.ok ? "approved" : "rejected"} ${p.t}</span></span><b class="num" style="color:${p.ok ? "var(--green)" : "var(--red)"}">${etb(p.amount)}</b></div>`).join("") : `<div class="empty">Nothing decided yet.</div>`;
+    renderBadge();
+  }
+  $("ap-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    S.pending = S.pending.filter(x => x.id !== id); S.decided.push({ ...p, ok, t: hhmm() });
+    let msg = "Rejected.";
+    if (ok && p.k === "Expense") { S.expenses.push({ n: p.what, amount: p.amount }); msg = `Approved. Profit is now ${etb(todaySummary().profit)}.`; }
+    if (ok && p.k === "Purchase order") { S.pos.push({ id: p.id, pid: p.pid, qty: p.qty, supplier: p.supplier, unit: p.unit, status: "approved" }); msg = "Approved. Receive it in Purchasing when it arrives."; }
+    if (ok && p.k === "Supplier return") { const bt = S.batches.find(x => x.id === p.bid); if (bt) { bt.ret += left(bt); } msg = "Approved. The batch is taken off the shelf for return."; }
+    logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${p.what}`, p.amount, false);
+    save(); renderApprovals(); renderMenu(); toast(msg);
+  });
+
+  /* ---------- live ---------- */
+  let liveOn = true, liveTimer = null;
+  function liveTick() {
+    if (document.hidden) return;
+    const R = Math.random, x = R();
+    if (x < 0.6) {
+      const lines = [], k = 1 + Math.floor(R() * 2);
+      for (let j = 0; j < k; j++) { const p = PRODUCTS[Math.floor(R() * PRODUCTS.length)]; if (stockOf(p.id) > 2 && !lines.find(l => l.pid === p.id)) lines.push({ pid: p.id, q: 1 }); }
+      if (!lines.length) return;
+      const m = ["Cash", "Cash", "telebirr", "CBE Birr", "Card"][Math.floor(R() * 5)], s = sell(lines, m, null, true);
+      if (s) { logEvent("💊", `Sale: ${s.items.map(i => P[i.pid].n).join(", ")} · ${m}`, s.gross, true); lastFlash = ["c-money", "c-recv", "c-top"]; }
+    } else if (x < 0.72) {
+      const c = CLINICS[Math.floor(R() * CLINICS.length)], s = sell([{ pid: "gauze", q: 4 }, { pid: "para", q: 10 }], "Clinic credit", c, true);
+      if (s) { logEvent("🏥", `${c} ordered on credit`, s.gross, true); lastFlash = ["c-money", "c-credit"]; }
+    } else if (x < 0.82) {
+      const o = S.pos.find(z => z.status === "approved"); if (o) receive(o.id);
+    } else if (x < 0.98) {
+      const b = S.batches.filter(z => left(z) > 0 && daysTo(z.exp) <= 30)[0];
+      if (b) logEvent("⏰", `${P[b.pid].n} ${b.id} expires in ${daysTo(b.exp)} days · ${left(b)} left`, left(b) * b.cost, true);
+    } else {
+      if (S.pending.length >= 3) return;
+      const opts = [["Expense", "Cashier", "Receipt printer rolls", 480], ["Expense", "Pharmacist", "Cold box ice packs", 900]];
+      const [k, who, what, amount] = opts[Math.floor(R() * opts.length)];
+      S.pending.push({ id: ++S.apSeq, k, who, what, amount }); logEvent("📝", `${who} asks you to approve: ${what}`, amount, true);
+    }
+    save();
+    if (!$("s-summary").hidden && viewOffset === 0) renderSummary(true); else renderBadge();
+    if (!$("s-pos").hidden) { renderMenu(); renderOrders(); }
+    if (!$("s-approvals").hidden) renderApprovals();
+  }
+  function setLive(on) { liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(liveTimer); if (on) liveTimer = setInterval(liveTick, 6000); renderFeed(); }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on: customers and staff keep working" : "Live paused"); });
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} S = freshState(); cart = []; $("lt").innerHTML = ""; save(); renderCart(); renderMenu(); renderOrders(); show("pos"); toast("Demo reset"); });
+
+  window.__pharmacy = { get S() { return S; }, left, stockOf, fefoBatches, todaySummary, receive };
+  renderMenu(); renderCart(); renderOrders(); renderSummary(); renderBadge();
+  setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
+})();
+</script>
+</body>
+</html>
