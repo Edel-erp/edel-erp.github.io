@@ -99,6 +99,7 @@ table.lines td.n, table.lines th.n { text-align: right; white-space: nowrap; pad
 @media (max-width: 420px) { .slip { padding: 22px 16px 16px; font-size: 11.5px; } .slip-reg { grid-template-columns: 64px 1fr; } .slip-reg canvas { width: 64px; height: 64px; } .slip-reg .stamp { grid-column: 1 / -1; justify-self: start; } }
 
 section.band { padding: 72px 0; }
+section[id] { scroll-margin-top: 88px; }
 section.soft { background: var(--soft); }
 .band h2 { font-size: clamp(28px, 3.6vw, 40px); margin-bottom: 14px; }
 .band p.intro { color: var(--muted); max-width: 60ch; font-size: 18px; }
@@ -109,8 +110,34 @@ section.soft { background: var(--soft); }
 .points span { color: var(--muted); font-size: 16px; }
 @media (max-width: 760px) { .points { grid-template-columns: 1fr; } }
 
-.industries { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; padding: 0; list-style: none; }
-.industries li { border: 1.5px solid var(--ink); border-radius: 999px; padding: 9px 16px; font-weight: 500; }
+
+/* Industries */
+section.dark { background: var(--black); color: #fff; }
+section.dark p.intro { color: #B9BBBF; }
+.ind-tabs { display: flex; gap: 10px; margin-top: 30px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+.ind-tabs::-webkit-scrollbar { display: none; }
+.ind-tabs button { flex: none; font: 600 16px/1 var(--body); color: #fff; background: transparent; border: 1.5px solid #3A3C40; border-radius: 999px; padding: 13px 20px; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+.ind-tabs button:hover { border-color: var(--gold); }
+.ind-tabs button[aria-selected="true"] { background: var(--gold); border-color: var(--gold); color: var(--black); }
+.ind-tabs button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ind-panel { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 40px; margin-top: 28px; background: #17181A; border: 1px solid #2A2C30; border-radius: 20px; padding: clamp(22px, 3.5vw, 40px); animation: indIn .25s ease; }
+.ind-panel[hidden] { display: none; }
+@keyframes indIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ind-panel { animation: none; } }
+.ind-head { display: grid; gap: 14px; align-content: start; }
+.ind-head h3 { font-size: clamp(26px, 3vw, 34px); }
+.ind-head p { color: #B9BBBF; font-size: 18px; }
+.ind-head .btn { justify-self: start; margin-top: 6px; }
+.ind-tag { justify-self: start; font-size: 13px; font-weight: 700; padding: 5px 11px; border-radius: 999px; background: #2A2C30; color: #D9DADC; }
+.ind-tag.live { background: rgba(47,180,99,.16); color: #5FD58C; }
+.ind-tag.live::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5FD58C; margin-right: 7px; vertical-align: 1px; }
+.ind-features { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; counter-reset: f; }
+.ind-features li { counter-increment: f; background: #0E0F10; border: 1px solid #2A2C30; border-radius: 14px; padding: 16px 16px 16px 54px; position: relative; }
+.ind-features li::before { content: counter(f, decimal-leading-zero); position: absolute; left: 16px; top: 16px; font: 700 13px/1 var(--mono); color: var(--gold); }
+.ind-features b { display: block; font-family: var(--display); font-size: 16px; margin-bottom: 4px; }
+.ind-features span { color: #A9ABAF; font-size: 15px; line-height: 1.45; }
+@media (max-width: 900px) { .ind-panel { grid-template-columns: 1fr; gap: 24px; } }
+@media (max-width: 560px) { .ind-features { grid-template-columns: 1fr; } }
 
 .about { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
 @media (max-width: 860px) { .about { grid-template-columns: 1fr; gap: 24px; } }
@@ -141,6 +168,63 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
 
 .wa-float { position: fixed; right: 18px; bottom: 18px; width: 56px; height: 56px; border-radius: 50%; background: #25D366; color: #fff; display: grid; place-items: center; box-shadow: 0 12px 26px -8px rgba(0,0,0,.45); z-index: 20; }
 .wa-float svg { width: 28px; height: 28px; }
+
+/* ---- upgrade: hero, icons, motion ---- */
+.hero { position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(600px 420px at 85% 35%, rgba(211,166,40,.20), transparent 70%),
+              radial-gradient(500px 300px at 5% 100%, rgba(211,166,40,.10), transparent 70%),
+              radial-gradient(circle, rgba(14,15,16,.07) 1px, transparent 1.2px) 0 0 / 22px 22px; }
+.trust { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 26px; color: var(--muted); font-size: 15px; font-weight: 500; }
+.trust li { display: inline-flex; align-items: center; gap: 7px; }
+.trust svg { width: 18px; height: 18px; color: var(--gold-deep); }
+.points .ic { width: 44px; height: 44px; border-radius: 12px; background: var(--gold-soft); color: var(--gold-deep); display: grid; place-items: center; margin-bottom: 14px; }
+.points .ic svg { width: 22px; height: 22px; }
+.points div { transition: transform .2s ease, box-shadow .2s ease; }
+.points div:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -22px rgba(14,15,16,.35); }
+.btn { transition: transform .15s ease, box-shadow .15s ease; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -12px rgba(14,15,16,.45); }
+
+/* industry dashboard image */
+.ind-shot { grid-column: 1 / -1; margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid #2A2C30; background: #0E0F10; }
+.ind-shot img { display: block; width: 100%; height: auto; }
+
+/* anywhere */
+.anywhere { background: linear-gradient(180deg, var(--paper), var(--gold-soft)); }
+.any-grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: 48px; align-items: center; }
+@media (max-width: 860px) { .any-grid { grid-template-columns: 1fr; } }
+.ticks { list-style: none; padding: 0; display: grid; gap: 12px; margin-top: 24px; font-size: 17px; }
+.ticks li { display: flex; gap: 10px; align-items: flex-start; }
+.ticks svg { width: 22px; height: 22px; flex: none; color: #fff; background: var(--gold); border-radius: 50%; padding: 4px; margin-top: 1px; }
+.phone-stage { display: grid; justify-items: center; gap: 12px; }
+.phone { width: 290px; max-width: 100%; background: #0E0F10; border-radius: 40px; padding: 38px 14px 18px; box-shadow: 0 0 0 8px #1F2023, 0 40px 70px -30px rgba(14,15,16,.6); display: grid; gap: 10px; position: relative; color: #fff; transform: rotate(2deg); }
+.phone-notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 84px; height: 18px; border-radius: 10px; background: #1F2023; }
+.ph-top { display: flex; justify-content: space-between; align-items: baseline; padding: 0 4px; font-size: 14px; color: #B9BBBF; }
+.ph-top b { color: #fff; font-family: "Noto Sans Ethiopic", var(--body); }
+.ph-card { background: #1A1B1E; border-radius: 16px; padding: 12px 14px; display: grid; gap: 4px; }
+.ph-card small { color: #9C9EA2; font-size: 12px; }
+.ph-card b { font-family: var(--display); font-size: 17px; }
+.ph-big { background: var(--gold); color: var(--black); }
+.ph-big small { color: rgba(14,15,16,.7); }
+.ph-big b { font-size: 26px; }
+.ph-big .up { font-size: 12px; font-weight: 700; }
+.ph-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ok { font-size: 11px; color: #5FD58C; font-weight: 700; }
+.bars { display: flex; align-items: flex-end; gap: 6px; height: 54px; margin-top: 4px; }
+.bars i { flex: 1; background: #3A3C40; border-radius: 4px; }
+.bars i.now { background: var(--gold); }
+.ph-alert { grid-template-columns: auto 1fr; align-items: center; gap: 10px; }
+.ph-alert .dot { width: 10px; height: 10px; border-radius: 50%; background: #F2A33A; box-shadow: 0 0 0 4px rgba(242,163,58,.2); }
+.ph-alert b { font-size: 14px; display: block; }
+.ph-branch { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; border-top: 1px solid #26272B; }
+.ph-branch:first-of-type { border-top: 0; }
+.ph-branch b { font-size: 13px; font-family: var(--body); }
+.example.on-light { color: var(--muted); }
+
+/* scroll reveal (content stays visible without JavaScript) */
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.js .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .reveal { opacity: 1; transform: none; transition: none; } .phone { transform: none; } }
 </style>
 </head>
 <body>
@@ -151,6 +235,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
     <nav aria-label="Main">
       <a href="#einvoice">E-invoice</a>
       <a href="#erp">ERP</a>
+      <a href="#anywhere">Dashboards</a>
       <a href="#about">About</a>
       <a href="#request">Contact</a>
     </nav>
@@ -170,6 +255,11 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <a class="btn btn-gold" href="#request">Request e-invoice</a>
           <a class="btn btn-line" href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp us</a>
         </div>
+        <ul class="trust">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>Ministry approved</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7M7.5 5v1.5c0 3-2 5.5-4 6.5M5 9c1 2 3 3.5 6 4.5"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>Amharic &amp; English</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Support in Addis Ababa</li>
+        </ul>
       </div>
       <div class="slip-stage">
         <article class="slip" aria-label="Example electronic invoice" id="slip"></article>
@@ -180,29 +270,177 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
 
   <section class="band soft" id="einvoice">
     <div class="wrap">
-      <h2>E-invoice</h2>
+      <h2 class="reveal">E-invoice</h2>
       <p class="intro">Issue tax invoices, cash receipts and credit notes. Edel registers each one with the Ministry of Revenues as you sell.</p>
       <div class="points">
-        <div><b>No new machine</b><span>Works on the computer, tablet or phone you already have.</span></div>
-        <div><b>Always working, 24/7</b><span>Power cuts or internet outages won't stop your sales.</span></div>
-        <div><b>Made for Ethiopia</b><span>Amharic and English, Birr, VAT and the Ethiopian calendar.</span></div>
+        <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><b>No new machine</b><span>Works on the computer, tablet or phone you already have.</span></div>
+        <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Always working, 24/7</b><span>Power cuts or internet outages won't stop your sales.</span></div>
+        <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><b>Made for Ethiopia</b><span>Amharic and English, Birr, VAT and the Ethiopian calendar.</span></div>
       </div>
     </div>
   </section>
 
-  <section class="band" id="erp">
+  <section class="band dark" id="erp">
     <div class="wrap">
-      <h2>ERP for your whole business</h2>
-      <p class="intro">Accounts, stock, purchasing, sales and payroll in one system, connected to your e-invoices. Set up for the way your industry works.</p>
-      <ul class="industries">
-        <li>Hotels</li>
-        <li>Beer distribution</li>
-        <li>Import &amp; export</li>
-        <li>Manufacturing</li>
-        <li>Farms</li>
-        <li>Logistics &amp; supply chain</li>
-        <li>Vehicle and fleet management</li>
-      </ul>
+      <h2 class="reveal">ERP built for your industry</h2>
+      <p class="intro">Accounts, stock, purchasing, sales and payroll in one system, connected to your e-invoices. Pick your industry to see what it does.</p>
+      <div class="ind-tabs" role="tablist" aria-label="Industries">
+        <button type="button" role="tab" id="t-hotels" aria-controls="p-hotels" aria-selected="true">Hotels</button>
+        <button type="button" role="tab" id="t-beer" aria-controls="p-beer" aria-selected="false" tabindex="-1">Beer distribution</button>
+        <button type="button" role="tab" id="t-logistics" aria-controls="p-logistics" aria-selected="false" tabindex="-1">Logistics &amp; fleet</button>
+        <button type="button" role="tab" id="t-import" aria-controls="p-import" aria-selected="false" tabindex="-1">Import &amp; export</button>
+        <button type="button" role="tab" id="t-manufacturing" aria-controls="p-manufacturing" aria-selected="false" tabindex="-1">Manufacturing</button>
+        <button type="button" role="tab" id="t-farms" aria-controls="p-farms" aria-selected="false" tabindex="-1">Farms</button>
+      </div>
+      <div class="ind-panel" role="tabpanel" id="p-hotels" aria-labelledby="t-hotels">
+        <figure class="ind-shot"><img src="dashboards/hotels.png" alt="Example hotel dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
+        <div class="ind-head">
+          <span class="ind-tag live">In use today</span>
+          <h3>ERP for hotels</h3>
+          <p>Run rooms, restaurant, bar and stores in one system, with a report for every day.</p>
+          <a class="btn btn-gold" href="#request" data-type="Hotels">Ask about this</a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Rooms and front desk</b><span>Bookings, check-in, check-out and room status on one screen.</span></li>
+          <li><b>Online bookings</b><span>Rooms and rates stay in sync with booking sites and your own website.</span></li>
+          <li><b>Online payment</b><span>Guests pay by telebirr, CBE Birr, card or bank transfer.</span></li>
+          <li><b>Restaurant and bar</b><span>Waiter orders go straight to the kitchen screen, and bills can go to the guest&#x27;s room.</span></li>
+          <li><b>Kitchen, bar and housekeeping stores</b><span>Each department requests stock and records exactly what it used.</span></li>
+          <li><b>Daily reporting</b><span>Sales, guests, purchases and cash for every day, matched to your fiscal Z-reports.</span></li>
+          <li><b>Guest QR in every room</b><span>Guests register themselves and message the hotel from their phone.</span></li>
+          <li><b>Staff and payroll</b><span>Fingerprint attendance and Ethiopian payroll, ready to send to the bank.</span></li>
+        </ol>
+      </div>
+      <div class="ind-panel" role="tabpanel" id="p-beer" aria-labelledby="t-beer" hidden>
+        <figure class="ind-shot"><img src="dashboards/beer.png" alt="Example beer distribution dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
+        <div class="ind-head">
+          <span class="ind-tag live">In use today</span>
+          <h3>ERP for beer distribution</h3>
+          <p>Every truck, crate, seller and Birr accounted for, every day.</p>
+          <a class="btn btn-gold" href="#request" data-type="Beer distribution">Ask about this</a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Daily sales per truck</b><span>Each truck&#x27;s load, sales, returns and cash recorded every day.</span></li>
+          <li><b>Bottles and crates</b><span>Know how many empties sit with each customer, truck and store.</span></li>
+          <li><b>Seller cash and deposits</b><span>See what each seller owes and when the cash reached the bank.</span></li>
+          <li><b>Brewery purchases and targets</b><span>Track orders, credits, and monthly and quarterly brewery targets.</span></li>
+          <li><b>Promotions</b><span>Plan outlet promotions, hand over the stock and reconcile what was given.</span></li>
+          <li><b>Bank matching</b><span>Import bank statements and match every deposit and payment.</span></li>
+          <li><b>Purchase taxes worked out</b><span>Ethiopian withholding and purchase taxes calculated on every purchase.</span></li>
+          <li><b>Owner dashboard</b><span>Profit and loss, stock losses, targets and an outlet map on one screen.</span></li>
+        </ol>
+      </div>
+      <div class="ind-panel" role="tabpanel" id="p-logistics" aria-labelledby="t-logistics" hidden>
+        <figure class="ind-shot"><img src="dashboards/logistics.png" alt="Example logistics and fleet dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
+        <div class="ind-head">
+          <span class="ind-tag live">In use today</span>
+          <h3>ERP for logistics &amp; fleet</h3>
+          <p>Know where every truck is, what each trip costs and where the fuel went.</p>
+          <a class="btn btn-gold" href="#request" data-type="Logistics &amp; fleet">Ask about this</a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Vehicle register</b><span>Every vehicle with insurance, inspection and document expiry reminders.</span></li>
+          <li><b>Trips and deliveries</b><span>Plan each trip, assign the driver and truck, and follow it to delivery.</span></li>
+          <li><b>Fuel control</b><span>Every fill-up, fuel request and fuel barrel per truck, so waste shows up fast.</span></li>
+          <li><b>GPS and trip history</b><span>Truck GPS and fuel history linked to each trip.</span></li>
+          <li><b>Maintenance and truck checks</b><span>Repair requests, service history and daily truck checks by QR code.</span></li>
+          <li><b>Driver allowances and bonuses</b><span>Per diem and bonuses calculated and paid in one run.</span></li>
+          <li><b>Cost per trip</b><span>Fuel, allowances and repairs per trip, so you price and bill correctly.</span></li>
+          <li><b>Warehouses and transfers</b><span>Stock in each warehouse and every move between branches.</span></li>
+        </ol>
+      </div>
+      <div class="ind-panel" role="tabpanel" id="p-import" aria-labelledby="t-import" hidden>
+        <figure class="ind-shot"><img src="dashboards/import.png" alt="Example import and export dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
+        <div class="ind-head">
+          <span class="ind-tag">Set up for your business</span>
+          <h3>ERP for import &amp; export</h3>
+          <p>Know the true landed cost of every container, from Djibouti to your warehouse shelf.</p>
+          <a class="btn btn-gold" href="#request" data-type="Import &amp; export">Ask about this</a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Landed cost per shipment</b><span>Freight, insurance, duty, excise, VAT, surtax and withholding added to every load.</span></li>
+          <li><b>Import taxes in the right order</b><span>Each tax worked out in Ethiopia&#x27;s order, on top of the one before.</span></li>
+          <li><b>Letters of credit</b><span>Follow each LC from opening to settlement, with fees, amendments and expiry alerts.</span></li>
+          <li><b>Foreign currency control</b><span>Track foreign currency balances and rates, so imports match the currency you hold.</span></li>
+          <li><b>Djibouti transit</b><span>Follow each container from the port to clearance, with the bill of lading attached.</span></li>
+          <li><b>Stock by shipment</b><span>Know what each shipment brought in, at what cost, and where it is stored.</span></li>
+          <li><b>Export payment follow-up</b><span>See every export payment and get warned before foreign currency is overdue.</span></li>
+          <li><b>Books in Birr and foreign currency</b><span>Exchange gains and losses shown per shipment.</span></li>
+        </ol>
+      </div>
+      <div class="ind-panel" role="tabpanel" id="p-manufacturing" aria-labelledby="t-manufacturing" hidden>
+        <figure class="ind-shot"><img src="dashboards/manufacturing.png" alt="Example manufacturing dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
+        <div class="ind-head">
+          <span class="ind-tag">Set up for your business</span>
+          <h3>ERP for manufacturing</h3>
+          <p>Know what every product really costs and where material is lost, from raw material to finished goods.</p>
+          <a class="btn btn-gold" href="#request" data-type="Manufacturing">Ask about this</a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Recipes and bills of materials</b><span>Set exactly what goes into each product, so every batch uses the right amounts.</span></li>
+          <li><b>Production orders</b><span>Plan and track each run from raw material to finished goods, including stoppages.</span></li>
+          <li><b>Raw material stock</b><span>See what you hold, what each run used, and when imported inputs need reordering.</span></li>
+          <li><b>True cost per product</b><span>Materials, labour, power, waste and excise in the cost of every unit.</span></li>
+          <li><b>Waste and scrap</b><span>Record losses and rejects per run, and see where material disappears.</span></li>
+          <li><b>Batch tracing</b><span>Trace any product back to its raw material lots, and recall only what&#x27;s affected.</span></li>
+          <li><b>Quality checks</b><span>Test materials and products at set points, and block failed lots from sale.</span></li>
+          <li><b>Machines and power cuts</b><span>Log servicing, breakdowns and power-cut downtime, so plans match reality.</span></li>
+        </ol>
+      </div>
+      <div class="ind-panel" role="tabpanel" id="p-farms" aria-labelledby="t-farms" hidden>
+        <figure class="ind-shot"><img src="dashboards/farms.png" alt="Example farm dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
+        <div class="ind-head">
+          <span class="ind-tag">Set up for your business</span>
+          <h3>ERP for farms</h3>
+          <p>From field and herd to market: one system for your costs, workers, harvests and sales.</p>
+          <a class="btn btn-gold" href="#request" data-type="Farms">Ask about this</a>
+        </div>
+        <ol class="ind-features">
+          <li><b>Plot and herd records</b><span>Every field, block, animal and flock on file, with its size, location and history.</span></li>
+          <li><b>Crops and harvests</b><span>Follow each planting from sowing to harvest, with yield per field and season.</span></li>
+          <li><b>Inputs and their cost</b><span>Seed, fertiliser, chemicals and feed charged to the field or herd that used them.</span></li>
+          <li><b>Seasonal workers</b><span>Daily attendance and pay for casual and harvest crews.</span></li>
+          <li><b>Cost per hectare or animal</b><span>See what each hectare, animal or batch cost and earned.</span></li>
+          <li><b>Tractors, pumps and trucks</b><span>Fuel, repairs and service dates against the work each machine did.</span></li>
+          <li><b>Sales and export</b><span>Sales to buyers, the commodity exchange and exporters, with stock and payments linked.</span></li>
+          <li><b>Traceability</b><span>Trace each lot back to its plot, and keep buyer and certification records ready.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="band anywhere" id="anywhere">
+    <div class="wrap any-grid">
+      <div class="reveal">
+        <h2>Follow your business from anywhere</h2>
+        <p class="intro">Every day, see how your business is doing: sales, cash, stock and staff. On your phone or laptop, from Addis Ababa or anywhere in the world.</p>
+        <ul class="ticks">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Today's numbers for every branch, updated as you sell</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Alerts on your phone when something needs you</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>No need to call the manager to know how the day went</li>
+        </ul>
+      </div>
+      <div class="phone-stage reveal" aria-label="Example owner dashboard on a phone">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="ph-top"><span>Today</span><b id="ph-date"></b></div>
+          <div class="ph-card ph-big"><small>Sales today</small><b>ETB 284,650</b><span class="up">▲ 12% vs last week</span></div>
+          <div class="ph-row">
+            <div class="ph-card"><small>Cash in bank</small><b>ETB 1.92M</b></div>
+            <div class="ph-card"><small>Invoices</small><b>146</b><span class="ok">All registered</span></div>
+          </div>
+          <div class="ph-card"><small>Sales this week</small>
+            <div class="bars" aria-hidden="true"><i style="height:48%"></i><i style="height:62%"></i><i style="height:55%"></i><i style="height:74%"></i><i style="height:68%"></i><i style="height:90%"></i><i class="now" style="height:80%"></i></div>
+          </div>
+          <div class="ph-card ph-alert"><span class="dot"></span><div><b>Low stock</b><small>Main store · 3 items</small></div></div>
+          <div class="ph-card"><small>Branches</small>
+            <div class="ph-branch"><span>Addis Ababa</span><b>ETB 151,200</b></div>
+            <div class="ph-branch"><span>Hawassa</span><b>ETB 78,950</b></div>
+            <div class="ph-branch"><span>Arba Minch</span><b>ETB 54,500</b></div>
+          </div>
+        </div>
+        <span class="example on-light">Example numbers</span>
+      </div>
     </div>
   </section>
 
@@ -260,6 +498,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
 </a>
 
 <script>
+document.documentElement.classList.add("js");
 (() => {
   document.getElementById("yr").textContent = new Date().getFullYear();
 
@@ -306,6 +545,39 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
     <div class="grand"><span>TOTAL ETB</span><span>${fmt(sub + vat)}</span></div></div>
     <div class="slip-reg"><canvas aria-label="Example verification QR code"></canvas><span>Official no.<br><b>MOR-XXXX-XXXX-0418</b><br>Scan to verify · ለማረጋገጥ ይቃኙ</span><span class="stamp">REGISTERED<br>ተመዝግቧል</span></div>`;
   drawQR(slipEl.querySelector("canvas"), inv.no);
+
+  // Phone mockup date + reveal on scroll
+  document.getElementById("ph-date").textContent = ethStr;
+  const reveals = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+  } else reveals.forEach(el => el.classList.add("in"));
+
+  // Industry tabs
+  const tabs = [...document.querySelectorAll('.ind-tabs [role="tab"]')];
+  function showTab(t, focus) {
+    tabs.forEach(b => {
+      const on = b === t;
+      b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
+      document.getElementById(b.getAttribute("aria-controls")).hidden = !on;
+    });
+    t.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+    if (focus) t.focus();
+  }
+  tabs.forEach((b, i) => {
+    b.addEventListener("click", () => showTab(b));
+    b.addEventListener("keydown", e => {
+      const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (k) { e.preventDefault(); showTab(tabs[(i + k + tabs.length) % tabs.length], true); }
+    });
+  });
+  // "Ask about this" fills the business type in the request form
+  const typeMap = { "Hotels": "Hotel", "Beer distribution": "Beer distribution", "Logistics & fleet": "Logistics & supply chain",
+    "Import & export": "Import & export", "Manufacturing": "Manufacturing", "Farms": "Farm" };
+  document.querySelectorAll("[data-type]").forEach(a => a.addEventListener("click", () => {
+    const sel = document.getElementById("f-type"); if (typeMap[a.dataset.type]) sel.value = typeMap[a.dataset.type];
+  }));
 
   // Request form: opens WhatsApp with the details filled in
   const f = document.getElementById("req"), msg = document.getElementById("msg");
