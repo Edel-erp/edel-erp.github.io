@@ -227,6 +227,28 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
 .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
 .js .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .js .reveal { opacity: 1; transform: none; transition: none; } .phone { transform: none; } }
+
+/* industry touch: tab icons + live preview card */
+.ind-tabs button { display: inline-flex; align-items: center; gap: 8px; }
+.tab-ic { width: 18px; height: 18px; flex: none; }
+.ind-head { position: relative; }
+.ind-preview { display: grid; gap: 12px; margin-top: 14px; text-decoration: none; color: #fff; background: linear-gradient(160deg, #222326, #121315); border: 1px solid #34363B; border-radius: 16px; padding: 14px; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.ind-preview:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 20px 40px -24px rgba(211,166,40,.55); }
+.ind-preview:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.pv-top { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #B9BBBF; }
+.pv-live { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; color: #5FD58C; background: rgba(47,180,99,.14); padding: 2px 8px; border-radius: 999px; font-size: 11.5px; }
+.pv-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #5FD58C; animation: pvPulse 1.6s infinite; }
+@keyframes pvPulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+.pv-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pv-tiles div { background: #0E0F10; border: 1px solid #2A2C30; border-radius: 12px; padding: 9px 10px; min-width: 0; }
+.pv-tiles small { display: block; font-size: 11px; color: #9C9EA2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pv-tiles b { display: block; font-family: var(--display); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pv-tiles div:first-child b { color: var(--gold); }
+.pv-trend { display: grid; gap: 4px; }
+.pv-trend small { font-size: 11px; color: #9C9EA2; }
+.spark { width: 100%; height: 36px; display: block; }
+.pv-open { font-size: 13px; font-weight: 700; color: var(--gold); }
+@media (prefers-reduced-motion: reduce) { .pv-live::before { animation: none; } }
 </style>
 </head>
 <body>
@@ -287,12 +309,12 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
       <h2 class="reveal">ERP built for your industry</h2>
       <p class="intro">Accounts, stock, purchasing, sales and payroll in one system, connected to your e-invoices. Pick your industry to see what it does.</p>
       <div class="ind-tabs" role="tablist" aria-label="Industries">
-        <button type="button" role="tab" id="t-hotels" aria-controls="p-hotels" aria-selected="true">Hotels</button>
-        <button type="button" role="tab" id="t-beer" aria-controls="p-beer" aria-selected="false" tabindex="-1">Beer distribution</button>
-        <button type="button" role="tab" id="t-tours" aria-controls="p-tours" aria-selected="false" tabindex="-1">Tours &amp; travel</button>
-        <button type="button" role="tab" id="t-import" aria-controls="p-import" aria-selected="false" tabindex="-1">Import &amp; export</button>
-        <button type="button" role="tab" id="t-manufacturing" aria-controls="p-manufacturing" aria-selected="false" tabindex="-1">Manufacturing</button>
-        <button type="button" role="tab" id="t-farms" aria-controls="p-farms" aria-selected="false" tabindex="-1">Farms</button>
+        <button type="button" role="tab" id="t-hotels" aria-controls="p-hotels" aria-selected="true"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V8l9-5 9 5v12"/><path d="M8 20v-5h8v5"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>Hotels</button>
+        <button type="button" role="tab" id="t-beer" aria-controls="p-beer" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9v15a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M15 8h2a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M9 8v8M12 8v8"/></svg>Beer distribution</button>
+        <button type="button" role="tab" id="t-tours" aria-controls="p-tours" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l2-6h14l2 6v5h-2"/><path d="M5 18H3v-5h18"/><circle cx="7.5" cy="18" r="1.8"/><circle cx="16.5" cy="18" r="1.8"/></svg>Tours &amp; travel</button>
+        <button type="button" role="tab" id="t-import" aria-controls="p-import" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="11" rx="1"/><path d="M7 7v11M11 7v11M15 7v11M19 7v11"/><path d="M12 3v4"/></svg>Import &amp; export</button>
+        <button type="button" role="tab" id="t-manufacturing" aria-controls="p-manufacturing" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V10l6 4V10l6 4V5h6v16z"/><path d="M7 17h2M13 17h2"/></svg>Manufacturing</button>
+        <button type="button" role="tab" id="t-farms" aria-controls="p-farms" aria-selected="false" tabindex="-1"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V9"/><path d="M12 13c-4 0-6-3-6-7 4 0 6 3 6 7z"/><path d="M12 10c3 0 5-2 5-5-3 0-5 2-5 5z"/></svg>Farms</button>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-hotels" aria-labelledby="t-hotels">
         <figure class="ind-shot"><img src="dashboards/hotels.png" alt="Example hotel dashboard in Edel" loading="lazy" onerror="this.parentElement.remove()"></figure>
@@ -301,6 +323,12 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <h3>ERP for hotels</h3>
           <p>Run rooms, restaurant, bar and stores in one system, with a report for every day.</p>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/hotel.html">Try the hotel demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Hotels">Ask about this</a></div>
+          <a class="ind-preview" href="demo/hotel.html" aria-label="Open the Demo Lodge demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Lodge · example</span>
+            <span class="pv-tiles"><div><small>Rooms taken</small><b class="num" data-count="24" data-pre="" data-suf=" / 30" data-dec="0">0 / 30</b></div><div><small>Income</small><b class="num" data-count="186400" data-pre="ETB " data-suf="" data-dec="0">ETB 0</b></div><div><small>Restaurant</small><b class="num" data-count="41250" data-pre="ETB " data-suf="" data-dec="0">ETB 0</b></div></span>
+            <span class="pv-trend"><small>Income, last 7 days</small><svg class="spark" data-seed="60" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
         </div>
         <ol class="ind-features">
           <li><b>Rooms and front desk</b><span>Bookings, check-in, check-out and room status on one screen.</span></li>
@@ -320,6 +348,12 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <h3>ERP for beer distribution</h3>
           <p>Every truck, crate, seller and Birr accounted for, every day.</p>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/beer.html">Try the beer distribution demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Beer distribution">Ask about this</a></div>
+          <a class="ind-preview" href="demo/beer.html" aria-label="Open the Demo Beverage Distributors demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Beverage Distributors · example</span>
+            <span class="pv-tiles"><div><small>Crates sold</small><b class="num" data-count="348" data-pre="" data-suf="" data-dec="0">0</b></div><div><small>Cash collected</small><b class="num" data-count="142267" data-pre="ETB " data-suf="" data-dec="0">ETB 0</b></div><div><small>Empties out</small><b class="num" data-count="1204" data-pre="" data-suf="" data-dec="0">0</b></div></span>
+            <span class="pv-trend"><small>Crates sold, last 7 days</small><svg class="spark" data-seed="62" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
         </div>
         <ol class="ind-features">
           <li><b>Daily sales per truck</b><span>Each truck&#x27;s load, sales, returns and cash recorded every day.</span></li>
@@ -339,6 +373,12 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <h3>ERP for tours &amp; travel</h3>
           <p>Every booking, car, driver and litre of fuel, with the profit of each trip.</p>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/tours.html">Try the tours demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Tours &amp; travel">Ask about this</a></div>
+          <a class="ind-preview" href="demo/tours.html" aria-label="Open the Demo Tours demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Tours · example</span>
+            <span class="pv-tiles"><div><small>Cars out</small><b class="num" data-count="3" data-pre="" data-suf=" / 8" data-dec="0">0 / 8</b></div><div><small>Revenue</small><b class="num" data-count="38000" data-pre="ETB " data-suf="" data-dec="0">ETB 0</b></div><div><small>Trips</small><b class="num" data-count="9" data-pre="" data-suf="" data-dec="0">0</b></div></span>
+            <span class="pv-trend"><small>Revenue, last 7 days</small><svg class="spark" data-seed="53" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
         </div>
         <ol class="ind-features">
           <li><b>Tour bookings</b><span>Tours, airport shuttles and company trips with route, passengers, guide and agreed rate.</span></li>
@@ -358,6 +398,12 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <h3>ERP for import &amp; export</h3>
           <p>Know the true landed cost of every container, from Djibouti to your warehouse shelf.</p>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/import.html">Try the import &amp; export demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Import &amp; export">Ask about this</a></div>
+          <a class="ind-preview" href="demo/import.html" aria-label="Open the Demo Traders demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Traders · example</span>
+            <span class="pv-tiles"><div><small>In transit</small><b class="num" data-count="4" data-pre="" data-suf=" containers" data-dec="0">0 containers</b></div><div><small>Landed cost</small><b class="num" data-count="4.05" data-pre="ETB " data-suf="M" data-dec="2">ETB 0M</b></div><div><small>USD free</small><b class="num" data-count="126500" data-pre="" data-suf="" data-dec="0">0</b></div></span>
+            <span class="pv-trend"><small>Sales, last 7 days</small><svg class="spark" data-seed="67" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
         </div>
         <ol class="ind-features">
           <li><b>Landed cost per shipment</b><span>Freight, insurance, duty, excise, VAT, surtax and withholding added to every load.</span></li>
@@ -377,6 +423,12 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <h3>ERP for manufacturing</h3>
           <p>Know what every product really costs and where material is lost, from raw material to finished goods.</p>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/manufacturing.html">Try the factory demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Manufacturing">Ask about this</a></div>
+          <a class="ind-preview" href="demo/manufacturing.html" aria-label="Open the Demo Factory demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Factory · example</span>
+            <span class="pv-tiles"><div><small>Packs made</small><b class="num" data-count="8450" data-pre="" data-suf="" data-dec="0">0</b></div><div><small>Cost per pack</small><b class="num" data-count="37.2" data-pre="ETB " data-suf="" data-dec="1">ETB 0</b></div><div><small>Waste</small><b class="num" data-count="2.1" data-pre="" data-suf="%" data-dec="1">0%</b></div></span>
+            <span class="pv-trend"><small>Output, last 7 days</small><svg class="spark" data-seed="111" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
         </div>
         <ol class="ind-features">
           <li><b>Recipes and bills of materials</b><span>Set exactly what goes into each product, so every batch uses the right amounts.</span></li>
@@ -396,6 +448,12 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <h3>ERP for farms</h3>
           <p>From field and herd to market: one system for your costs, workers, harvests and sales.</p>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/farms.html">Try the farm demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Farms">Ask about this</a></div>
+          <a class="ind-preview" href="demo/farms.html" aria-label="Open the Demo Farm demo">
+            <span class="pv-top"><span class="pv-live">Live demo</span>Demo Farm · example</span>
+            <span class="pv-tiles"><div><small>Harvest</small><b class="num" data-count="46" data-pre="" data-suf=" t" data-dec="0">0 t</b></div><div><small>Workers today</small><b class="num" data-count="214" data-pre="" data-suf="" data-dec="0">0</b></div><div><small>Cost per ha</small><b class="num" data-count="41800" data-pre="ETB " data-suf="" data-dec="0">ETB 0</b></div></span>
+            <span class="pv-trend"><small>Harvest, last 7 days</small><svg class="spark" data-seed="56" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"></svg></span>
+            <span class="pv-open">Open the demo →</span>
+          </a>
         </div>
         <ol class="ind-features">
           <li><b>Plot and herd records</b><span>Every field, block, animal and flock on file, with its size, location and history.</span></li>
@@ -556,6 +614,34 @@ document.documentElement.classList.add("js");
     reveals.forEach(el => io.observe(el));
   } else reveals.forEach(el => el.classList.add("in"));
 
+  // Industry preview cards: sparkline + count-up when a tab opens
+  function spark(svg) {
+    let x = Number(svg.dataset.seed) || 7; const r = () => (x = (x * 9301 + 49297) % 233280) / 233280;
+    const pts = Array.from({ length: 7 }, (_, i) => 0.45 + r() * 0.4 + i * 0.02);
+    const max = Math.max(...pts), min = Math.min(...pts) - 0.05;
+    const xy = pts.map((v, i) => [i * 20, 30 - (v - min) / (max - min) * 26]);
+    const line = xy.map(p => p.join(",")).join(" ");
+    svg.innerHTML = `<polygon points="0,32 ${line} 120,32" fill="rgba(211,166,40,.16)"/><polyline points="${line}" fill="none" stroke="#D3A628" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="120" cy="${xy[6][1]}" r="2.6" fill="#D3A628"/>`;
+  }
+  document.querySelectorAll(".spark").forEach(spark);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function countUp(panel) {
+    panel.querySelectorAll("[data-count]").forEach(el => {
+      const end = Number(el.dataset.count), dec = Number(el.dataset.dec), pre = el.dataset.pre, suf = el.dataset.suf;
+      const fmt = v => pre + v.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
+      if (reduce) { el.textContent = fmt(end); return; }
+      const t0 = performance.now(), dur = 900;
+      const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(dec ? end * e : Math.round(end * e)); if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+      setTimeout(() => { el.textContent = fmt(end); }, dur + 150);
+    });
+  }
+  const erpSec = document.getElementById("erp");
+  if ("IntersectionObserver" in window) {
+    const o = new IntersectionObserver(es => { if (es[0].isIntersecting) { countUp(document.querySelector(".ind-panel:not([hidden])")); o.disconnect(); } }, { threshold: 0.2 });
+    o.observe(erpSec);
+  } else countUp(document.querySelector(".ind-panel:not([hidden])"));
+
   // Industry tabs
   const tabs = [...document.querySelectorAll('.ind-tabs [role="tab"]')];
   function showTab(t, focus) {
@@ -564,6 +650,7 @@ document.documentElement.classList.add("js");
       b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
       document.getElementById(b.getAttribute("aria-controls")).hidden = !on;
     });
+    countUp(document.getElementById(t.getAttribute("aria-controls")));
     t.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
     if (focus) t.focus();
   }
