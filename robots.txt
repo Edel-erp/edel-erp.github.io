@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://edel-erp.github.io/sitemap.xml
