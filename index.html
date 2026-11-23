@@ -593,6 +593,49 @@ input::placeholder { color: #6F6B62; }
 footer { background: #050506; }
 
 @media (prefers-reduced-motion: reduce) { .orbit, .status .on::before, .qrbox::after { animation: none; } .tilt { transition: none; } }
+
+/* ===================== MINIMAL pass ===================== */
+.hero::after { display: none; }
+.hero::before { background: radial-gradient(640px 460px at 78% 34%, rgba(211,166,40,.20), transparent 64%); }
+.hero h1 { font-size: clamp(42px, 6vw, 80px); }
+.hero p.lede { max-width: 40ch; }
+.slip { box-shadow: 0 40px 80px -36px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.05); }
+.scroll-bar { display: none !important; }
+section.band { padding: clamp(64px, 8vw, 104px) 0; }
+.band p.intro { max-width: 52ch; }
+.marquee, .fidel { display: none; }
+
+/* picker */
+.picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 26px; }
+.picker span { color: #8F8A80; font-size: 13.5px; font-weight: 600; margin-right: 4px; }
+.pick { font: 600 14px var(--body); color: #DDD8CC; background: transparent; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 8px 14px; cursor: pointer; transition: all .15s; }
+.pick:hover { border-color: rgba(211,166,40,.6); color: #fff; }
+.pick[aria-pressed="true"] { background: var(--gold-grad); color: #111; border-color: transparent; }
+#h1-who { display: inline; transition: opacity .2s; }
+#h1-who.swap { opacity: 0; }
+
+/* industry panels: lighter */
+.ind-panel { grid-template-columns: 1fr; }
+@media (min-width: 901px) {
+  .ind-head { grid-template-columns: 1fr minmax(300px, .9fr); column-gap: 44px; }
+  .ind-head > * { grid-column: 1; }
+  .ind-head > .ind-preview { grid-column: 2; grid-row: 1 / span 6; align-self: center; margin-top: 0; max-width: none; }
+}
+.ind-head p { max-width: 52ch; }
+.ind-more-feats { margin-top: 4px; }
+.ind-more-feats summary { cursor: pointer; color: var(--gold); font-weight: 700; list-style: none; display: inline-flex; gap: 8px; align-items: center; }
+.ind-more-feats summary::-webkit-details-marker { display: none; }
+.ind-more-feats summary::after { content: "+"; font-size: 18px; line-height: 1; }
+.ind-more-feats[open] summary::after { content: "−"; }
+.ind-more-feats .ind-features { margin-top: 14px; }
+.ind-preview { max-width: 520px; }
+
+/* QR tap */
+button.qrbox { border: 0; cursor: pointer; padding: 12px; }
+.qr-hint { position: absolute; left: 50%; bottom: -26px; transform: translateX(-50%); white-space: nowrap; font: 600 12px var(--body); color: var(--gold); }
+#qr-result { opacity: .35; transition: opacity .3s; }
+#qr-result.on { opacity: 1; }
+.qrbox.scanning::after { animation-duration: .9s; }
 </style>
 </head>
 <body>
@@ -616,49 +659,33 @@ footer { background: #050506; }
 
 <main id="top">
   <section class="hero">
-    <div class="grain" aria-hidden="true"></div>
     <div class="wrap hero-grid">
       <div>
         <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Approved by the Ministry of Revenues</span>
-        <h1><span class="grad">E-invoicing</span> for Ethiopian businesses.</h1>
+        <h1><span class="grad">E-invoicing</span> for <span id="h1-who">Ethiopian businesses</span>.</h1>
         <p class="am" lang="am">ለኢትዮጵያ ንግዶች ኤሌክትሮኒክ ደረሰኝ</p>
         <p class="lede">Every invoice you issue with Edel is registered with the Ministry of Revenues and carries an official number and a QR code.</p>
         <div class="cta">
-          <a class="btn btn-gold" href="#request">Request e-invoice</a>
+          <a class="btn btn-gold" href="#request" id="hero-cta">Request e-invoice</a>
           <a class="btn btn-line" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp us</a>
         </div>
-        <div class="ask-chips"><span>Or ask us on WhatsApp:</span><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20is%20e-invoicing%20required%20for%20my%20business%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>Is e-invoicing required for me?</a><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20what%20would%20Edel%20cost%20for%20my%20business%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>What would it cost me?</a><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20a%20demo%20of%20Edel." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>Show me a demo</a><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%20already%20use%20other%20software.%20Can%20Edel%20work%20for%20me%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/></svg>I already use other software</a></div>
-        <ul class="trust">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>Ministry approved</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7M7.5 5v1.5c0 3-2 5.5-4 6.5M5 9c1 2 3 3.5 6 4.5"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg>Amharic &amp; English</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Support in Addis Ababa</li>
-        </ul>
+        <div class="picker" role="group" aria-label="What do you run?"><span>What do you run?</span><button type="button" class="pick" data-k="hotel" data-plural="hotels" data-demo="hotel" aria-pressed="false">Hotel</button><button type="button" class="pick" data-k="beer" data-plural="distributors" data-demo="beer distribution" aria-pressed="false">Distribution</button><button type="button" class="pick" data-k="tours" data-plural="tour companies" data-demo="tours" aria-pressed="false">Tours</button><button type="button" class="pick" data-k="supermarket" data-plural="shops and supermarkets" data-demo="supermarket" aria-pressed="false">Shop</button><button type="button" class="pick" data-k="pharmacy" data-plural="pharmacies" data-demo="pharmacy" aria-pressed="false">Pharmacy</button><button type="button" class="pick" data-k="manufacturing" data-plural="factories" data-demo="manufacturing" aria-pressed="false">Factory</button><button type="button" class="pick" data-k="farms" data-plural="farms" data-demo="farm" aria-pressed="false">Farm</button></div>
+
       </div>
       <div class="slip-stage">
-        <span class="orbit o1" aria-hidden="true"><i>✓</i>Registered with the Ministry</span>
-        <span class="orbit o2" aria-hidden="true"><i>%</i>VAT 15% worked out</span>
-        <span class="orbit o3" aria-hidden="true"><i>ብ</i>Paid by telebirr</span>
         <div class="tilt"><article class="slip" aria-label="Example electronic invoice" id="slip"></article></div>
         <span class="example">Example invoice. Not a real sale.</span>
       </div>
     </div>
   </section>
 
-  <div class="tibeb" aria-hidden="true"></div>
   <section class="band soft" id="einvoice">
     <div class="wrap">
       <span class="eyebrow">01 · E-invoice</span>
       <h2 class="reveal">E-invoice</h2>
       <p class="intro">Issue tax invoices, cash receipts and credit notes. Edel registers each one with the Ministry of Revenues as you sell.</p>
       <p class="more-links"><a href="e-invoicing-ethiopia/">Read the plain guide to e-invoicing in Ethiopia →</a><a href="e-invoicing-checker/">Does it apply to my business? Check in 30 seconds →</a></p>
-      <div class="flow reveal" aria-label="How a sale gets registered">
-        <div class="node" data-step="0"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></span><b>You make a sale</b><small>At the till, in the office or on your phone.</small></div>
-        <div class="wire" aria-hidden="true"><i></i></div>
-        <div class="node" data-step="1"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-6 9 6"/><path d="M5 10v9M19 10v9M9 10v9M15 10v9M3 21h18"/></svg></span><b>The Ministry registers it</b><small>Edel sends it and gets an official number back.</small></div>
-        <div class="wire" aria-hidden="true"><i></i></div>
-        <div class="node" data-step="2"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v1M14 20h1M18 18h3v3"/></svg></span><b>Your customer gets proof</b><small>Official number and a QR code anyone can scan.</small></div>
-      </div>
-      <div class="bento">
+<div class="bento">
         <div class="tile wide reveal">
           <div class="devices" aria-hidden="true">
             <svg class="lap" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="14" y="6" width="92" height="58" rx="6"/><path d="M4 72h112"/><path d="M28 22h40M28 32h60M28 42h30" opacity=".5"/></svg>
@@ -677,8 +704,8 @@ footer { background: #050506; }
         </div>
         <div class="tile wide reveal">
           <div class="qrtile">
-            <div class="qrbox" aria-hidden="true"><canvas id="b-qr"></canvas></div>
-            <div><h3>Proof your customer can scan</h3><p>Every invoice carries an official number and a QR code. Anyone can scan it to see the sale was registered with the Ministry of Revenues.</p><span class="verified">✓ Registered · ተመዝግቧል</span></div>
+            <button type="button" class="qrbox" id="qr-tap" aria-label="Tap to scan the example QR code"><canvas id="b-qr"></canvas><span class="qr-hint">Tap to scan</span></button>
+            <div><h3>Proof your customer can scan</h3><p>Every invoice carries an official number and a QR code. Anyone can scan it to see the sale was registered with the Ministry of Revenues.</p><span class="verified" id="qr-result" aria-live="polite">✓ Registered · ተመዝግቧል</span></div>
           </div>
         </div>
       </div>
@@ -730,7 +757,7 @@ footer { background: #050506; }
             <div><label for="c-sales">Sales on a normal day (ETB)</label><input id="c-sales" type="number" min="0" step="1000" value="120000" inputmode="numeric"></div>
           </div>
           <div><label for="c-share">Share of sales with no receipt or record: <span class="pct" id="c-share-v">5%</span></label><input id="c-share" type="range" min="0" max="30" value="5"></div>
-          <div><label for="c-days">Days open per month</label><input id="c-days" type="number" min="1" max="31" value="26" inputmode="numeric"></div>
+          <input id="c-days" type="hidden" value="26">
           <div class="out" aria-live="polite">
             <small>Unrecorded sales in a year</small>
             <div class="odo" id="odo" role="img" aria-label="ETB 0"></div>
@@ -744,7 +771,6 @@ footer { background: #050506; }
   </section>
 
   <section class="band dark" id="erp">
-    <div class="fidel" aria-hidden="true"><span>ሀ</span><span>ለ</span><span>ሐ</span><span>መ</span><span>ሠ</span><span>ረ</span><span>ሰ</span><span>ሸ</span><span>ቀ</span><span>በ</span><span>ተ</span><span>ቸ</span><span>ኀ</span><span>ነ</span><span>ኘ</span><span>አ</span><span>ከ</span><span>ኸ</span><span>ወ</span><span>ዐ</span><span>ዘ</span><span>ዠ</span><span>የ</span><span>ደ</span><span>ጀ</span><span>ገ</span><span>ጠ</span><span>ጨ</span><span>ጰ</span><span>ጸ</span><span>ፀ</span><span>ፈ</span><span>ፐ</span><span>ሀ</span><span>ለ</span><span>ሐ</span><span>መ</span><span>ሠ</span><span>ረ</span><span>ሰ</span></div>
     <div class="wrap">
       <span class="eyebrow">03 · ERP by industry</span>
       <h2 class="reveal">ERP built for your industry</h2>
@@ -774,6 +800,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Rooms and front desk</b><span>Bookings, check-in, check-out and room status on one screen.</span></li>
           <li><b>Online bookings</b><span>Rooms and rates stay in sync with booking sites and your own website.</span></li>
@@ -784,6 +811,7 @@ footer { background: #050506; }
           <li><b>Guest QR in every room</b><span>Guests register themselves and message the hotel from their phone.</span></li>
           <li><b>Staff and payroll</b><span>Fingerprint attendance and Ethiopian payroll, ready to send to the bank.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-beer" aria-labelledby="t-beer" hidden>
         <div class="ind-head">
@@ -799,6 +827,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Daily sales per truck</b><span>Each truck&#x27;s load, sales, returns and cash recorded every day.</span></li>
           <li><b>Bottles and crates</b><span>Know how many empties sit with each customer, truck and store.</span></li>
@@ -809,6 +838,7 @@ footer { background: #050506; }
           <li><b>Purchase taxes worked out</b><span>Ethiopian withholding and purchase taxes calculated on every purchase.</span></li>
           <li><b>Owner dashboard</b><span>Profit and loss, stock losses, targets and an outlet map on one screen.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-tours" aria-labelledby="t-tours" hidden>
         <div class="ind-head">
@@ -824,6 +854,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Tour bookings</b><span>Tours, airport shuttles and company trips with route, passengers, guide and agreed rate.</span></li>
           <li><b>Deposits and credit</b><span>Take a deposit, confirm with payment, or put an agency or company on credit.</span></li>
@@ -834,6 +865,7 @@ footer { background: #050506; }
           <li><b>Papers and alerts</b><span>Registration and insurance expiry reminders, and an alert when a car is out too long.</span></li>
           <li><b>Owner dashboard</b><span>Revenue, costs, profit and trips against last week, from your phone anywhere.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-import" aria-labelledby="t-import" hidden>
         <div class="ind-head">
@@ -849,6 +881,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Landed cost per shipment</b><span>Freight, insurance, duty, excise, VAT, surtax and withholding added to every load.</span></li>
           <li><b>Import taxes in the right order</b><span>Each tax worked out in Ethiopia&#x27;s order, on top of the one before.</span></li>
@@ -859,6 +892,7 @@ footer { background: #050506; }
           <li><b>Export payment follow-up</b><span>See every export payment and get warned before foreign currency is overdue.</span></li>
           <li><b>Books in Birr and foreign currency</b><span>Exchange gains and losses shown per shipment.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-manufacturing" aria-labelledby="t-manufacturing" hidden>
         <div class="ind-head">
@@ -874,6 +908,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Recipes and bills of materials</b><span>Set exactly what goes into each product, so every batch uses the right amounts.</span></li>
           <li><b>Production orders</b><span>Plan and track each run from raw material to finished goods, including stoppages.</span></li>
@@ -884,6 +919,7 @@ footer { background: #050506; }
           <li><b>Quality checks</b><span>Test materials and products at set points, and block failed lots from sale.</span></li>
           <li><b>Machines and power cuts</b><span>Log servicing, breakdowns and power-cut downtime, so plans match reality.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-farms" aria-labelledby="t-farms" hidden>
         <div class="ind-head">
@@ -899,6 +935,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Plot and herd records</b><span>Every field, block, animal and flock on file, with its size, location and history.</span></li>
           <li><b>Crops and harvests</b><span>Follow each planting from sowing to harvest, with yield per field and season.</span></li>
@@ -909,6 +946,7 @@ footer { background: #050506; }
           <li><b>Sales and export</b><span>Sales to buyers, the commodity exchange and exporters, with stock and payments linked.</span></li>
           <li><b>Traceability</b><span>Trace each lot back to its plot, and keep buyer and certification records ready.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-pharmacy" aria-labelledby="t-pharmacy" hidden>
         <div class="ind-head">
@@ -924,6 +962,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Batch and expiry tracking</b><span>Every box belongs to a batch with its expiry date, from delivery to sale.</span></li>
           <li><b>Sell the oldest first</b><span>The till picks the batch that expires first and warns before it is too late.</span></li>
@@ -934,6 +973,7 @@ footer { background: #050506; }
           <li><b>Supplier price comparison</b><span>Compare suppliers&#x27; prices and reorder what is running low.</span></li>
           <li><b>Returns and stock counts</b><span>Return near-expiry stock to suppliers and count stock with the loss in Birr.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-supermarket" aria-labelledby="t-supermarket" hidden>
         <div class="ind-head">
@@ -949,6 +989,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Fast tills</b><span>Quick-add buttons, search and scanning, with a registered e-invoice for every sale.</span></li>
           <li><b>Keeps selling offline</b><span>If the internet drops, sales continue and register as soon as it is back.</span></li>
@@ -959,6 +1000,7 @@ footer { background: #050506; }
           <li><b>Prices and margins</b><span>Change prices with approval and see the margin on every product.</span></li>
           <li><b>Owner dashboard</b><span>Sales, baskets and margin for every branch, from your phone anywhere.</span></li>
         </ol>
+        </details>
       </div>
       <div class="ind-panel" role="tabpanel" id="p-hr" aria-labelledby="t-hr" hidden>
         <div class="ind-head">
@@ -974,6 +1016,7 @@ footer { background: #050506; }
             <span class="pv-open">Open the demo →</span>
           </a>
         </div>
+        <details class="ind-more-feats"><summary>See all features</summary>
         <ol class="ind-features">
           <li><b>Payroll in the Ethiopian calendar</b><span>Salary periods by Ethiopian month, with income tax and pension worked out.</span></li>
           <li><b>Fingerprint attendance</b><span>Punches from fingerprint and face clocks flow straight into payroll.</span></li>
@@ -984,6 +1027,7 @@ footer { background: #050506; }
           <li><b>Owner approval and bank file</b><span>The owner approves the payroll and the bank gets the payment file.</span></li>
           <li><b>HR dashboard</b><span>Headcount, payroll cost, absence and overtime on one screen.</span></li>
         </ol>
+        </details>
       </div>
     </div>
   </section>
@@ -1398,6 +1442,34 @@ document.documentElement.classList.add("js");
   function openHR(e) { var t = document.getElementById("t-hr"); if (!t) return; if (e) e.preventDefault(); t.click(); document.getElementById("erp").scrollIntoView({ behavior: "smooth" }); }
   document.querySelectorAll('a[href="#hr"]').forEach(function (a) { a.addEventListener("click", openHR); });
   if (location.hash === "#hr") setTimeout(openHR, 50);
+})();
+
+(function () {
+  // "What do you run?": personalise the headline and the main button
+  var who = document.getElementById("h1-who"), cta = document.getElementById("hero-cta"), picks = document.querySelectorAll(".pick");
+  picks.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var on = b.getAttribute("aria-pressed") !== "true";
+      picks.forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+      if (on) b.setAttribute("aria-pressed", "true");
+      who.classList.add("swap");
+      setTimeout(function () {
+        who.textContent = on ? b.dataset.plural : "Ethiopian businesses";
+        who.classList.remove("swap");
+      }, 200);
+      if (on) { cta.textContent = "Try the " + b.dataset.demo + " demo →"; cta.href = "demo/" + b.dataset.k + ".html"; }
+      else { cta.textContent = "Request e-invoice"; cta.href = "#request"; }
+      var tab = document.getElementById("t-" + (b.dataset.k === "hotel" ? "hotels" : b.dataset.k)); if (on && tab) tab.click();
+    });
+  });
+  // QR tile: tap to scan
+  var qr = document.getElementById("qr-tap"), res = document.getElementById("qr-result");
+  if (qr && res) {
+    qr.addEventListener("click", function () {
+      res.classList.remove("on"); qr.classList.add("scanning"); res.textContent = "Scanning…";
+      setTimeout(function () { qr.classList.remove("scanning"); res.textContent = "✓ Registered with the Ministry · No. MOR-XXXX-0418 · ETB 146,717"; res.classList.add("on"); }, 900);
+    });
+  }
 })();
 </script>
 </body>
