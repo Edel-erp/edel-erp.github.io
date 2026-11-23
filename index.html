@@ -636,6 +636,68 @@ button.qrbox { border: 0; cursor: pointer; padding: 12px; }
 #qr-result { opacity: .35; transition: opacity .3s; }
 #qr-result.on { opacity: 1; }
 .qrbox.scanning::after { animation-duration: .9s; }
+
+/* e-invoice story */
+.story { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(24px, 4vw, 56px); align-items: center; margin-top: 44px; }
+@media (max-width: 900px) { .story { grid-template-columns: 1fr; } }
+.story-steps { list-style: none; padding: 0; display: grid; gap: 10px; }
+.story-steps button { position: relative; overflow: hidden; width: 100%; text-align: left; display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; padding: 18px; border-radius: 18px; border: 1px solid transparent; background: transparent; color: var(--ink); cursor: pointer; font: inherit; transition: background .25s, border-color .25s; }
+.story-steps button:hover { background: rgba(255,255,255,.03); }
+.story-steps button[aria-selected="true"] { background: var(--glass); border-color: rgba(211,166,40,.3); }
+.story-steps .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 700 15px var(--display); color: #8F8A80; border: 1px solid rgba(255,255,255,.16); transition: all .25s; }
+.story-steps button[aria-selected="true"] .n { background: var(--gold-grad); color: #111; border-color: transparent; }
+.story-steps b { display: block; font: 700 18px var(--display); letter-spacing: -.01em; color: #8F8A80; transition: color .25s; }
+.story-steps button[aria-selected="true"] b { color: #fff; }
+.story-steps small { display: block; color: var(--muted); font-size: 15px; margin-top: 2px; }
+.story-steps .bar { position: absolute; left: 18px; right: 18px; bottom: 0; height: 2px; background: rgba(255,255,255,.06); }
+.story-steps .bar::after { content: ""; position: absolute; inset: 0; transform-origin: 0 50%; transform: scaleX(0); background: var(--gold); }
+.story-steps button[aria-selected="true"] .bar::after { animation: stepbar var(--dur, 3.6s) linear forwards; }
+.story.paused .story-steps .bar::after { animation: none; transform: scaleX(0); }
+@keyframes stepbar { to { transform: scaleX(1); } }
+
+.story-stage { display: grid; justify-items: center; gap: 10px; }
+.rcpt { display: block; position: relative; width: min(380px, 100%); background: #fff; color: #17181A; border-radius: 16px; padding: 22px; box-shadow: 0 40px 90px -40px rgba(0,0,0,.9), 0 0 100px -30px rgba(211,166,40,.35); font: 13.5px/1.5 var(--mono); }
+.rcpt-top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed #D9D5CA; padding-bottom: 10px; margin-bottom: 8px; }
+.rcpt-top b { font: 700 15px var(--body); } .rcpt-top span { color: #5E6166; font-size: 11.5px; letter-spacing: .08em; }
+.rcpt .l { display: flex; justify-content: space-between; padding: 4px 0; opacity: 0; transform: translateY(6px); transition: opacity .3s, transform .3s; }
+.rcpt .l.sub { color: #5E6166; border-top: 1px solid #EEEBE3; margin-top: 4px; }
+.rcpt .l.tot { background: #0E0F10; color: #fff; border-radius: 6px; padding: 8px 10px; margin-top: 6px; font-weight: 700; }
+.rcpt .l.show { opacity: 1; transform: none; }
+.rcpt-reg { display: grid; grid-template-columns: 88px 1fr; gap: 14px; align-items: center; margin-top: 16px; min-height: 88px; }
+.qr-wrap { position: relative; width: 88px; height: 88px; border-radius: 8px; overflow: hidden; background: #F4F2EC; }
+.qr-wrap canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; opacity: 0; transform: scale(.85); transition: opacity .4s, transform .4s; }
+.rcpt.registered .qr-wrap canvas { opacity: 1; transform: none; }
+.scanline { position: absolute; left: 4px; right: 4px; top: 4px; height: 3px; border-radius: 2px; background: var(--gold); box-shadow: 0 0 12px 3px rgba(211,166,40,.8); opacity: 0; }
+.rcpt.scanning .scanline { opacity: 1; animation: scanmove 1s ease-in-out infinite; }
+@keyframes scanmove { 50% { top: calc(100% - 7px); } }
+.reg-text { display: grid; gap: 6px; justify-items: start; }
+.chip { display: none; align-items: center; gap: 8px; font: 700 12.5px var(--body); padding: 6px 11px; border-radius: 999px; }
+.chip.sending { background: #FFF1D9; color: #8A5A00; }
+.chip.ok { background: #E3F4EA; color: #1F8A4C; }
+.rcpt.sending .chip.sending { display: inline-flex; }
+.rcpt.registered .chip.ok { display: inline-flex; }
+.spin { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(138,90,0,.3); border-top-color: #8A5A00; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.offno { font-size: 12px; color: #5E6166; opacity: 0; transition: opacity .4s; }
+.offno b { color: #17181A; }
+.rcpt.registered .offno { opacity: 1; }
+.verified-pop { position: absolute; left: 50%; bottom: -62px; transform: translate(-50%, 10px); opacity: 0; transition: opacity .35s, transform .35s; background: #0E0F10; color: #fff; border: 1px solid rgba(74,222,128,.5); border-radius: 14px; padding: 10px 14px; display: grid; gap: 2px; text-align: center; width: max-content; max-width: 92%; box-shadow: 0 20px 40px -16px rgba(0,0,0,.8); font-family: var(--body); }
+.verified-pop b { color: #4ADE80; font-size: 15px; }
+.verified-pop span { font-size: 12px; color: #C7C2B6; }
+.rcpt.verified .verified-pop { opacity: 1; transform: translate(-50%, 0); }
+.story-note { color: #8F8A80; font-size: 12px; margin-top: 72px; }
+
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 48px; border-top: 1px solid var(--line); }
+.facts > div { display: flex; gap: 14px; align-items: flex-start; padding: 22px 22px 0 0; }
+.facts > div + div { padding-left: 22px; border-left: 1px solid var(--line); }
+.facts svg { width: 24px; height: 24px; flex: none; color: var(--gold); margin-top: 2px; }
+.facts b { display: block; font: 700 16px var(--display); color: #fff; margin-bottom: 2px; }
+.facts span { color: var(--muted); font-size: 15px; }
+.facts em { font-style: normal; color: #F2D27A; font-family: "Noto Sans Ethiopic", var(--body); }
+.facts .pulse { width: 12px; height: 12px; margin: 7px 6px 0 6px; border-radius: 50%; background: #4ADE80; flex: none; box-shadow: 0 0 0 0 rgba(74,222,128,.6); animation: ping 1.8s infinite; }
+@media (max-width: 760px) { .facts { grid-template-columns: 1fr; } .facts > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); margin-top: 18px; } }
+.story-links { margin-top: 26px; }
+@media (prefers-reduced-motion: reduce) { .story-steps .bar::after { animation: none !important; } .rcpt .l, .qr-wrap canvas, .offno, .verified-pop { transition: none; } .facts .pulse, .spin { animation: none; } }
 </style>
 </head>
 <body>
@@ -682,33 +744,43 @@ button.qrbox { border: 0; cursor: pointer; padding: 12px; }
   <section class="band soft" id="einvoice">
     <div class="wrap">
       <span class="eyebrow">01 · E-invoice</span>
-      <h2 class="reveal">E-invoice</h2>
-      <p class="intro">Issue tax invoices, cash receipts and credit notes. Edel registers each one with the Ministry of Revenues as you sell.</p>
-      <p class="more-links"><a href="e-invoicing-ethiopia/">Read the plain guide to e-invoicing in Ethiopia →</a><a href="e-invoicing-checker/">Does it apply to my business? Check in 30 seconds →</a></p>
-<div class="bento">
-        <div class="tile wide reveal">
-          <div class="devices" aria-hidden="true">
-            <svg class="lap" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="14" y="6" width="92" height="58" rx="6"/><path d="M4 72h112"/><path d="M28 22h40M28 32h60M28 42h30" opacity=".5"/></svg>
-            <svg class="tab" viewBox="0 0 70 86" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="4" width="60" height="78" rx="8"/><path d="M18 22h34M18 32h24" opacity=".5"/></svg>
-            <svg class="ph" viewBox="0 0 40 66" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="3" width="32" height="60" rx="7"/><path d="M15 54h10"/></svg>
+      <h2 class="reveal">Every sale, registered in seconds.</h2>
+      <p class="intro">Tax invoices, cash receipts and credit notes go to the Ministry of Revenues as you sell, and come back with an official number and a QR code.</p>
+<div class="story" id="story">
+        <ol class="story-steps" role="tablist" aria-label="How a sale gets registered">
+          <li><button type="button" role="tab" data-step="0" aria-selected="true"><span class="n">1</span><span><b>You make a sale</b><small>At the till, in the office or on your phone.</small></span><i class="bar"></i></button></li>
+          <li><button type="button" role="tab" data-step="1" aria-selected="false"><span class="n">2</span><span><b>The Ministry registers it</b><small>Edel sends it and gets an official number back.</small></span><i class="bar"></i></button></li>
+          <li><button type="button" role="tab" data-step="2" aria-selected="false"><span class="n">3</span><span><b>Your customer scans it</b><small>The QR code proves the sale was registered.</small></span><i class="bar"></i></button></li>
+        </ol>
+        <div class="story-stage" aria-live="polite">
+          <div class="rcpt">
+            <div class="rcpt-top"><b>Example Café</b><span>CASH RECEIPT</span></div>
+            <div class="rcpt-lines">
+              <div class="l"><span>Macchiato × 2</span><span>180.00</span></div>
+              <div class="l"><span>Beef tibs × 1</span><span>650.00</span></div>
+              <div class="l"><span>Fresh juice × 2</span><span>320.00</span></div>
+              <div class="l sub"><span>VAT 15%</span><span>172.50</span></div>
+              <div class="l tot"><span>TOTAL ETB</span><span>1,322.50</span></div>
+            </div>
+            <div class="rcpt-reg">
+              <div class="qr-wrap"><canvas id="b-qr" aria-hidden="true"></canvas><span class="scanline" aria-hidden="true"></span></div>
+              <div class="reg-text">
+                <span class="chip sending"><span class="spin" aria-hidden="true"></span>Sending to the Ministry…</span>
+                <span class="chip ok">✓ Registered · ተመዝግቧል</span>
+                <span class="offno">Official no. <b>MOR-XXXX-0418</b></span>
+              </div>
+            </div>
+            <div class="verified-pop" aria-hidden="true"><b>✓ Verified</b><span>Registered with the Ministry of Revenues · ETB 1,322.50</span></div>
           </div>
-          <div><h3>No new machine</h3><p>Works on the computer, tablet or phone you already have. Connect your receipt printer and start selling.</p></div>
-        </div>
-        <div class="tile reveal">
-          <div class="status"><span class="on">Online, registering</span><div class="queue" aria-hidden="true"><span>#418</span><span>#419</span><span>#420</span><span>#421</span></div></div>
-          <div><h3>Always working, 24/7</h3><p>Power cuts or internet outages won't stop your sales.</p></div>
-        </div>
-        <div class="tile reveal">
-          <div class="dates"><div><small>Ethiopian</small><b id="b-eth">—</b></div><div><small>Gregorian</small><b id="b-greg">—</b></div></div>
-          <div><h3>Made for Ethiopia</h3><p>Amharic and English, Birr, VAT and the Ethiopian calendar.</p><div class="chipset" style="margin-top:12px"><span>አማርኛ</span><span>English</span><span>ETB</span><span>VAT 15%</span></div></div>
-        </div>
-        <div class="tile wide reveal">
-          <div class="qrtile">
-            <button type="button" class="qrbox" id="qr-tap" aria-label="Tap to scan the example QR code"><canvas id="b-qr"></canvas><span class="qr-hint">Tap to scan</span></button>
-            <div><h3>Proof your customer can scan</h3><p>Every invoice carries an official number and a QR code. Anyone can scan it to see the sale was registered with the Ministry of Revenues.</p><span class="verified" id="qr-result" aria-live="polite">✓ Registered · ተመዝግቧል</span></div>
-          </div>
+          <p class="story-note">Example receipt</p>
         </div>
       </div>
+      <div class="facts">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span><b>No new machine</b>Your computer, tablet or phone.</span></div>
+        <div><span class="pulse" aria-hidden="true"></span><span><b>Always working, 24/7</b>Power cuts or outages won't stop sales.</span></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span><b>Made for Ethiopia</b><em id="b-eth">—</em> · Amharic &amp; English · VAT 15%</span></div>
+      </div>
+      <p class="more-links story-links"><a href="e-invoicing-ethiopia/">Read the plain guide to e-invoicing in Ethiopia →</a><a href="e-invoicing-checker/">Does it apply to my business? Check in 30 seconds →</a></p>
     </div>
   </section>
 
@@ -1412,6 +1484,31 @@ document.documentElement.classList.add("js");
       setTimeout(function () { qr.classList.remove("scanning"); res.textContent = "✓ Registered with the Ministry · No. MOR-XXXX-0418 · ETB 146,717"; res.classList.add("on"); }, 900);
     });
   }
+})();
+
+(function () {
+  var story = document.getElementById("story"); if (!story) return;
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var tabs = [].slice.call(story.querySelectorAll(".story-steps button")), rc = story.querySelector(".rcpt");
+  var lines = [].slice.call(rc.querySelectorAll(".l")), step = -1, timers = [], auto = null, visible = false;
+  function later(ms, fn) { timers.push(setTimeout(fn, reduce ? 0 : ms)); }
+  function clear() { timers.forEach(clearTimeout); timers = []; }
+  function show(k) {
+    clear(); step = k;
+    tabs.forEach(function (t, i) { t.setAttribute("aria-selected", i === k); t.style.setProperty("--dur", "3.6s"); var b = t.querySelector(".bar"); b.style.display = "none"; void b.offsetWidth; b.style.display = ""; });
+    rc.className = "rcpt";
+    if (k === 0) { lines.forEach(function (l) { l.classList.remove("show"); }); lines.forEach(function (l, i) { later(250 + i * 320, function () { l.classList.add("show"); }); }); }
+    else { lines.forEach(function (l) { l.classList.add("show"); }); }
+    if (k === 1) { rc.classList.add("sending"); later(1500, function () { rc.classList.remove("sending"); rc.classList.add("registered"); }); }
+    if (k === 2) { rc.classList.add("registered", "scanning"); later(1400, function () { rc.classList.remove("scanning"); rc.classList.add("verified"); }); }
+  }
+  function next() { show((step + 1) % 3); }
+  function play() { stop(); if (reduce) return; auto = setInterval(next, 3600); story.classList.remove("paused"); }
+  function stop() { clearInterval(auto); auto = null; }
+  tabs.forEach(function (t, i) { t.addEventListener("click", function () { show(i); stop(); story.classList.add("paused"); setTimeout(function () { if (visible) play(); }, 7000); }); });
+  if ("IntersectionObserver" in window && !reduce) {
+    new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) { if (step < 0) show(0); play(); } else stop(); }, { threshold: .35 }).observe(story);
+  } else { show(2); }
 })();
 </script>
 </body>
