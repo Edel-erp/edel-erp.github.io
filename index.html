@@ -426,7 +426,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
 
 /* Fidel texture behind the dark ERP section */
 #erp { position: relative; overflow: hidden; isolation: isolate; }
-.fidel { position: absolute; inset: -10% -5%; z-index: -1; pointer-events: none; font: 600 clamp(60px, 9vw, 120px)/1.25 "Noto Sans Ethiopic", serif; color: rgba(211,166,40,.045); display: flex; flex-wrap: wrap; gap: .2em .6em; align-content: flex-start; animation: fidelDrift 60s linear infinite alternate; }
+.fidel { position: absolute; inset: -10% -5%; z-index: -1; pointer-events: none; font: 600 clamp(60px, 9vw, 120px)/1.25 "Noto Sans Ethiopic", serif; color: rgba(211,166,40,.028); display: flex; flex-wrap: wrap; gap: .2em .6em; align-content: flex-start; animation: fidelDrift 60s linear infinite alternate; }
 @keyframes fidelDrift { to { transform: translate3d(-4%, -6%, 0); } }
 
 /* cursor spotlight on dark cards (mouse only) */
@@ -448,13 +448,158 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
 .save-data .fidel { display: none; }
 @media (prefers-reduced-data: reduce) { .marquee .track, .fidel, .flow .wire i { animation: none !important; } .fidel { display: none; } }
 @media (prefers-reduced-motion: reduce) { .fidel { animation: none; } .odo .d span { transition: none; } }
+
+/* ===================== MIDNIGHT GOLD theme ===================== */
+:root {
+  --bg: #09090A; --bg2: #101012; --paper: #151619; --soft: #101012; --ink: #F3EFE6; --muted: #A9A498;
+  --line: rgba(255,255,255,.09); --gold-soft: rgba(211,166,40,.13); --gold-deep: #E9C25B; --on-dark: #fff;
+  --glass: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+  --gold-grad: linear-gradient(135deg, #F7DC86 0%, #D3A628 52%, #B07F14 100%);
+}
+html { background: var(--bg); }
+body { background: var(--bg); color: var(--ink); }
+::selection { background: rgba(211,166,40,.35); color: #fff; }
+/* paper islands keep light colours */
+.hero .slip .am { color: #5E6166; font-size: 12px; margin: 0; }
+.qr-card .qr { background: #fff; color: #5E6166; }
+.slip, .ba, .ph-toast, .qr-card .qr { --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #fff; --gold-deep: #A67F12; --gold-soft: #F7EFD6; color: #17181A; }
+.slip { background: #fff; }
+
+/* header: glass over the page */
+header { background: rgba(9,9,10,.72); border-bottom: 1px solid rgba(255,255,255,.07); -webkit-backdrop-filter: saturate(140%) blur(14px); backdrop-filter: saturate(140%) blur(14px); }
+.nav nav a { color: #BDB8AC; } .nav nav a:hover { color: #fff; }
+.btn-dark { background: rgba(255,255,255,.07); color: #fff; border: 1px solid rgba(255,255,255,.16); }
+.btn-dark:hover { border-color: rgba(211,166,40,.7); }
+.btn-line { border-color: rgba(255,255,255,.28); color: #fff; }
+.btn-line:hover { border-color: var(--gold); }
+.btn-gold { background: var(--gold-grad); color: #111; box-shadow: 0 10px 30px -12px rgba(211,166,40,.65), inset 0 1px 0 rgba(255,255,255,.35); }
+.btn-gold:hover { box-shadow: 0 16px 36px -12px rgba(211,166,40,.8), inset 0 1px 0 rgba(255,255,255,.35); }
+.menu-btn { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.14); }
+.menu-btn span { background: #fff; }
+@media (max-width: 760px) { .nav nav#main-nav { background: rgba(12,12,13,.97); border-bottom-color: rgba(255,255,255,.08); } .nav nav#main-nav a { border-top-color: rgba(255,255,255,.07); color: #fff; } }
+
+/* section rhythm + big type */
+section.band { padding: clamp(72px, 9vw, 120px) 0; }
+section.soft { background: var(--bg2); }
+section.dark { background: #060607; }
+.band h2 { font-size: clamp(32px, 4.6vw, 58px); letter-spacing: -0.035em; line-height: 1.04; max-width: 18ch; }
+.band p.intro { color: var(--muted); font-size: clamp(17px, 1.5vw, 20px); }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font: 600 12.5px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+.eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--gold); }
+.grad { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* HERO */
+.hero { padding: clamp(56px, 8vw, 110px) 0 clamp(70px, 9vw, 120px); isolation: isolate; }
+.hero::before { background:
+  radial-gradient(700px 520px at 78% 30%, rgba(211,166,40,.28), transparent 62%),
+  radial-gradient(520px 380px at 8% 95%, rgba(176,127,20,.20), transparent 65%),
+  radial-gradient(900px 600px at 50% -20%, rgba(255,255,255,.05), transparent 60%); }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px) 0 0 / 56px 56px, linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px) 0 0 / 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 40%, #000 30%, transparent 75%); mask-image: radial-gradient(ellipse 70% 60% at 60% 40%, #000 30%, transparent 75%); }
+.grain { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .07; mix-blend-mode: overlay; background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.hero h1 { font-size: clamp(44px, 6.6vw, 92px); letter-spacing: -0.045em; line-height: .98; margin: 22px 0 14px; }
+.hero .am { color: #C9B98D; font-size: clamp(18px, 1.8vw, 22px); }
+.hero p.lede { color: #C7C2B6; font-size: clamp(18px, 1.6vw, 21px); }
+.badge { background: rgba(211,166,40,.12); color: #F2D27A; border: 1px solid rgba(211,166,40,.35); }
+.trust { color: #A9A498; }
+.trust svg { color: var(--gold); }
+.ask-chips span { color: #8F8A80; }
+.ask-chips a { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); color: #EDE8DD; }
+.ask-chips a:hover { background: rgba(37,211,102,.1); border-color: rgba(37,211,102,.55); }
+.ask-chips a svg { color: #4ADE80; }
+.slip-stage { perspective: 1200px; position: relative; }
+.tilt { transition: transform .25s ease-out; transform-style: preserve-3d; width: 100%; display: grid; justify-items: center; }
+.slip { box-shadow: 0 50px 90px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.06), 0 0 120px -30px rgba(211,166,40,.45); }
+.example { color: #8F8A80; }
+.orbit { position: absolute; z-index: 3; display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; font: 600 13.5px var(--body); color: #fff;
+  background: rgba(20,20,22,.78); border: 1px solid rgba(255,255,255,.14); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 18px 40px -16px rgba(0,0,0,.8); animation: bob 6s ease-in-out infinite; }
+.orbit i { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 12px; }
+.orbit.o1 { top: 6%; left: -6%; } .orbit.o1 i { background: #1F8A4C; }
+.orbit.o2 { top: 44%; right: -8%; animation-delay: -2s; } .orbit.o2 i { background: var(--gold); color: #111; }
+.orbit.o3 { bottom: 12%; left: -10%; animation-delay: -4s; } .orbit.o3 i { background: #2563EB; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@media (max-width: 860px) { .orbit.o1 { left: 0; } .orbit.o2 { right: 0; } .orbit.o3 { left: 0; } }
+@media (max-width: 480px) { .orbit { font-size: 12px; padding: 7px 11px; } .orbit.o3 { display: none; } }
+
+/* tibeb, marquee */
+.marquee { background: #060607; border-block-color: rgba(255,255,255,.06); }
+
+/* BENTO for e-invoice */
+.bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+.tile { position: relative; overflow: hidden; border-radius: 24px; padding: 26px; background: var(--glass); border: 1px solid var(--line); min-height: 220px; display: grid; align-content: space-between; gap: 18px; transition: border-color .25s, transform .25s; }
+.tile:hover { border-color: rgba(211,166,40,.4); transform: translateY(-3px); }
+.tile::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; background: radial-gradient(420px circle at var(--mx, 80%) var(--my, 0%), rgba(211,166,40,.12), transparent 55%); }
+.tile h3 { font-size: 22px; letter-spacing: -0.02em; margin-bottom: 6px; }
+.tile p { color: var(--muted); font-size: 16px; max-width: 40ch; }
+.tile.wide { grid-column: span 2; }
+@media (max-width: 900px) { .bento { grid-template-columns: 1fr; } .tile.wide { grid-column: auto; } }
+.devices { display: flex; gap: 14px; align-items: flex-end; }
+.devices svg { color: var(--gold); }
+.devices .lap { width: 120px; height: 80px; } .devices .tab { width: 70px; height: 86px; } .devices .ph { width: 40px; height: 66px; }
+.status { display: grid; gap: 8px; font: 500 14px var(--body); }
+.status .on { display: inline-flex; align-items: center; gap: 8px; color: #4ADE80; font-weight: 700; }
+.status .on::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 0 0 rgba(74,222,128,.6); animation: ping 1.8s infinite; }
+@keyframes ping { 70% { box-shadow: 0 0 0 10px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+.queue { display: flex; gap: 6px; }
+.queue span { flex: 1; height: 34px; border-radius: 8px; background: rgba(255,255,255,.06); border: 1px dashed rgba(255,255,255,.18); display: grid; place-items: center; font-size: 11px; color: var(--muted); }
+.queue span.done { background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.45); color: #4ADE80; }
+.dates { display: flex; flex-wrap: wrap; gap: 10px; }
+.dates div { background: rgba(255,255,255,.05); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; }
+.dates small { display: block; color: var(--muted); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; }
+.dates b { font-family: "Noto Sans Ethiopic", var(--display); font-size: 18px; }
+.chipset { display: flex; flex-wrap: wrap; gap: 8px; }
+.chipset span { font-size: 13px; font-weight: 600; padding: 6px 11px; border-radius: 999px; background: rgba(211,166,40,.12); color: #F2D27A; border: 1px solid rgba(211,166,40,.3); }
+.qrtile { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; }
+.qrbox { position: relative; width: 132px; height: 132px; border-radius: 16px; background: #fff; padding: 12px; box-shadow: 0 0 60px -10px rgba(211,166,40,.5); }
+.qrbox canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+.qrbox::after { content: ""; position: absolute; left: 10px; right: 10px; top: 10px; height: 3px; background: var(--gold); box-shadow: 0 0 14px 3px rgba(211,166,40,.8); border-radius: 2px; animation: qrscan 2.4s ease-in-out infinite; }
+@keyframes qrscan { 50% { top: calc(100% - 13px); } }
+.verified { display: inline-flex; align-items: center; gap: 8px; color: #4ADE80; font-weight: 700; margin-top: 8px; }
+@media (max-width: 520px) { .qrtile { grid-template-columns: 1fr; } }
+
+/* flow, why, cards in the dark */
+.flow .node { background: var(--glass); border-color: var(--line); }
+.flow .node.on { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(211,166,40,.15), 0 20px 40px -20px rgba(211,166,40,.5); }
+.flow .wire { background: repeating-linear-gradient(90deg, rgba(211,166,40,.5) 0 6px, transparent 6px 11px); }
+.ba-caption div { color: var(--muted); } .ba-caption b { color: var(--ink); }
+.calc { background: var(--glass), #0D0D0F; border: 1px solid rgba(211,166,40,.25); box-shadow: 0 30px 80px -40px rgba(211,166,40,.45); }
+.points div { background: var(--glass); }
+
+/* industries */
+.ind-tabs button { border-color: rgba(255,255,255,.14); }
+.ind-tabs button[aria-selected="true"] { background: var(--gold-grad); border-color: transparent; color: #111; box-shadow: 0 10px 28px -12px rgba(211,166,40,.7); }
+.ind-panel { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); border-color: rgba(255,255,255,.08); border-radius: 28px; }
+
+/* anywhere */
+.anywhere { background: radial-gradient(700px 480px at 80% 50%, rgba(211,166,40,.16), transparent 65%), var(--bg); }
+.ticks li { color: #DDD8CC; }
+
+/* about: statement */
+.about h2 { max-width: 12ch; }
+.about p { color: #CFCABE; font-size: clamp(19px, 1.9vw, 24px); line-height: 1.5; }
+.about p:first-child::first-line { color: #fff; }
+
+/* request */
+.contact a, .contact b { color: #fff; }
+form { background: var(--glass), #0F0F11; border-color: var(--line); border-radius: 24px; }
+label { color: #DDD8CC; }
+input, select { background: #0B0B0C; color: var(--ink); border-color: rgba(255,255,255,.14); }
+input::placeholder { color: #6F6B62; }
+.qr-card { background: var(--glass); border-color: var(--line); }
+.qr-card b { color: #fff; }
+
+/* footer */
+footer { background: #050506; }
+
+@media (prefers-reduced-motion: reduce) { .orbit, .status .on::before, .qrbox::after { animation: none; } .tilt { transition: none; } }
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap nav">
-    <a href="#top" aria-label="Edel home"><img src="edel-logo-web-360.webp" srcset="edel-logo-web-360.webp 360w, edel-logo-web.webp 720w" sizes="128px" width="720" height="338" alt="Edel: e-invoicing software for Ethiopia"></a>
+    <a href="#top" aria-label="Edel home"><img src="edel-logo-dark-360.webp" srcset="edel-logo-dark-360.webp 360w, edel-logo-dark.webp 720w" sizes="128px" width="720" height="338" alt="Edel: e-invoicing software for Ethiopia"></a>
     <nav aria-label="Main" id="main-nav">
       <a href="e-invoicing-ethiopia/">E-invoicing guide</a>
       <a href="#erp">ERP</a>
@@ -470,10 +615,11 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
 
 <main id="top">
   <section class="hero">
+    <div class="grain" aria-hidden="true"></div>
     <div class="wrap hero-grid">
       <div>
         <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Approved by the Ministry of Revenues</span>
-        <h1>E-invoicing for Ethiopian businesses.</h1>
+        <h1><span class="grad">E-invoicing</span> for Ethiopian businesses.</h1>
         <p class="am" lang="am">ለኢትዮጵያ ንግዶች ኤሌክትሮኒክ ደረሰኝ</p>
         <p class="lede">Every invoice you issue with Edel is registered with the Ministry of Revenues and carries an official number and a QR code.</p>
         <div class="cta">
@@ -488,7 +634,10 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         </ul>
       </div>
       <div class="slip-stage">
-        <article class="slip" aria-label="Example electronic invoice" id="slip"></article>
+        <span class="orbit o1" aria-hidden="true"><i>✓</i>Registered with the Ministry</span>
+        <span class="orbit o2" aria-hidden="true"><i>%</i>VAT 15% worked out</span>
+        <span class="orbit o3" aria-hidden="true"><i>ብ</i>Paid by telebirr</span>
+        <div class="tilt"><article class="slip" aria-label="Example electronic invoice" id="slip"></article></div>
         <span class="example">Example invoice. Not a real sale.</span>
       </div>
     </div>
@@ -501,6 +650,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   <div class="tibeb" aria-hidden="true"></div>
   <section class="band soft" id="einvoice">
     <div class="wrap">
+      <span class="eyebrow">01 · E-invoice</span>
       <h2 class="reveal">E-invoice</h2>
       <p class="intro">Issue tax invoices, cash receipts and credit notes. Edel registers each one with the Ministry of Revenues as you sell.</p>
       <p class="more-links"><a href="e-invoicing-ethiopia/">Read the plain guide to e-invoicing in Ethiopia →</a><a href="e-invoicing-checker/">Does it apply to my business? Check in 30 seconds →</a></p>
@@ -511,16 +661,36 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         <div class="wire" aria-hidden="true"><i></i></div>
         <div class="node" data-step="2"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v1M14 20h1M18 18h3v3"/></svg></span><b>Your customer gets proof</b><small>Official number and a QR code anyone can scan.</small></div>
       </div>
-      <div class="points">
-        <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><b>No new machine</b><span>Works on the computer, tablet or phone you already have.</span></div>
-        <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Always working, 24/7</b><span>Power cuts or internet outages won't stop your sales.</span></div>
-        <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><b>Made for Ethiopia</b><span>Amharic and English, Birr, VAT and the Ethiopian calendar.</span></div>
+      <div class="bento">
+        <div class="tile wide reveal">
+          <div class="devices" aria-hidden="true">
+            <svg class="lap" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="14" y="6" width="92" height="58" rx="6"/><path d="M4 72h112"/><path d="M28 22h40M28 32h60M28 42h30" opacity=".5"/></svg>
+            <svg class="tab" viewBox="0 0 70 86" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="4" width="60" height="78" rx="8"/><path d="M18 22h34M18 32h24" opacity=".5"/></svg>
+            <svg class="ph" viewBox="0 0 40 66" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="3" width="32" height="60" rx="7"/><path d="M15 54h10"/></svg>
+          </div>
+          <div><h3>No new machine</h3><p>Works on the computer, tablet or phone you already have. Connect your receipt printer and start selling.</p></div>
+        </div>
+        <div class="tile reveal">
+          <div class="status"><span class="on">Online, registering</span><div class="queue" aria-hidden="true"><span>#418</span><span>#419</span><span>#420</span><span>#421</span></div></div>
+          <div><h3>Always working, 24/7</h3><p>Power cuts or internet outages won't stop your sales.</p></div>
+        </div>
+        <div class="tile reveal">
+          <div class="dates"><div><small>Ethiopian</small><b id="b-eth">—</b></div><div><small>Gregorian</small><b id="b-greg">—</b></div></div>
+          <div><h3>Made for Ethiopia</h3><p>Amharic and English, Birr, VAT and the Ethiopian calendar.</p><div class="chipset" style="margin-top:12px"><span>አማርኛ</span><span>English</span><span>ETB</span><span>VAT 15%</span></div></div>
+        </div>
+        <div class="tile wide reveal">
+          <div class="qrtile">
+            <div class="qrbox" aria-hidden="true"><canvas id="b-qr"></canvas></div>
+            <div><h3>Proof your customer can scan</h3><p>Every invoice carries an official number and a QR code. Anyone can scan it to see the sale was registered with the Ministry of Revenues.</p><span class="verified">✓ Registered · ተመዝግቧል</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="band" id="why">
     <div class="wrap">
+      <span class="eyebrow">02 · Why switch</span>
       <h2 class="reveal">From receipt book to registered e-invoice</h2>
       <p class="intro">Drag the gold handle to see the difference. Then work out what unrecorded sales add up to in your business.</p>
       <div class="why-grid">
@@ -579,6 +749,7 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   <section class="band dark" id="erp">
     <div class="fidel" aria-hidden="true"><span>ሀ</span><span>ለ</span><span>ሐ</span><span>መ</span><span>ሠ</span><span>ረ</span><span>ሰ</span><span>ሸ</span><span>ቀ</span><span>በ</span><span>ተ</span><span>ቸ</span><span>ኀ</span><span>ነ</span><span>ኘ</span><span>አ</span><span>ከ</span><span>ኸ</span><span>ወ</span><span>ዐ</span><span>ዘ</span><span>ዠ</span><span>የ</span><span>ደ</span><span>ጀ</span><span>ገ</span><span>ጠ</span><span>ጨ</span><span>ጰ</span><span>ጸ</span><span>ፀ</span><span>ፈ</span><span>ፐ</span><span>ሀ</span><span>ለ</span><span>ሐ</span><span>መ</span><span>ሠ</span><span>ረ</span><span>ሰ</span></div>
     <div class="wrap">
+      <span class="eyebrow">03 · ERP by industry</span>
       <h2 class="reveal">ERP built for your industry</h2>
       <p class="intro">Accounts, stock, purchasing, sales and payroll in one system, connected to your e-invoices. Pick your industry to see what it does.</p>
       <div class="ind-tabs" role="tablist" aria-label="Industries">
@@ -745,7 +916,8 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   <section class="band anywhere" id="anywhere">
     <div class="wrap any-grid">
       <div class="reveal">
-        <h2>Follow your business from anywhere</h2>
+        <span class="eyebrow">04 · Dashboards</span>
+      <h2>Follow your business from anywhere</h2>
         <p class="intro">Every day, see how your business is doing: sales, cash, stock and staff. On your phone or laptop, from Addis Ababa or anywhere in the world.</p>
         <ul class="ticks">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Today's numbers for every branch, updated as you sell</li>
@@ -780,7 +952,8 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
 
   <section class="band soft" id="about">
     <div class="wrap about">
-      <h2>Who is Edel</h2>
+      <div><span class="eyebrow">05 · Who we are</span>
+      <h2>Who is Edel</h2></div>
       <div>
         <p>Edel Trading PLC is an Ethiopian software company based in Addis Ababa. We build e-invoicing and ERP systems for Ethiopian businesses.</p>
         <p>Our team sets up the system for you, trains your staff and supports you in Amharic and English.</p>
@@ -791,7 +964,8 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   <section class="band" id="request">
     <div class="wrap request">
       <div>
-        <h2>Request e-invoice</h2>
+        <span class="eyebrow">06 · Get started</span>
+      <h2>Request e-invoice</h2>
         <p class="intro">Send us your details and our team will contact you.</p>
         <div class="contact">
           <div><small>Phone</small><a href="tel:+251911251837">+251 911 251837</a></div>
@@ -1105,6 +1279,42 @@ document.documentElement.classList.add("js");
     var hand = document.getElementById("eth-hand"); if (hand) hand.setAttribute("transform", "rotate(" + ((eh % 12) * 30 + m / 2) + " 17 17)");
   }
   if (ec) { tickClock(); setInterval(tickClock, 30000); }
+})();
+
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // hero invoice tilts toward the mouse
+  var stage = document.querySelector(".slip-stage"), tilt = document.querySelector(".tilt");
+  if (stage && tilt && !reduce && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    document.querySelector(".hero").addEventListener("pointermove", function (e) {
+      var r = stage.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      tilt.style.transform = "rotateY(" + (x * 10).toFixed(2) + "deg) rotateX(" + (-y * 8).toFixed(2) + "deg)";
+    });
+    document.querySelector(".hero").addEventListener("pointerleave", function () { tilt.style.transform = ""; });
+  }
+  // bento glow follows the mouse
+  document.addEventListener("pointermove", function (e) {
+    var t = e.target.closest && e.target.closest(".tile"); if (!t) return;
+    var r = t.getBoundingClientRect(); t.style.setProperty("--mx", (e.clientX - r.left) + "px"); t.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }, { passive: true });
+  // bento: today's dates
+  var d = new Date(), M = ["መስከረም","ጥቅምት","ኅዳር","ታኅሣሥ","ጥር","የካቲት","መጋቢት","ሚያዝያ","ግንቦት","ሰኔ","ሐምሌ","ነሐሴ","ጳጉሜ"];
+  var jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856, r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+  var ey = 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), em = Math.floor(n / 30) + 1, ed = (n % 30) + 1;
+  var be = document.getElementById("b-eth"), bg = document.getElementById("b-greg");
+  if (be) be.textContent = M[em - 1] + " " + ed + "፣ " + ey;
+  if (bg) bg.textContent = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  // bento: QR pattern
+  var c = document.getElementById("b-qr");
+  if (c) { var N = 25, x = c.getContext("2d"); c.width = c.height = N; x.fillStyle = "#fff"; x.fillRect(0, 0, N, N); x.fillStyle = "#0E0F10";
+    var s = 99, rnd = function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+    for (var j = 0; j < N; j++) for (var i = 0; i < N; i++) if (!((i < 8 && j < 8) || (i > N - 9 && j < 8) || (i < 8 && j > N - 9)) && rnd() > .52) x.fillRect(i, j, 1, 1);
+    [[0, 0], [N - 7, 0], [0, N - 7]].forEach(function (p) { x.fillRect(p[0], p[1], 7, 7); x.fillStyle = "#fff"; x.fillRect(p[0] + 1, p[1] + 1, 5, 5); x.fillStyle = "#0E0F10"; x.fillRect(p[0] + 2, p[1] + 2, 3, 3); }); }
+  // bento: offline queue registers one by one
+  var q = [].slice.call(document.querySelectorAll(".queue span"));
+  if (q.length && !reduce) { var k = 0; setInterval(function () {
+    if (k < q.length) { q[k].classList.add("done"); q[k].textContent = "✓"; k++; }
+    else { q.forEach(function (el, i) { el.classList.remove("done"); el.textContent = "#" + (418 + i); }); k = 0; } }, 1100); }
 })();
 </script>
 </body>

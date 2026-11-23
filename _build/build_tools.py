@@ -359,7 +359,7 @@ CHK_STYLE = '''
 .opts { display: grid; gap: 10px; }
 .opts.grid2 { grid-template-columns: 1fr 1fr; }
 @media (max-width: 520px) { .opts.grid2 { grid-template-columns: 1fr; } }
-.opts button { text-align: left; border: 1.5px solid var(--line); background: #fff; border-radius: 14px; padding: 15px 16px; font: 600 16px var(--body); cursor: pointer; display: flex; justify-content: space-between; gap: 10px; transition: border-color .15s, transform .15s; }
+.opts button { text-align: left; border: 1.5px solid var(--line); background: var(--glass), #121214; color: var(--ink); border-radius: 14px; padding: 15px 16px; font: 600 16px var(--body); cursor: pointer; display: flex; justify-content: space-between; gap: 10px; transition: border-color .15s, transform .15s; }
 .opts button:hover, .opts button:focus-visible { border-color: var(--gold); transform: translateY(-1px); outline: none; }
 .opts button span { color: var(--gold-deep); }
 .back { margin-top: 14px; border: 0; background: none; color: var(--muted); font: 600 14px var(--body); cursor: pointer; padding: 6px 0; }

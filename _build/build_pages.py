@@ -62,7 +62,7 @@ def chrome_top(current=""):
     def cur(p): return ' aria-current="page"' if p == current else ""
     return f'''<header class="site">
   <div class="wrap nav">
-    <a href="../"><img src="../edel-logo-web-360.webp" srcset="../edel-logo-web-360.webp 360w, ../edel-logo-web.webp 720w" sizes="128px" width="720" height="338" alt="Edel: e-invoicing software for Ethiopia"></a>
+    <a href="../"><img src="../edel-logo-dark-360.webp" srcset="../edel-logo-dark-360.webp 360w, ../edel-logo-dark.webp 720w" sizes="128px" width="720" height="338" alt="Edel: e-invoicing software for Ethiopia"></a>
     <nav aria-label="Main" id="main-nav">
       <a href="../e-invoicing-ethiopia/"{cur("e-invoicing-ethiopia")}>E-invoicing guide</a>
       <a href="../#erp">Industries</a>
