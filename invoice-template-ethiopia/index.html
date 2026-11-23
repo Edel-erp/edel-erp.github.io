@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Invoice Template for Ethiopian Businesses (Birr, VAT, TIN) | Edel</title>
+<meta name="description" content="Free invoice template for Ethiopia: seller and buyer TIN, Ethiopian and Gregorian date, items in Birr, 15% VAT. Fill it in, then print or save as PDF.">
+<link rel="canonical" href="https://edel-erp.github.io/invoice-template-ethiopia/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edel">
+<meta property="og:title" content="Free Invoice Template for Ethiopian Businesses (Birr, VAT, TIN) | Edel">
+<meta property="og:description" content="Free invoice template for Ethiopia: seller and buyer TIN, Ethiopian and Gregorian date, items in Birr, 15% VAT. Fill it in, then print or save as PDF.">
+<meta property="og:url" content="https://edel-erp.github.io/invoice-template-ethiopia/">
+<meta property="og:image" content="https://edel-erp.github.io/edel-logo-web.png">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+[
+ {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+   {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Edel",
+    "item": "https://edel-erp.github.io/"
+   },
+   {
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Free tools",
+    "item": "https://edel-erp.github.io/e-invoicing-checker/"
+   },
+   {
+    "@type": "ListItem",
+    "position": 3,
+    "name": "Invoice template",
+    "item": "https://edel-erp.github.io/invoice-template-ethiopia/"
+   }
+  ]
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Invoice template",
+  "url": "https://edel-erp.github.io/invoice-template-ethiopia/",
+  "description": "Free invoice template for Ethiopia: seller and buyer TIN, Ethiopian and Gregorian date, items in Birr, 15% VAT. Fill it in, then print or save as PDF.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser",
+  "isAccessibleForFree": true,
+  "inLanguage": [
+   "en",
+   "am"
+  ],
+  "areaServed": {
+   "@type": "Country",
+   "name": "Ethiopia"
+  },
+  "offers": {
+   "@type": "Offer",
+   "price": "0",
+   "priceCurrency": "ETB"
+  },
+  "publisher": {
+   "@type": "Organization",
+   "name": "Edel Trading PLC",
+   "url": "https://edel-erp.github.io/"
+  }
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+   {
+    "@type": "Question",
+    "name": "Is this invoice valid for the Ministry of Revenues?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "It is a plain invoice. Businesses that must use electronic invoicing need registered e-invoices from an approved system, which carry an official number and QR code. Edel issues those."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "What should an invoice in Ethiopia show?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "At least the seller's name, address and TIN, the buyer's name (and TIN for business customers), an invoice number, the date, each item with quantity and price, and the VAT if you are VAT-registered."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "How do I save it as a PDF?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Press 'Print or save as PDF', then choose 'Save as PDF' as the printer. You can then send it by email, WhatsApp or Telegram."
+    }
+   }
+  ]
+ }
+]
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+
+.inv-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 18px; align-items: start; }
+@media (max-width: 900px) { .inv-grid { grid-template-columns: 1fr; } }
+.banner { background: var(--gold-soft); border: 1px solid #EADFBF; border-radius: 14px; padding: 14px 16px; font-size: 15px; margin-bottom: 18px; }
+.banner a { font-weight: 700; }
+fieldset { border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; margin: 0; }
+legend { font-weight: 700; padding: 0 6px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 480px) { .two { grid-template-columns: 1fr; } }
+.irow { display: grid; grid-template-columns: 1fr 60px 100px 34px; gap: 6px; align-items: center; }
+.irow .del { border: 0; background: var(--soft); border-radius: 8px; height: 38px; cursor: pointer; font-size: 18px; color: var(--muted); }
+.add-row { border: 1.5px dashed var(--line); background: none; border-radius: 10px; padding: 10px; font: 600 15px var(--body); cursor: pointer; }
+.check { display: flex; gap: 8px; align-items: center; font-weight: 600; }
+.check input { width: auto; }
+.preview-wrap { position: sticky; top: 92px; display: grid; gap: 12px; }
+.invoice { background: #fff; border: 1px solid var(--line); border-top: 6px solid var(--gold); border-radius: 10px; padding: 24px; font-size: 14px; box-shadow: 0 30px 60px -30px rgba(14,15,16,.35); overflow-wrap: anywhere; }
+.invoice .top { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.invoice h2 { font-size: 22px; margin: 0 0 2px; }
+.invoice .muted { color: var(--muted); }
+.invoice table { width: 100%; border-collapse: collapse; margin-top: 16px; font-variant-numeric: tabular-nums; }
+.invoice th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1.5px solid var(--ink); padding: 6px 4px; }
+.invoice td { padding: 7px 4px; border-bottom: 1px solid #EEECE6; }
+.invoice .n { text-align: right; white-space: nowrap; }
+.invoice .tot { margin-top: 12px; margin-left: auto; width: min(280px, 100%); display: grid; gap: 4px; font-variant-numeric: tabular-nums; }
+.invoice .tot div { display: flex; justify-content: space-between; }
+.invoice .tot .grand { font-weight: 700; font-size: 17px; border-top: 1.5px solid var(--ink); padding-top: 6px; }
+.invoice .plain { margin-top: 18px; font-size: 11.5px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; }
+@media print {
+  body * { visibility: hidden !important; }
+  #invoice, #invoice * { visibility: visible !important; }
+  #invoice { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: 0; border-top: 6px solid #D3A628; }
+  .page-hero, .crumbs { display: none !important; }
+}
+
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap nav">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel: e-invoicing software for Ethiopia"></a>
+    <nav aria-label="Main">
+      <a href="../e-invoicing-ethiopia/">E-invoicing guide</a>
+      <a href="../#erp">Industries</a>
+      <a href="../e-invoicing-checker/" aria-current="page">Free tools</a>
+      <a href="../#request">Contact</a>
+    </nav>
+    <a class="btn btn-dark" href="../#request">Request e-invoice</a>
+  </div>
+</header>
+<main>
+  <div class="wrap crumbs no-print"><a href="../">Edel</a><span>›</span>Free tools<span>›</span>Invoice template</div>
+  <section class="page-hero no-print">
+    <div class="wrap">
+      <span class="kicker">Free tool · no sign-up</span>
+      <h1>Free invoice template for Ethiopian businesses</h1>
+      <p class="am" lang="am">ለኢትዮጵያ ንግዶች ነፃ የደረሰኝ ቅፅ</p>
+      <p class="lede">Fill in your details and items. The invoice updates as you type, with the Ethiopian and Gregorian date, then print it or save it as a PDF.</p>
+    </div>
+  </section>
+  <section class="band" style="padding-top:8px">
+    <div class="wrap">
+      <div class="banner no-print">This is a plain invoice, not a registered e-invoice. Registered e-invoices with an official number and QR code come from an approved system like Edel. <a href="../#request">Request e-invoice →</a></div>
+      <div class="inv-grid">
+        <form class="card no-print" id="inv-form" style="display:grid;gap:14px" onsubmit="return false">
+          <fieldset><legend>Your business (seller)</legend>
+            <div class="field"><label for="s-name">Business name</label><input id="s-name" value="Abyssinia Grocers PLC"></div>
+            <div class="two"><div class="field"><label for="s-tin">TIN</label><input id="s-tin" inputmode="numeric" value="0012345678"></div>
+            <div class="field"><label for="s-phone">Phone</label><input id="s-phone" value="+251 911 000000"></div></div>
+            <div class="field"><label for="s-addr">Address</label><input id="s-addr" value="Bole, Addis Ababa"></div>
+          </fieldset>
+          <fieldset><legend>Customer (buyer)</legend>
+            <div class="two"><div class="field"><label for="b-name">Customer name</label><input id="b-name" value="Meskerem Trading PLC"></div>
+            <div class="field"><label for="b-tin">Customer TIN</label><input id="b-tin" inputmode="numeric" value=""></div></div>
+          </fieldset>
+          <fieldset><legend>Invoice</legend>
+            <div class="two"><div class="field"><label for="i-no">Invoice number</label><input id="i-no" value="INV-0001"></div>
+            <div class="field"><label for="i-date">Date</label><input id="i-date" type="date"></div></div>
+            <div id="items" style="display:grid;gap:6px"></div>
+            <button type="button" class="add-row" id="add">+ Add item</button>
+            <label class="check" for="vat-on"><input type="checkbox" id="vat-on" checked> Add VAT 15%</label>
+            <div class="field"><label for="i-notes">Notes</label><textarea id="i-notes" rows="2">Payment within 15 days. Thank you for your business.</textarea></div>
+          </fieldset>
+        </form>
+        <div class="preview-wrap">
+          <article class="invoice" id="invoice" aria-label="Invoice preview"></article>
+          <div class="btns no-print"><button type="button" class="btn btn-gold" id="print">Print or save as PDF</button></div>
+          <p class="note no-print">Tip: in the print window, choose "Save as PDF" to send it by email or Telegram.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band soft no-print">
+    <div class="wrap narrow">
+      <h2>Questions</h2>
+      <div class="faq">
+        <details open><summary>Is this invoice valid for the Ministry of Revenues?</summary><p>It is a plain invoice. Businesses that must use electronic invoicing need registered e-invoices from an approved system, which carry an official number and QR code. Edel issues those.</p></details>
+        <details><summary>What should an invoice in Ethiopia show?</summary><p>At least the seller&#x27;s name, address and TIN, the buyer&#x27;s name (and TIN for business customers), an invoice number, the date, each item with quantity and price, and the VAT if you are VAT-registered.</p></details>
+        <details><summary>How do I save it as a PDF?</summary><p>Press &#x27;Print or save as PDF&#x27;, then choose &#x27;Save as PDF&#x27; as the printer. You can then send it by email, WhatsApp or Telegram.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="band no-print">
+    <div class="wrap">
+      <h2>More free tools</h2>
+      <div class="related"><a href="../vat-calculator-ethiopia/">VAT calculator (15%)<small>Add or remove 15% VAT in Birr</small></a><a href="../e-invoicing-checker/">Does e-invoicing apply to me?<small>Check in 30 seconds</small></a><a href="../e-invoicing-ethiopia/">E-invoicing guide<small>How it works, in plain words</small></a></div>
+      <div class="cta-band" style="margin-top:40px">
+        <h2>Need registered e-invoices?</h2>
+        <p>Edel issues e-invoices approved by the Ministry of Revenues, with an official number and QR code on every sale. We set it up and train your staff.</p>
+        <div class="btns"><a class="btn btn-gold" href="../#request">Request e-invoice</a><a class="btn btn-line" style="color:#fff;border-color:#55575C" href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp us</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><img src="../edel-logo-dark.png" alt="Edel Trading PLC"><p>E-invoicing and ERP for Ethiopian businesses, approved by the Ministry of Revenues. Built and supported in Addis Ababa.</p><p lang="am" style="font-family:'Noto Sans Ethiopic',var(--body);margin-top:8px">ኤሌክትሮኒክ ደረሰኝ እና ኢአርፒ ለኢትዮጵያ ንግዶች</p></div>
+      <div><h4>Industries</h4><ul><li><a href="../hotel-software-ethiopia/">Hotels</a></li><li><a href="../beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="../tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="../import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="../manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="../farm-management-software-ethiopia/">Farms</a></li></ul></div>
+      <div><h4>Free tools and guides</h4><ul><li><a href="../e-invoicing-ethiopia/">E-invoicing guide</a></li><li><a href="../e-invoicing-checker/">Does e-invoicing apply to me?</a></li><li><a href="../vat-calculator-ethiopia/">VAT calculator (15%)</a></li><li><a href="../invoice-template-ethiopia/">Free invoice template</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li><li><a href="../#request">Request e-invoice</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© <span class="yr">2026</span> Edel Trading PLC</span><span lang="am">ግብር ይክፈሉ፣ ሀገር ይልማ።</span></div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/251960369445" target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg></a>
+<script>document.querySelectorAll(".yr").forEach(function (el) { el.textContent = new Date().getFullYear(); });</script>
+<script>
+(function () {
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function birr(n, dec) { dec = dec == null ? 2 : dec; return "ETB " + (isFinite(n) ? n : 0).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+  function num(v) { var x = parseFloat(String(v).replace(/,/g, "")); return isFinite(x) ? x : 0; }
+
+  var ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEthiopian(d) {
+    var jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    var r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  function ethStr(d) { var t = toEthiopian(d); return ETH_MONTHS[t.m - 1] + " " + t.d + "፣ " + t.y; }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var items = $("items");
+  var d0 = new Date(); $("i-date").value = d0.getFullYear() + "-" + String(d0.getMonth() + 1).padStart(2, "0") + "-" + String(d0.getDate()).padStart(2, "0");
+  function addItem(d, q, p) {
+    var row = document.createElement("div"); row.className = "irow";
+    row.innerHTML = '<input aria-label="Item description" placeholder="Item" value="' + esc(d || "") + '">' +
+      '<input aria-label="Quantity" inputmode="decimal" value="' + esc(q == null ? 1 : q) + '">' +
+      '<input aria-label="Unit price" inputmode="decimal" placeholder="Price" value="' + esc(p == null ? "" : p) + '">' +
+      '<button type="button" class="del" aria-label="Remove item">×</button>';
+    items.appendChild(row); render();
+  }
+  function render() {
+    var lines = [], net = 0;
+    items.querySelectorAll(".irow").forEach(function (r) {
+      var i = r.querySelectorAll("input"), q = num(i[1].value), p = num(i[2].value), a = Math.round(q * p * 100) / 100;
+      if (i[0].value.trim() || a) { lines.push({ d: i[0].value, q: q, p: p, a: a }); net += a; }
+    });
+    net = Math.round(net * 100) / 100;
+    var vatOn = $("vat-on").checked, vat = vatOn ? Math.round(net * 15) / 100 : 0;
+    var dt = $("i-date").value ? new Date($("i-date").value + "T12:00:00") : new Date();
+    var greg = dt.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    var plain = function (n) { return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+    $("invoice").innerHTML =
+      '<div class="top"><div><h2>' + esc($("s-name").value || "Your business") + '</h2><div class="muted">' + esc($("s-addr").value) +
+      (($("s-phone").value) ? '<br>' + esc($("s-phone").value) : "") + (($("s-tin").value) ? '<br>TIN ' + esc($("s-tin").value) : "") + '</div></div>' +
+      '<div style="text-align:right"><b style="font-size:18px">' + (vatOn ? "TAX INVOICE" : "INVOICE") + '</b><div class="muted">No ' + esc($("i-no").value) +
+      '<br>' + esc(ethStr(dt)) + ' ዓ.ም<br>' + esc(greg) + '</div></div></div>' +
+      '<div style="margin-top:16px"><span class="muted">Bill to</span><br><b>' + esc($("b-name").value || "Customer") + '</b>' +
+      (($("b-tin").value) ? '<br><span class="muted">TIN ' + esc($("b-tin").value) + '</span>' : "") + '</div>' +
+      '<table><thead><tr><th>Item</th><th class="n">Qty</th><th class="n">Unit price</th><th class="n">Amount</th></tr></thead><tbody>' +
+      (lines.length ? lines.map(function (l) { return '<tr><td>' + esc(l.d) + '</td><td class="n">' + esc(l.q) + '</td><td class="n">' + plain(l.p) + '</td><td class="n">' + plain(l.a) + '</td></tr>'; }).join("")
+        : '<tr><td colspan="4" class="muted">Add items on the left.</td></tr>') +
+      '</tbody></table><div class="tot"><div><span>Subtotal</span><span>' + plain(net) + '</span></div>' +
+      (vatOn ? '<div><span>VAT 15%</span><span>' + plain(vat) + '</span></div>' : "") +
+      '<div class="grand"><span>TOTAL ETB</span><span>' + plain(net + vat) + '</span></div></div>' +
+      (($("i-notes").value.trim()) ? '<p style="margin-top:14px">' + esc($("i-notes").value).replace(/\n/g, "<br>") + '</p>' : "") +
+      '<div class="plain">Plain invoice made with the free Edel template. Not a registered e-invoice.</div>';
+  }
+  $("inv-form").addEventListener("input", render);
+  $("inv-form").addEventListener("change", render);
+  items.addEventListener("click", function (ev) { var b = ev.target.closest(".del"); if (b) { b.closest(".irow").remove(); render(); } });
+  $("add").addEventListener("click", function () { addItem("", 1, ""); });
+  $("print").addEventListener("click", function () { window.print(); });
+  addItem("Teff flour, 25kg bag", 20, 3250); addItem("Sunflower oil, 5L", 36, 1180);
+
+})();
+</script>
+</body>
+</html>

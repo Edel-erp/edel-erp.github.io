@@ -249,6 +249,21 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
 .spark { width: 100%; height: 36px; display: block; }
 .pv-open { font-size: 13px; font-weight: 700; color: var(--gold); }
 @media (prefers-reduced-motion: reduce) { .pv-live::before { animation: none; } }
+
+/* links to the new pages */
+.ind-more { color: var(--gold); font-weight: 700; text-decoration: none; justify-self: start; }
+.ind-more:hover { text-decoration: underline; text-underline-offset: 4px; }
+.more-links { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 6px; }
+.more-links a { color: var(--gold-deep); font-weight: 700; text-decoration: none; }
+.more-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.foot-cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 24px; margin-bottom: 26px; }
+.foot-cols img { height: 34px; display: block; margin-bottom: 10px; }
+.foot-cols h4 { color: #fff; font: 700 14px var(--body); margin-bottom: 10px; }
+.foot-cols ul { list-style: none; padding: 0; display: grid; gap: 6px; }
+.foot-cols a { color: #D9DADC; text-decoration: none; }
+.foot-cols a:hover { color: var(--gold); }
+footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
+@media (max-width: 760px) { .foot-cols { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
@@ -257,7 +272,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
   <div class="wrap nav">
     <a href="#top" aria-label="Edel home"><img src="edel-logo-web.png" alt="Edel: e-invoicing software for Ethiopia"></a>
     <nav aria-label="Main">
-      <a href="#einvoice">E-invoice</a>
+      <a href="e-invoicing-ethiopia/">E-invoicing guide</a>
       <a href="#erp">ERP</a>
       <a href="#anywhere">Dashboards</a>
       <a href="#about">About</a>
@@ -296,6 +311,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
     <div class="wrap">
       <h2 class="reveal">E-invoice</h2>
       <p class="intro">Issue tax invoices, cash receipts and credit notes. Edel registers each one with the Ministry of Revenues as you sell.</p>
+      <p class="more-links"><a href="e-invoicing-ethiopia/">Read the plain guide to e-invoicing in Ethiopia →</a><a href="e-invoicing-checker/">Does it apply to my business? Check in 30 seconds →</a></p>
       <div class="points">
         <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><b>No new machine</b><span>Works on the computer, tablet or phone you already have.</span></div>
         <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Always working, 24/7</b><span>Power cuts or internet outages won't stop your sales.</span></div>
@@ -322,6 +338,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag live">In use today</span>
           <h3>ERP for hotels</h3>
           <p>Run rooms, restaurant, bar and stores in one system, with a report for every day.</p>
+          <a class="ind-more" href="hotel-software-ethiopia/">Everything Edel does for hotels →</a>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/hotel.html">Try the hotel demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Hotels">Ask about this</a></div>
           <a class="ind-preview" href="demo/hotel.html" aria-label="Open the Demo Lodge demo">
             <span class="pv-top"><span class="pv-live">Live demo</span>Demo Lodge · example</span>
@@ -347,6 +364,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag live">In use today</span>
           <h3>ERP for beer distribution</h3>
           <p>Every truck, crate, seller and Birr accounted for, every day.</p>
+          <a class="ind-more" href="beer-distribution-software-ethiopia/">Everything Edel does for beer distribution →</a>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/beer.html">Try the beer distribution demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Beer distribution">Ask about this</a></div>
           <a class="ind-preview" href="demo/beer.html" aria-label="Open the Demo Beverage Distributors demo">
             <span class="pv-top"><span class="pv-live">Live demo</span>Demo Beverage Distributors · example</span>
@@ -372,6 +390,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag live">In use today</span>
           <h3>ERP for tours &amp; travel</h3>
           <p>Every booking, car, driver and litre of fuel, with the profit of each trip.</p>
+          <a class="ind-more" href="tour-company-software-ethiopia/">Everything Edel does for tours &amp; travel →</a>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/tours.html">Try the tours demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Tours &amp; travel">Ask about this</a></div>
           <a class="ind-preview" href="demo/tours.html" aria-label="Open the Demo Tours demo">
             <span class="pv-top"><span class="pv-live">Live demo</span>Demo Tours · example</span>
@@ -397,6 +416,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for import &amp; export</h3>
           <p>Know the true landed cost of every container, from Djibouti to your warehouse shelf.</p>
+          <a class="ind-more" href="import-export-software-ethiopia/">Everything Edel does for import &amp; export →</a>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/import.html">Try the import &amp; export demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Import &amp; export">Ask about this</a></div>
           <a class="ind-preview" href="demo/import.html" aria-label="Open the Demo Traders demo">
             <span class="pv-top"><span class="pv-live">Live demo</span>Demo Traders · example</span>
@@ -422,6 +442,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for manufacturing</h3>
           <p>Know what every product really costs and where material is lost, from raw material to finished goods.</p>
+          <a class="ind-more" href="manufacturing-erp-ethiopia/">Everything Edel does for manufacturing →</a>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/manufacturing.html">Try the factory demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Manufacturing">Ask about this</a></div>
           <a class="ind-preview" href="demo/manufacturing.html" aria-label="Open the Demo Factory demo">
             <span class="pv-top"><span class="pv-live">Live demo</span>Demo Factory · example</span>
@@ -447,6 +468,7 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
           <span class="ind-tag">Set up for your business</span>
           <h3>ERP for farms</h3>
           <p>From field and herd to market: one system for your costs, workers, harvests and sales.</p>
+          <a class="ind-more" href="farm-management-software-ethiopia/">Everything Edel does for farms →</a>
           <div class="ind-btns"><a class="btn btn-gold" href="demo/farms.html">Try the farm demo →</a><a class="btn btn-ghost-dark" href="#request" data-type="Farms">Ask about this</a></div>
           <a class="ind-preview" href="demo/farms.html" aria-label="Open the Demo Farm demo">
             <span class="pv-top"><span class="pv-live">Live demo</span>Demo Farm · example</span>
@@ -546,10 +568,16 @@ footer { background: var(--black); color: #B9BBBF; padding: 36px 0; font-size: 1
 </main>
 
 <footer>
-  <div class="wrap foot">
-    <img src="edel-logo-dark.png" alt="Edel Trading PLC">
-    <span>E-invoicing and ERP for Ethiopian businesses · <span lang="am">ኤሌክትሮኒክ ደረሰኝ</span></span>
-    <span><a href="tel:+251911251837">+251 911 251837</a> · © <span id="yr"></span> Edel Trading PLC</span>
+  <div class="wrap">
+    <div class="foot-cols">
+      <div><img src="edel-logo-dark.png" alt="Edel Trading PLC"><p>E-invoicing and ERP for Ethiopian businesses · <span lang="am">ኤሌክትሮኒክ ደረሰኝ</span></p></div>
+      <div><h4>Industries</h4><ul><li><a href="hotel-software-ethiopia/">Hotels</a></li><li><a href="beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="farm-management-software-ethiopia/">Farms</a></li></ul></div>
+      <div><h4>Free tools and guides</h4><ul><li><a href="e-invoicing-ethiopia/">E-invoicing guide</a></li><li><a href="e-invoicing-checker/">Does e-invoicing apply to me?</a></li><li><a href="vat-calculator-ethiopia/">VAT calculator (15%)</a></li><li><a href="invoice-template-ethiopia/">Free invoice template</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li></ul></div>
+    </div>
+    <div class="foot">
+      <span>© <span id="yr"></span> Edel Trading PLC</span><span lang="am">ግብር ይክፈሉ፣ ሀገር ይልማ።</span>
+    </div>
   </div>
 </footer>
 

@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VAT Calculator Ethiopia (15%): Add or Remove VAT in Birr | Edel</title>
+<meta name="description" content="Free 15% VAT calculator for Ethiopia. Add VAT to a price or remove it from a total, in Birr, and add up several items with VAT. No sign-up.">
+<link rel="canonical" href="https://edel-erp.github.io/vat-calculator-ethiopia/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edel">
+<meta property="og:title" content="VAT Calculator Ethiopia (15%): Add or Remove VAT in Birr | Edel">
+<meta property="og:description" content="Free 15% VAT calculator for Ethiopia. Add VAT to a price or remove it from a total, in Birr, and add up several items with VAT. No sign-up.">
+<meta property="og:url" content="https://edel-erp.github.io/vat-calculator-ethiopia/">
+<meta property="og:image" content="https://edel-erp.github.io/edel-logo-web.png">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+[
+ {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+   {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Edel",
+    "item": "https://edel-erp.github.io/"
+   },
+   {
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Free tools",
+    "item": "https://edel-erp.github.io/e-invoicing-checker/"
+   },
+   {
+    "@type": "ListItem",
+    "position": 3,
+    "name": "VAT calculator",
+    "item": "https://edel-erp.github.io/vat-calculator-ethiopia/"
+   }
+  ]
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "VAT calculator",
+  "url": "https://edel-erp.github.io/vat-calculator-ethiopia/",
+  "description": "Free 15% VAT calculator for Ethiopia. Add VAT to a price or remove it from a total, in Birr, and add up several items with VAT. No sign-up.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser",
+  "isAccessibleForFree": true,
+  "inLanguage": [
+   "en",
+   "am"
+  ],
+  "areaServed": {
+   "@type": "Country",
+   "name": "Ethiopia"
+  },
+  "offers": {
+   "@type": "Offer",
+   "price": "0",
+   "priceCurrency": "ETB"
+  },
+  "publisher": {
+   "@type": "Organization",
+   "name": "Edel Trading PLC",
+   "url": "https://edel-erp.github.io/"
+  }
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+   {
+    "@type": "Question",
+    "name": "How do I calculate 15% VAT in Ethiopia?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Multiply the price before VAT by 0.15 to get the VAT, then add it to the price. For example, ETB 2,000 + 15% VAT (ETB 300) = ETB 2,300."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "How do I remove VAT from a total?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Divide the total by 1.15 to get the price before VAT. The difference is the VAT. For example, ETB 1,150 ÷ 1.15 = ETB 1,000, so the VAT is ETB 150."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Does every business charge VAT?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "VAT-registered businesses charge 15% VAT. Some goods and services are exempt, and businesses that are not VAT-registered pay turnover tax instead. Check your situation with the Ministry of Revenues."
+    }
+   }
+  ]
+ }
+]
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+@media (max-width: 820px) { .calc-grid { grid-template-columns: 1fr; } }
+.seg { display: inline-flex; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; max-width: 100%; }
+@media (max-width: 480px) { .seg { display: flex; } .seg button { flex: 1; padding: 10px 8px; font-size: 14px; white-space: nowrap; } }
+.seg button { border: 0; background: none; padding: 10px 14px; border-radius: 999px; font: 600 15px var(--body); color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
+.big-in { font-size: 24px; font-weight: 700; padding: 14px 16px; }
+.result { background: var(--black); color: #fff; border-radius: 16px; padding: 20px; display: grid; gap: 10px; }
+.result .row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #2A2C30; font-variant-numeric: tabular-nums; }
+.result .row:last-of-type { border-bottom: 0; }
+.result .row span { color: #B9BBBF; }
+.result .total b { color: var(--gold); font-family: var(--display); font-size: 24px; }
+.copy { justify-self: start; border: 1px solid #55575C; background: transparent; color: #fff; border-radius: 999px; padding: 8px 14px; font: 600 14px var(--body); cursor: pointer; }
+.items { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.items th { text-align: left; font-size: 13px; color: var(--muted); font-weight: 600; padding: 6px 4px; }
+.items td { padding: 4px; vertical-align: middle; }
+.items td.n { text-align: right; white-space: nowrap; }
+.items input { padding: 9px 10px; }
+.items .del { border: 0; background: var(--soft); border-radius: 8px; width: 34px; height: 34px; cursor: pointer; font-size: 18px; color: var(--muted); }
+.add-row { margin-top: 10px; border: 1.5px dashed var(--line); background: none; border-radius: 10px; padding: 10px 14px; font: 600 15px var(--body); cursor: pointer; width: 100%; }
+.sum { margin-top: 14px; display: grid; gap: 6px; font-variant-numeric: tabular-nums; }
+.sum div { display: flex; justify-content: space-between; gap: 10px; }
+.sum b { white-space: nowrap; }
+.sum .grand { font-weight: 700; font-size: 19px; border-top: 1px solid var(--line); padding-top: 8px; }
+.items .q { width: 64px; } .items .p { width: 110px; }
+@media (max-width: 520px) {
+  .items thead { display: none; }
+  .items, .items tbody { display: block; }
+  .items tr { display: grid; grid-template-columns: 1fr 1fr 1.2fr 34px; gap: 6px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .items td { padding: 0; min-width: 0; }
+  .items td.desc { grid-column: 1 / -1; }
+  .items .q, .items .p { width: 100%; }
+  .items td.n { font-size: 14px; }
+}
+
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap nav">
+    <a href="../"><img src="../edel-logo-web.png" alt="Edel: e-invoicing software for Ethiopia"></a>
+    <nav aria-label="Main">
+      <a href="../e-invoicing-ethiopia/">E-invoicing guide</a>
+      <a href="../#erp">Industries</a>
+      <a href="../e-invoicing-checker/" aria-current="page">Free tools</a>
+      <a href="../#request">Contact</a>
+    </nav>
+    <a class="btn btn-dark" href="../#request">Request e-invoice</a>
+  </div>
+</header>
+<main>
+  <div class="wrap crumbs no-print"><a href="../">Edel</a><span>›</span>Free tools<span>›</span>VAT calculator</div>
+  <section class="page-hero no-print">
+    <div class="wrap">
+      <span class="kicker">Free tool · no sign-up</span>
+      <h1>VAT calculator for Ethiopia (15%)</h1>
+      <p class="am" lang="am">የተጨማሪ እሴት ታክስ (ተ.እ.ታ) 15% ማስያ</p>
+      <p class="lede">Add 15% VAT to a price, or take it out of a total, instantly in Birr. Add up several items below.</p>
+    </div>
+  </section>
+  <section class="band" style="padding-top:8px">
+    <div class="wrap calc-grid">
+      <div class="card" style="display:grid;gap:16px">
+        <h2 style="font-size:24px">One amount</h2>
+        <div class="seg" role="group" aria-label="What do you want to do?">
+          <button type="button" aria-pressed="true" data-mode="add">Add VAT to price</button>
+          <button type="button" aria-pressed="false" data-mode="remove">Remove VAT from total</button>
+        </div>
+        <div class="field"><label for="amt" id="amt-label">Price before VAT (ETB)</label>
+          <input id="amt" class="big-in" inputmode="decimal" autocomplete="off" placeholder="e.g. 2,000" value="2000"></div>
+        <div class="result" aria-live="polite">
+          <div class="row"><span>Price before VAT</span><b id="r-net">ETB 0.00</b></div>
+          <div class="row"><span>VAT 15%</span><b id="r-vat">ETB 0.00</b></div>
+          <div class="row total"><span>Total with VAT</span><b id="r-gross">ETB 0.00</b></div>
+          <button type="button" class="copy" id="copy">Copy result</button>
+        </div>
+        <p class="note">VAT-registered businesses charge 15% VAT. Check exemptions for your goods with the Ministry of Revenues.</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:24px;margin-bottom:10px">Several items</h2>
+        <table class="items">
+          <thead><tr><th class="desc">Item</th><th>Qty</th><th>Unit price</th><th class="n">Amount</th><th><span class="sr" style="position:absolute;left:-9999px">Remove</span></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <button type="button" class="add-row" id="add">+ Add item</button>
+        <div class="sum" aria-live="polite">
+          <div><span>Subtotal (before VAT)</span><b id="s-net">ETB 0.00</b></div>
+          <div><span>VAT 15%</span><b id="s-vat">ETB 0.00</b></div>
+          <div class="grand"><span>Total with VAT</span><b id="s-gross">ETB 0.00</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band soft no-print">
+    <div class="wrap narrow">
+      <h2>Questions</h2>
+      <div class="faq">
+        <details open><summary>How do I calculate 15% VAT in Ethiopia?</summary><p>Multiply the price before VAT by 0.15 to get the VAT, then add it to the price. For example, ETB 2,000 + 15% VAT (ETB 300) = ETB 2,300.</p></details>
+        <details><summary>How do I remove VAT from a total?</summary><p>Divide the total by 1.15 to get the price before VAT. The difference is the VAT. For example, ETB 1,150 ÷ 1.15 = ETB 1,000, so the VAT is ETB 150.</p></details>
+        <details><summary>Does every business charge VAT?</summary><p>VAT-registered businesses charge 15% VAT. Some goods and services are exempt, and businesses that are not VAT-registered pay turnover tax instead. Check your situation with the Ministry of Revenues.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="band no-print">
+    <div class="wrap">
+      <h2>More free tools</h2>
+      <div class="related"><a href="../invoice-template-ethiopia/">Free invoice template<small>Fill in, print or save as PDF</small></a><a href="../e-invoicing-checker/">Does e-invoicing apply to me?<small>Check in 30 seconds</small></a><a href="../e-invoicing-ethiopia/">E-invoicing guide<small>How it works, in plain words</small></a></div>
+      <div class="cta-band" style="margin-top:40px">
+        <h2>Need registered e-invoices?</h2>
+        <p>Edel issues e-invoices approved by the Ministry of Revenues, with an official number and QR code on every sale. We set it up and train your staff.</p>
+        <div class="btns"><a class="btn btn-gold" href="../#request">Request e-invoice</a><a class="btn btn-line" style="color:#fff;border-color:#55575C" href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp us</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><img src="../edel-logo-dark.png" alt="Edel Trading PLC"><p>E-invoicing and ERP for Ethiopian businesses, approved by the Ministry of Revenues. Built and supported in Addis Ababa.</p><p lang="am" style="font-family:'Noto Sans Ethiopic',var(--body);margin-top:8px">ኤሌክትሮኒክ ደረሰኝ እና ኢአርፒ ለኢትዮጵያ ንግዶች</p></div>
+      <div><h4>Industries</h4><ul><li><a href="../hotel-software-ethiopia/">Hotels</a></li><li><a href="../beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="../tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="../import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="../manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="../farm-management-software-ethiopia/">Farms</a></li></ul></div>
+      <div><h4>Free tools and guides</h4><ul><li><a href="../e-invoicing-ethiopia/">E-invoicing guide</a></li><li><a href="../e-invoicing-checker/">Does e-invoicing apply to me?</a></li><li><a href="../vat-calculator-ethiopia/">VAT calculator (15%)</a></li><li><a href="../invoice-template-ethiopia/">Free invoice template</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445" target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li><li><a href="../#request">Request e-invoice</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© <span class="yr">2026</span> Edel Trading PLC</span><span lang="am">ግብር ይክፈሉ፣ ሀገር ይልማ።</span></div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/251960369445" target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg></a>
+<script>document.querySelectorAll(".yr").forEach(function (el) { el.textContent = new Date().getFullYear(); });</script>
+<script>
+(function () {
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function birr(n, dec) { dec = dec == null ? 2 : dec; return "ETB " + (isFinite(n) ? n : 0).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+  function num(v) { var x = parseFloat(String(v).replace(/,/g, "")); return isFinite(x) ? x : 0; }
+
+  var VAT = 0.15, mode = "add", amt = document.getElementById("amt");
+  function round2(x) { return Math.round(x * 100) / 100; }
+  function calc() {
+    var v = num(amt.value), net, vat, gross;
+    if (mode === "add") { net = v; vat = round2(v * VAT); gross = round2(net + vat); }
+    else { gross = v; net = round2(v / (1 + VAT)); vat = round2(gross - net); }
+    document.getElementById("r-net").textContent = birr(net);
+    document.getElementById("r-vat").textContent = birr(vat);
+    document.getElementById("r-gross").textContent = birr(gross);
+    return { net: net, vat: vat, gross: gross };
+  }
+  document.querySelectorAll("[data-mode]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.dataset.mode;
+      document.querySelectorAll("[data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      document.getElementById("amt-label").textContent = mode === "add" ? "Price before VAT (ETB)" : "Total with VAT (ETB)";
+      calc();
+    });
+  });
+  amt.addEventListener("input", calc);
+  document.getElementById("copy").addEventListener("click", function (ev) {
+    var r = calc(), btn = ev.currentTarget;
+    var t = "Price before VAT: " + birr(r.net) + "\nVAT 15%: " + birr(r.vat) + "\nTotal with VAT: " + birr(r.gross);
+    var done = function () { btn.textContent = "Copied ✓"; setTimeout(function () { btn.textContent = "Copy result"; }, 1800); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () { btn.textContent = "Copy not allowed"; });
+    else btn.textContent = "Copy not allowed";
+  });
+  calc();
+
+  var rows = document.getElementById("rows");
+  function addRow(d, q, p) {
+    var tr = document.createElement("tr");
+    tr.innerHTML = '<td class="desc"><input aria-label="Item" placeholder="Item" value="' + esc(d || "") + '"></td>' +
+      '<td><input class="q" aria-label="Quantity" inputmode="decimal" value="' + esc(q == null ? 1 : q) + '"></td>' +
+      '<td><input class="p" aria-label="Unit price" inputmode="decimal" value="' + esc(p == null ? "" : p) + '"></td>' +
+      '<td class="n" data-amt>ETB 0.00</td><td><button type="button" class="del" aria-label="Remove item">×</button></td>';
+    rows.appendChild(tr); sum();
+  }
+  function sum() {
+    var net = 0;
+    rows.querySelectorAll("tr").forEach(function (tr) {
+      var ins = tr.querySelectorAll("input"), a = round2(num(ins[1].value) * num(ins[2].value));
+      tr.querySelector("[data-amt]").textContent = birr(a); net += a;
+    });
+    net = round2(net); var vat = round2(net * VAT);
+    document.getElementById("s-net").textContent = birr(net);
+    document.getElementById("s-vat").textContent = birr(vat);
+    document.getElementById("s-gross").textContent = birr(net + vat);
+  }
+  rows.addEventListener("input", sum);
+  rows.addEventListener("click", function (ev) { var b = ev.target.closest(".del"); if (b) { b.closest("tr").remove(); sum(); } });
+  document.getElementById("add").addEventListener("click", function () { addRow("", 1, ""); });
+  addRow("Teff flour 25kg", 4, 3250); addRow("Sunflower oil 5L", 6, 1180);
+
+})();
+</script>
+</body>
+</html>
