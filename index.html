@@ -712,67 +712,9 @@ button.qrbox { border: 0; cursor: pointer; padding: 12px; }
     </div>
   </section>
 
-  <section class="band" id="why">
-    <div class="wrap">
-      <span class="eyebrow">02 · Why switch</span>
-      <h2 class="reveal">From receipt book to registered e-invoice</h2>
-      <p class="intro">Drag the gold handle to see the difference. Then work out what unrecorded sales add up to in your business.</p>
-      <div class="why-grid">
-        <div>
-          <div class="ba" id="ba" style="--cut:50%">
-            <div class="ba-side ba-paper" aria-hidden="true">
-              <h4>Receipt No. 0347</h4>
-              <div class="ln"><span>Teff 25kg × 20</span><span>65,000</span></div>
-              <div class="ln"><span>Oil 5L × 36</span><span><s>41,280</s> 42,480</span></div>
-              <div class="ln"><span>Pasta × 15</span><span>20,100</span></div>
-              <div class="ln"><span>VAT?</span><span>…</span></div>
-              <div class="ln"><b>Total</b><b>~146,000</b></div>
-              <div class="note">No official number. Copy lost?</div>
-              <div class="smudge"></div>
-            </div>
-            <div class="ba-side ba-new" aria-hidden="true">
-              <h4>TAX INVOICE · የግብር ደረሰኝ</h4>
-              <div class="ln"><span>Teff flour 25kg × 20</span><span>65,000.00</span></div>
-              <div class="ln"><span>Sunflower oil 5L × 36</span><span>42,480.00</span></div>
-              <div class="ln"><span>Pasta 500g × 15</span><span>20,100.00</span></div>
-              <div class="ln"><span>VAT 15%</span><span>19,137.00</span></div>
-              <div class="tot"><span>TOTAL ETB</span><span>146,717.00</span></div>
-              <div class="reg"><i></i><span>Official no.<br><b>Registered with the Ministry</b></span><span class="stamp2">REGISTERED</span></div>
-            </div>
-            <div class="ba-handle" aria-hidden="true"></div>
-            <span class="ba-tag l">Receipt book</span><span class="ba-tag r">Edel e-invoice</span>
-            <label class="sr" for="ba-range" style="position:absolute;left:-9999px">Compare receipt book and e-invoice</label>
-            <input id="ba-range" type="range" min="0" max="100" value="50">
-          </div>
-          <div class="ba-caption">
-            <div><b>Receipt book</b>Totals by hand, no official number, easy to lose or rewrite.</div>
-            <div><b>Edel e-invoice</b>VAT worked out, official number and QR code, in your reports straight away.</div>
-          </div>
-        </div>
-        <div class="calc" id="calc">
-          <h3>Sales your books never see</h3>
-          <p class="s">If some sales go without a receipt or a record, they never reach your books. Here is what that adds up to.</p>
-          <div class="row2">
-            <div><label for="c-type">Your business</label><select id="c-type"><option>Hotel</option><option>Restaurant or café</option><option>Shop or supermarket</option><option>Distributor</option><option>Other business</option></select></div>
-            <div><label for="c-sales">Sales on a normal day (ETB)</label><input id="c-sales" type="number" min="0" step="1000" value="120000" inputmode="numeric"></div>
-          </div>
-          <div><label for="c-share">Share of sales with no receipt or record: <span class="pct" id="c-share-v">5%</span></label><input id="c-share" type="range" min="0" max="30" value="5"></div>
-          <input id="c-days" type="hidden" value="26">
-          <div class="out" aria-live="polite">
-            <small>Unrecorded sales in a year</small>
-            <div class="odo" id="odo" role="img" aria-label="ETB 0"></div>
-            <div class="equal">That is <b id="c-month">ETB 0</b> a month, or about <b id="c-days-eq">0</b> full days of sales a year.</div>
-          </div>
-          <a class="btn btn-gold" id="c-wa" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%20would%20like%20every%20sale%20recorded%20with%20Edel." target="_blank" rel="noopener">Record every sale with Edel →</a>
-          <p class="note">An estimate from your own numbers. With Edel, every sale is a registered e-invoice and goes straight into your reports.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="band dark" id="erp">
     <div class="wrap">
-      <span class="eyebrow">03 · ERP by industry</span>
+      <span class="eyebrow">02 · ERP by industry</span>
       <h2 class="reveal">ERP built for your industry</h2>
       <p class="intro">Accounts, stock, purchasing, sales and payroll in one system, connected to your e-invoices. Pick your industry to see what it does.</p>
       <div class="ind-tabs" role="tablist" aria-label="Industries">
@@ -1035,7 +977,7 @@ button.qrbox { border: 0; cursor: pointer; padding: 12px; }
   <section class="band anywhere" id="anywhere">
     <div class="wrap any-grid">
       <div class="reveal">
-        <span class="eyebrow">04 · Dashboards</span>
+        <span class="eyebrow">03 · Dashboards</span>
       <h2>Follow your business from anywhere</h2>
         <p class="intro">Every day, see how your business is doing: sales, cash, stock and staff. On your phone or laptop, from Addis Ababa or anywhere in the world.</p>
         <ul class="ticks">
@@ -1071,7 +1013,7 @@ button.qrbox { border: 0; cursor: pointer; padding: 12px; }
 
   <section class="band soft" id="about">
     <div class="wrap about">
-      <div><span class="eyebrow">05 · Who we are</span>
+      <div><span class="eyebrow">04 · Who we are</span>
       <h2>Who is Edel</h2></div>
       <div>
         <p>Edel Trading PLC is an Ethiopian software company based in Addis Ababa. We build e-invoicing and ERP systems for Ethiopian businesses.</p>
@@ -1083,7 +1025,7 @@ button.qrbox { border: 0; cursor: pointer; padding: 12px; }
   <section class="band" id="request">
     <div class="wrap request">
       <div>
-        <span class="eyebrow">06 · Get started</span>
+        <span class="eyebrow">05 · Get started</span>
       <h2>Request e-invoice</h2>
         <p class="intro">Send us your details and our team will contact you.</p>
         <div class="contact">
