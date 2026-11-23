@@ -283,6 +283,80 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
   .nav nav#main-nav a:first-child { border-top: 0; }
   .nav-call { display: block; color: var(--gold-deep) !important; }
 }
+
+/* ---- motion & fun (all off for reduced motion) ---- */
+.scroll-bar { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--gold), #F2C94C); z-index: 60; pointer-events: none; }
+.btn-gold { position: relative; overflow: hidden; }
+.btn-gold::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-20deg); transition: left .6s ease; pointer-events: none; }
+.btn-gold:hover::after { left: 130%; }
+@media (prefers-reduced-motion: reduce) { .scroll-bar { display: none; } .btn-gold::after { display: none; } }
+
+/* hero entrance */
+@keyframes slipIn { from { opacity: 0; transform: translateY(40px) rotate(4deg) scale(.96); } }
+@keyframes stampIn { 0% { opacity: 0; transform: rotate(-6deg) scale(2.4); } 60% { opacity: 1; transform: rotate(-6deg) scale(.92); } 100% { opacity: 1; transform: rotate(-6deg) scale(1); } }
+@keyframes scan { 0%, 100% { top: 0; opacity: 0; } 10%, 90% { opacity: 1; } 50% { top: calc(100% - 3px); } }
+@keyframes riseIn { from { opacity: 0; transform: translateY(16px); } }
+.slip.drop { animation: slipIn .9s cubic-bezier(.2,.8,.2,1) backwards; }
+.slip.drop .stamp { animation: stampIn .5s cubic-bezier(.3,1.6,.5,1) 1s backwards; }
+.slip-reg { position: relative; }
+.slip-reg::before { content: ""; position: absolute; left: 0; top: 0; width: 76px; height: 3px; background: var(--gold); box-shadow: 0 0 10px 2px rgba(211,166,40,.7); border-radius: 2px; opacity: 0; animation: scan 2.6s ease-in-out 1.6s infinite; z-index: 2; }
+@media (max-width: 420px) { .slip-reg::before { width: 64px; } }
+.hero h1, .hero .am, .hero p.lede, .hero .cta, .hero .trust, .hero .badge { animation: riseIn .7s cubic-bezier(.2,.8,.2,1) backwards; }
+.hero .badge { animation-delay: .05s; } .hero h1 { animation-delay: .12s; } .hero .am { animation-delay: .2s; }
+.hero p.lede { animation-delay: .28s; } .hero .cta { animation-delay: .36s; } .hero .trust { animation-delay: .44s; }
+
+/* "works with" marquee */
+.marquee { background: var(--black); color: #D9DADC; overflow: hidden; border-block: 1px solid #2A2C30; }
+.marquee .track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+.marquee:hover .track { animation-play-state: paused; }
+.marquee ul { list-style: none; display: flex; gap: 0; padding: 0; margin: 0; }
+.marquee li { display: inline-flex; align-items: center; gap: 10px; padding: 13px 22px; font-weight: 600; font-size: 15px; white-space: nowrap; }
+.marquee li::after { content: "✦"; color: var(--gold); margin-left: 22px; font-size: 11px; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* sale -> ministry -> QR flow */
+.flow { display: grid; grid-template-columns: 1fr 70px 1fr 70px 1fr; align-items: center; gap: 8px; margin-top: 30px; }
+.flow .node { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 4px; justify-items: start; }
+.flow .node .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--gold-soft); color: var(--gold-deep); margin-bottom: 6px; }
+.flow .node .ic svg { width: 22px; height: 22px; }
+.flow .node b { font-family: var(--display); font-size: 16px; }
+.flow .node small { color: var(--muted); font-size: 14px; }
+.flow .node.on { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(211,166,40,.18); transition: box-shadow .3s, border-color .3s; }
+.flow .wire { position: relative; height: 3px; background: repeating-linear-gradient(90deg, #D9CBA0 0 6px, transparent 6px 11px); border-radius: 2px; }
+.flow .wire i { position: absolute; top: 50%; left: 0; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(211,166,40,.25); animation: travel 3s ease-in-out infinite; }
+.flow .wire:nth-of-type(4) i { animation-delay: 1.5s; }
+@keyframes travel { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 12px); opacity: 0; } }
+@media (max-width: 760px) {
+  .flow { grid-template-columns: 1fr; gap: 0; }
+  .flow .wire { width: 3px; height: 34px; margin-left: 34px; background: repeating-linear-gradient(180deg, #D9CBA0 0 6px, transparent 6px 11px); }
+  .flow .wire i { left: 50%; top: 0; margin: 0 0 0 -6px; animation-name: travelDown; }
+  @keyframes travelDown { 0% { top: 0; opacity: 0; } 15%, 85% { opacity: 1; } 100% { top: calc(100% - 12px); opacity: 0; } }
+}
+
+/* e-invoice cards: icon wiggle on hover */
+.points div:hover .ic { animation: wiggle .5s ease; }
+@keyframes wiggle { 25% { transform: rotate(-8deg); } 50% { transform: rotate(6deg); } 75% { transform: rotate(-3deg); } }
+
+/* live phone */
+.ph-card b.bump { animation: bump .6s ease; }
+@keyframes bump { 30% { color: #fff; transform: scale(1.06); } }
+.ph-big b.bump { animation: bumpDark .6s ease; }
+@keyframes bumpDark { 30% { transform: scale(1.06); } }
+.ph-alert.swap { animation: alertIn .45s cubic-bezier(.2,.8,.2,1); }
+@keyframes alertIn { from { opacity: 0; transform: translateX(24px); } }
+.bars i { transition: height .6s ease; }
+.ph-toast { position: absolute; left: 12px; right: 12px; top: 44px; background: #fff; color: var(--ink); border-radius: 14px; padding: 9px 12px; font-size: 12.5px; box-shadow: 0 12px 24px -10px rgba(0,0,0,.5); display: flex; gap: 8px; align-items: center; transform: translateY(-140%); opacity: 0; transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s; z-index: 3; }
+.ph-toast.show { transform: none; opacity: 1; }
+.ph-toast img { width: 22px; height: 22px; border-radius: 6px; flex: none; }
+.ph-toast b { display: block; font-size: 12.5px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slip.drop, .slip.drop .stamp, .hero h1, .hero .am, .hero p.lede, .hero .cta, .hero .trust, .hero .badge { animation: none; }
+  .slip-reg::before, .flow .wire i { display: none; }
+  .marquee .track { animation: none; flex-wrap: wrap; width: auto; }
+  .marquee .track ul + ul { display: none; }
+  .points div:hover .ic { animation: none; }
+}
 </style>
 </head>
 <body>
@@ -328,11 +402,22 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
     </div>
   </section>
 
+  <div class="marquee" role="region" aria-label="What Edel works with">
+    <div class="track"><ul><li>Pay by telebirr</li><li>CBE Birr</li><li>Cards</li><li>Bank transfer</li><li>Cash</li><li>Registered e-invoices</li><li>Amharic and English</li><li>Ethiopian calendar</li><li>Birr and VAT 15%</li><li>Keeps selling when the internet drops</li><li>Follow your business from anywhere</li></ul><ul aria-hidden="true"><li>Pay by telebirr</li><li>CBE Birr</li><li>Cards</li><li>Bank transfer</li><li>Cash</li><li>Registered e-invoices</li><li>Amharic and English</li><li>Ethiopian calendar</li><li>Birr and VAT 15%</li><li>Keeps selling when the internet drops</li><li>Follow your business from anywhere</li></ul></div>
+  </div>
+
   <section class="band soft" id="einvoice">
     <div class="wrap">
       <h2 class="reveal">E-invoice</h2>
       <p class="intro">Issue tax invoices, cash receipts and credit notes. Edel registers each one with the Ministry of Revenues as you sell.</p>
       <p class="more-links"><a href="e-invoicing-ethiopia/">Read the plain guide to e-invoicing in Ethiopia →</a><a href="e-invoicing-checker/">Does it apply to my business? Check in 30 seconds →</a></p>
+      <div class="flow reveal" aria-label="How a sale gets registered">
+        <div class="node" data-step="0"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></span><b>You make a sale</b><small>At the till, in the office or on your phone.</small></div>
+        <div class="wire" aria-hidden="true"><i></i></div>
+        <div class="node" data-step="1"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-6 9 6"/><path d="M5 10v9M19 10v9M9 10v9M15 10v9M3 21h18"/></svg></span><b>The Ministry registers it</b><small>Edel sends it and gets an official number back.</small></div>
+        <div class="wire" aria-hidden="true"><i></i></div>
+        <div class="node" data-step="2"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v1M14 20h1M18 18h3v3"/></svg></span><b>Your customer gets proof</b><small>Official number and a QR code anyone can scan.</small></div>
+      </div>
       <div class="points">
         <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><b>No new machine</b><span>Works on the computer, tablet or phone you already have.</span></div>
         <div class="reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Always working, 24/7</b><span>Power cuts or internet outages won't stop your sales.</span></div>
@@ -524,22 +609,23 @@ footer .foot { border-top: 1px solid #2A2C30; padding-top: 18px; }
         </ul>
       </div>
       <div class="phone-stage reveal" aria-label="Example owner dashboard on a phone">
-        <div class="phone">
+        <div class="phone" id="phone">
           <div class="phone-notch"></div>
+          <div class="ph-toast" id="ph-toast" aria-hidden="true"><img src="edel-logo-web.png" alt=""><span><b id="ph-toast-t"></b><span id="ph-toast-s"></span></span></div>
           <div class="ph-top"><span>Today</span><b id="ph-date"></b></div>
-          <div class="ph-card ph-big"><small>Sales today</small><b>ETB 284,650</b><span class="up">▲ 12% vs last week</span></div>
+          <div class="ph-card ph-big"><small>Sales today</small><b id="ph-sales">ETB 284,650</b><span class="up">▲ 12% vs last week</span></div>
           <div class="ph-row">
             <div class="ph-card"><small>Cash in bank</small><b>ETB 1.92M</b></div>
-            <div class="ph-card"><small>Invoices</small><b>146</b><span class="ok">All registered</span></div>
+            <div class="ph-card"><small>Invoices</small><b id="ph-inv">146</b><span class="ok">All registered</span></div>
           </div>
           <div class="ph-card"><small>Sales this week</small>
-            <div class="bars" aria-hidden="true"><i style="height:48%"></i><i style="height:62%"></i><i style="height:55%"></i><i style="height:74%"></i><i style="height:68%"></i><i style="height:90%"></i><i class="now" style="height:80%"></i></div>
+            <div class="bars" aria-hidden="true"><i style="height:48%"></i><i style="height:62%"></i><i style="height:55%"></i><i style="height:74%"></i><i style="height:68%"></i><i style="height:90%"></i><i class="now" id="ph-now" style="height:80%"></i></div>
           </div>
-          <div class="ph-card ph-alert"><span class="dot"></span><div><b>Low stock</b><small>Main store · 3 items</small></div></div>
+          <div class="ph-card ph-alert" id="ph-alert"><span class="dot"></span><div><b id="ph-alert-t">Low stock</b><small id="ph-alert-s">Main store · 3 items</small></div></div>
           <div class="ph-card"><small>Branches</small>
-            <div class="ph-branch"><span>Addis Ababa</span><b>ETB 151,200</b></div>
-            <div class="ph-branch"><span>Hawassa</span><b>ETB 78,950</b></div>
-            <div class="ph-branch"><span>Arba Minch</span><b>ETB 54,500</b></div>
+            <div class="ph-branch"><span>Addis Ababa</span><b data-br="151200">ETB 151,200</b></div>
+            <div class="ph-branch"><span>Hawassa</span><b data-br="78950">ETB 78,950</b></div>
+            <div class="ph-branch"><span>Arba Minch</span><b data-br="54500">ETB 54,500</b></div>
           </div>
         </div>
         <span class="example on-light">Example numbers</span>
@@ -746,6 +832,50 @@ document.documentElement.classList.add("js");
   b.addEventListener("click", function () { set(!n.classList.contains("open")); });
   n.addEventListener("click", function (e) { if (e.target.closest("a")) set(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") set(false); });
+})();
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce) {
+    var bar = document.createElement("div"); bar.className = "scroll-bar"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar);
+    var tick = false;
+    window.addEventListener("scroll", function () {
+      if (tick) return; tick = true;
+      requestAnimationFrame(function () { var h = document.documentElement.scrollHeight - innerHeight; bar.style.transform = "scaleX(" + (h > 0 ? Math.min(1, scrollY / h) : 0) + ")"; tick = false; });
+    }, { passive: true });
+  }
+})();
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // hero invoice drop + stamp
+  var slip = document.getElementById("slip"); if (slip && !reduce) slip.classList.add("drop");
+  // flow: light up each step in turn
+  var nodes = document.querySelectorAll(".flow .node"), k = 0;
+  if (nodes.length && !reduce) setInterval(function () { nodes.forEach(function (n, j) { n.classList.toggle("on", j === k); }); k = (k + 1) % nodes.length; }, 1000);
+  // live phone: sales come in while the phone is on screen
+  var phone = document.getElementById("phone"); if (!phone || reduce) return;
+  var fmt = function (n) { return "ETB " + Math.round(n).toLocaleString("en-US"); };
+  var br = [].slice.call(phone.querySelectorAll("[data-br]")), inv = 146, nowH = 80, live = false, timer = null;
+  var ALERTS = [["Low stock", "Main store · 3 items"], ["Approval waiting", "Generator fuel · ETB 18,400"], ["Cash deposited", "Hawassa branch · CBE"], ["Big sale", "Addis Ababa · ETB 24,500"], ["Target reached", "Arba Minch branch · today"]];
+  var ai = 0;
+  function bump(el) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+  function step() {
+    var b = br[Math.floor(Math.random() * br.length)], add = Math.round((450 + Math.random() * 6000) / 10) * 10;
+    var v = Number(b.dataset.br) + add; b.dataset.br = v; b.textContent = fmt(v); bump(b);
+    var total = br.reduce(function (t, x) { return t + Number(x.dataset.br); }, 0);
+    var s = document.getElementById("ph-sales"); s.textContent = fmt(total); bump(s);
+    inv += 1; var iv = document.getElementById("ph-inv"); iv.textContent = inv; bump(iv);
+    nowH = Math.min(98, nowH + 1.2); document.getElementById("ph-now").style.height = nowH + "%";
+    var place = b.parentNode.querySelector("span").textContent;
+    var t = document.getElementById("ph-toast"); document.getElementById("ph-toast-t").textContent = "New sale · " + fmt(add);
+    document.getElementById("ph-toast-s").textContent = place + " · e-invoice registered"; t.classList.add("show");
+    setTimeout(function () { t.classList.remove("show"); }, 1800);
+    if (inv % 3 === 0) { ai = (ai + 1) % ALERTS.length; var a = document.getElementById("ph-alert");
+      document.getElementById("ph-alert-t").textContent = ALERTS[ai][0]; document.getElementById("ph-alert-s").textContent = ALERTS[ai][1];
+      a.classList.remove("swap"); void a.offsetWidth; a.classList.add("swap"); }
+  }
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) {
+    live = es[0].isIntersecting; clearInterval(timer); if (live) { setTimeout(step, 700); timer = setInterval(step, 3200); }
+  }, { threshold: 0.4 }).observe(phone);
 })();
 </script>
 </body>

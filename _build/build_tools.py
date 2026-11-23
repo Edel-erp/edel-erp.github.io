@@ -102,7 +102,7 @@ VAT_STYLE = '''
 .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
 @media (max-width: 820px) { .calc-grid { grid-template-columns: 1fr; } }
 .seg { display: inline-flex; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; max-width: 100%; }
-@media (max-width: 480px) { .seg { display: flex; } .seg button { flex: 1; padding: 10px 8px; font-size: 14px; white-space: nowrap; } }
+@media (max-width: 480px) { .seg { display: flex; } .seg button { flex: 1; padding: 9px 8px; font-size: 13.5px; line-height: 1.2; } }
 .seg button { border: 0; background: none; padding: 10px 14px; border-radius: 999px; font: 600 15px var(--body); color: var(--muted); cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
 .big-in { font-size: 24px; font-weight: 700; padding: 14px 16px; }

@@ -109,7 +109,7 @@
 .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
 @media (max-width: 820px) { .calc-grid { grid-template-columns: 1fr; } }
 .seg { display: inline-flex; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; max-width: 100%; }
-@media (max-width: 480px) { .seg { display: flex; } .seg button { flex: 1; padding: 10px 8px; font-size: 14px; white-space: nowrap; } }
+@media (max-width: 480px) { .seg { display: flex; } .seg button { flex: 1; padding: 9px 8px; font-size: 13.5px; line-height: 1.2; } }
 .seg button { border: 0; background: none; padding: 10px 14px; border-radius: 999px; font: 600 15px var(--body); color: var(--muted); cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--black); color: #fff; }
 .big-in { font-size: 24px; font-weight: 700; padding: 14px 16px; }
@@ -238,6 +238,25 @@ input.bad { border-color: #B3261E; background: #FBE7E5; } input.bad:focus { outl
 </footer>
 <a class="wa-float" href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .9a4.5 4.5 0 0 1-2.3-2.3l.9-1-1-2z"/></svg></a>
 <script>document.querySelectorAll(".yr").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+(function () {
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce) {
+    var bar = document.createElement("div"); bar.className = "scroll-bar"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar);
+    var tick = false;
+    window.addEventListener("scroll", function () {
+      if (tick) return; tick = true;
+      requestAnimationFrame(function () { var h = document.documentElement.scrollHeight - innerHeight; bar.style.transform = "scaleX(" + (h > 0 ? Math.min(1, scrollY / h) : 0) + ")"; tick = false; });
+    }, { passive: true });
+  }
+})();
+(function () {
+  document.documentElement.classList.add("js");
+  var els = document.querySelectorAll(".band h2, .band p.intro, .features li, .reasons > div, .demo-box, .faq details, .related a, .cta-band, .card");
+  if (!("IntersectionObserver" in window) || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+  els.forEach(function (el, i) { el.classList.add("rv"); el.style.transitionDelay = (i % 4) * 60 + "ms"; });
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { threshold: 0.1 });
+  els.forEach(function (el) { io.observe(el); });
+})();
 (function () {
   var b = document.querySelector(".menu-btn"), n = document.getElementById("main-nav");
   if (!b || !n) return;

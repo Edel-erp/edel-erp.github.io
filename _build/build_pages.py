@@ -94,6 +94,25 @@ def chrome_bottom():
 <a class="wa-float" href="{WA_LINK}" target="_blank" rel="noopener" aria-label="Message Edel on WhatsApp">{WA_SVG}</a>
 <script>document.querySelectorAll(".yr").forEach(function (el) {{ el.textContent = new Date().getFullYear(); }});
 (function () {{
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce) {{
+    var bar = document.createElement("div"); bar.className = "scroll-bar"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar);
+    var tick = false;
+    window.addEventListener("scroll", function () {{
+      if (tick) return; tick = true;
+      requestAnimationFrame(function () {{ var h = document.documentElement.scrollHeight - innerHeight; bar.style.transform = "scaleX(" + (h > 0 ? Math.min(1, scrollY / h) : 0) + ")"; tick = false; }});
+    }}, {{ passive: true }});
+  }}
+}})();
+(function () {{
+  document.documentElement.classList.add("js");
+  var els = document.querySelectorAll(".band h2, .band p.intro, .features li, .reasons > div, .demo-box, .faq details, .related a, .cta-band, .card");
+  if (!("IntersectionObserver" in window) || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+  els.forEach(function (el, i) {{ el.classList.add("rv"); el.style.transitionDelay = (i % 4) * 60 + "ms"; }});
+  var io = new IntersectionObserver(function (es) {{ es.forEach(function (e) {{ if (e.isIntersecting) {{ e.target.classList.add("in"); io.unobserve(e.target); }} }}); }}, {{ threshold: 0.1 }});
+  els.forEach(function (el) {{ io.observe(el); }});
+}})();
+(function () {{
   var b = document.querySelector(".menu-btn"), n = document.getElementById("main-nav");
   if (!b || !n) return;
   function set(open) {{ n.classList.toggle("open", open); b.setAttribute("aria-expanded", open); b.setAttribute("aria-label", open ? "Close menu" : "Open menu"); }}
