@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HR & Payroll Demo | Edel ERP</title>
+<meta name="description" content="Try Edel HR and payroll with example data: run an Ethiopian payroll in 3 clicks, roll call from fingerprint clocks, leave, loans and payslips.">
+<link rel="canonical" href="https://edel-erp.github.io/demo/hr.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
+<style>
+:root {
+  --gold: #D3A628; --gold-deep: #A67F12; --gold-soft: #F7EFD6;
+  --black: #0E0F10; --ink: #17181A; --muted: #5E6166; --line: #E4E2DC; --paper: #FFFFFF; --bg: #F4F3EF;
+  --green: #1F8A4C; --green-soft: #E3F4EA; --red: #B3261E; --red-soft: #FBE7E5; --amber: #B26A00; --amber-soft: #FFF1D9; --blue: #2B6CB0; --blue-soft: #E4EEF9;
+  --display: "Sora", "Noto Sans Ethiopic", Arial, sans-serif;
+  --body: "DM Sans", "Noto Sans Ethiopic", Arial, sans-serif;
+  --mono: ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font: 15px/1.5 var(--body); color: var(--ink); background: var(--bg); padding-bottom: 80px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.01em; line-height: 1.2; }
+button { font: inherit; cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+.demo-bar { background: var(--gold); color: var(--black); font-size: 13.5px; font-weight: 600; text-align: center; padding: 7px 12px; }
+.demo-bar a { color: var(--black); }
+header { background: var(--black); color: #fff; position: sticky; top: 0; z-index: 20; }
+.top { max-width: 1120px; margin: 0 auto; padding: 0 16px; height: 58px; display: flex; align-items: center; gap: 14px; }
+.top img { height: 34px; width: auto; display: block; }
+.top .app { font-family: var(--display); font-size: 16px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 420px) { .top { gap: 10px; } .top .app { font-size: 14px; } .top img { height: 28px; } }
+.top .app small { display: block; font: 500 12px var(--body); color: #9C9EA2; }
+.top .sp { flex: 1; }
+.top .ghost { background: transparent; border: 1px solid #3A3C40; color: #D9DADC; border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+.top .cta { background: var(--gold); color: var(--black); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+@media (max-width: 560px) { .top .cta { display: none; } .top .app small { display: none; } }
+.live { display: inline-flex; align-items: center; gap: 7px; background: #1F2023; border: 1px solid #3A3C40; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+.live .pulse { width: 9px; height: 9px; border-radius: 50%; background: #9C9EA2; }
+.live[aria-pressed="true"] .pulse { background: #5FD58C; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,213,140,.7); } 70% { box-shadow: 0 0 0 8px rgba(95,213,140,0); } 100% { box-shadow: 0 0 0 0 rgba(95,213,140,0); } }
+nav.tabs { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 58px; z-index: 19; }
+nav.tabs .in { max-width: 1120px; margin: 0 auto; padding: 0 8px; display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; padding: 13px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 12px; margin-left: 6px; }
+.badge[hidden] { display: none; }
+main { max-width: 1120px; margin: 0 auto; padding: 18px 16px; }
+.screen[hidden] { display: none; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; min-width: 0; }
+.card h3 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.card h3 small { font: 500 13px var(--body); color: var(--muted); }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 860px) { .g2, .g3 { grid-template-columns: 1fr; } .g4 { grid-template-columns: 1fr 1fr; } }
+.muted { color: var(--muted); } .small { font-size: 13px; }
+.row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #F0EEE8; }
+.row:first-child { border-top: 0; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+.hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+.btn { border: 0; border-radius: 999px; padding: 11px 18px; font-weight: 700; }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-dark { background: var(--black); color: #fff; }
+.btn-line { background: var(--paper); border: 1.5px solid var(--ink); }
+.btn-green { background: var(--green); color: #fff; }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.sm { padding: 7px 12px; font-size: 13px; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+#attention .row { align-items: center; } #attention .row > span:first-child { flex: 1; min-width: 0; } .row .tag { flex: none; white-space: nowrap; }
+.t-green { background: var(--green-soft); color: var(--green); } .t-amber { background: var(--amber-soft); color: var(--amber); } .t-red { background: var(--red-soft); color: var(--red); } .t-blue { background: var(--blue-soft); color: var(--blue); } .t-grey { background: #EEEDE8; color: var(--muted); }
+
+/* payroll stepper */
+.payhead { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.payhead h2 { font-size: clamp(20px, 3vw, 26px); }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.step { background: var(--paper); border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 8px; align-content: space-between; }
+.step .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #EEEDE8; font-weight: 700; font-size: 13px; }
+.step.active { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(211,166,40,.15); }
+.step.active .n { background: var(--gold); }
+.step.done { border-color: #BFE3CC; } .step.done .n { background: var(--green); color: #fff; }
+.step b { font-size: 14.5px; } .step small { color: var(--muted); font-size: 12.5px; }
+@media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+.totals { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 14px; }
+.totals div { background: var(--black); color: #fff; border-radius: 12px; padding: 10px 12px; }
+.totals small { display: block; color: #9C9EA2; font-size: 11.5px; }
+.totals b { font-family: var(--display); font-size: 15.5px; }
+.totals div.cost { background: var(--gold); color: var(--black); } .totals div.cost small { color: rgba(14,15,16,.7); }
+@media (max-width: 860px) { .totals { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 460px) { .totals { grid-template-columns: 1fr 1fr; } }
+.tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.pay { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 980px; }
+table.pay th { text-align: right; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 8px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.pay th:first-child, table.pay td:first-child { text-align: left; }
+table.pay td { text-align: right; padding: 8px; border-bottom: 1px solid #F0EEE8; white-space: nowrap; }
+table.pay td input { width: 92px; padding: 5px 7px; border: 1.5px solid var(--line); border-radius: 8px; text-align: right; font: inherit; }
+table.pay td input.ot { width: 54px; }
+table.pay td input.bad { border-color: var(--red); background: var(--red-soft); }
+table.pay tr { transition: background .4s; }
+table.pay tr.sel td { background: #FBF6E7; }
+table.pay tr.changed td.vs { background: var(--amber-soft); }
+table.pay tr.ok td { background: var(--green-soft); }
+table.pay tr.pop { animation: rowIn .45s ease; }
+@keyframes rowIn { from { background: var(--gold-soft); } }
+table.pay td.name b { display: block; } table.pay td.name small { color: var(--muted); }
+table.pay td.vs small { display: block; color: var(--amber); font-size: 11.5px; }
+table.pay tfoot td { font-weight: 700; border-top: 2px solid var(--ink); }
+.note { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+.paywrap { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+@media (max-width: 1000px) { .paywrap { grid-template-columns: 1fr; } }
+
+/* phone payslip */
+.phone { width: 280px; max-width: 100%; justify-self: center; background: #0E0F10; border-radius: 36px; padding: 34px 12px 16px; box-shadow: 0 0 0 7px #1F2023, 0 30px 60px -28px rgba(0,0,0,.6); color: #fff; position: relative; transform: translateY(14px); opacity: 0; transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .4s; }
+.phone.show { transform: none; opacity: 1; }
+.phone::before { content: ""; position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 78px; height: 16px; border-radius: 10px; background: #1F2023; }
+.slip { background: #fff; color: var(--ink); border-radius: 18px; padding: 14px; font-size: 12.5px; }
+.slip .hd { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; border-bottom: 1px dashed var(--line); padding-bottom: 8px; margin-bottom: 6px; }
+.slip .hd b { font-family: var(--display); font-size: 14px; }
+.slip .hd small { color: var(--muted); display: block; }
+.slip .r { display: flex; justify-content: space-between; padding: 3px 0; }
+.slip .r.minus span:last-child { color: var(--red); }
+.slip .net { background: var(--black); color: #fff; border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; font-weight: 700; margin-top: 6px; }
+.slip .am { font-family: "Noto Sans Ethiopic", var(--body); }
+.phone .ph-cap { text-align: center; color: #9C9EA2; font-size: 11.5px; margin-top: 8px; }
+
+/* attendance */
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.emp { background: var(--paper); border: 1px solid var(--line); border-left: 5px solid var(--c, #9C9EA2); border-radius: 12px; padding: 10px 12px; display: grid; gap: 4px; }
+.emp b { font-size: 14.5px; } .emp small { color: var(--muted); font-size: 12.5px; }
+.emp .acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.emp .acts button { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 600; }
+.s-present { --c: var(--green); } .s-late { --c: var(--amber); } .s-absent { --c: var(--red); } .s-leave { --c: var(--blue); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.kpis div { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.kpis small { display: block; color: var(--muted); font-size: 12px; } .kpis b { font-family: var(--display); font-size: 20px; }
+@media (max-width: 640px) { .kpis { grid-template-columns: 1fr 1fr; } }
+
+/* lists */
+.item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid #F0EEE8; }
+.item:first-child { border-top: 0; }
+.item .btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.item .btns button { border-radius: 999px; padding: 7px 12px; font-weight: 700; border: 0; font-size: 13px; }
+.ok-b { background: var(--green); color: #fff; } .no-b { background: var(--red-soft); color: var(--red); }
+.item.gone { opacity: 0; transform: translateX(20px); transition: all .3s; }
+.meter { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.meter i { display: block; height: 100%; background: var(--gold); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.ecard { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 6px; }
+.ecard .av { width: 38px; height: 38px; border-radius: 50%; background: var(--gold-soft); color: var(--gold-deep); display: grid; place-items: center; font-weight: 700; font-family: var(--display); }
+.ecard .top2 { display: flex; gap: 10px; align-items: center; }
+.ecard .docs { display: flex; gap: 6px; flex-wrap: wrap; }
+.bars { display: flex; align-items: flex-end; gap: 8px; height: 110px; margin-top: 8px; }
+.bars div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 4px; height: 100%; }
+.bars .tr { flex: 1; display: flex; align-items: flex-end; }
+.bars .b { width: 100%; background: #E8E3D3; border-radius: 6px 6px 3px 3px; }
+.bars .cur .b { background: var(--gold); }
+.bars small { font-size: 11px; color: var(--muted); text-align: center; }
+form.inline { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 8px; align-items: end; }
+@media (max-width: 640px) { form.inline { grid-template-columns: 1fr 1fr; } }
+form.inline label { font-size: 12.5px; font-weight: 700; display: grid; gap: 4px; }
+select, input[type=number], input[type=text] { font: inherit; padding: 9px 10px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; width: 100%; }
+/* feed */
+.feed { display: grid; max-height: 260px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; padding: 7px 0; border-top: 1px solid #F0EEE8; animation: evIn .35s ease; }
+.ev:first-child { border-top: 0; }
+@keyframes evIn { from { opacity: 0; transform: translateX(-8px); background: var(--gold-soft); } }
+.ev .i { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--bg); font-size: 13px; }
+.ev small { color: var(--muted); font-size: 12px; }
+/* sheet, toast, live pop-ups */
+.sheet-bg { position: fixed; inset: 0; background: rgba(14,15,16,.5); z-index: 40; display: grid; place-items: end center; }
+.sheet-bg[hidden] { display: none; }
+.sheet { background: var(--paper); width: min(520px, 100%); border-radius: 20px 20px 0 0; padding: 20px; max-height: 88vh; overflow: auto; }
+@media (min-width: 700px) { .sheet-bg { place-items: center; } .sheet { border-radius: 20px; } }
+.sheet h2 { font-size: 20px; margin-bottom: 4px; }
+.sheet .actions { display: grid; gap: 8px; margin-top: 16px; }
+.sheet pre { background: var(--bg); border-radius: 10px; padding: 10px; font: 12px/1.5 var(--mono); overflow-x: auto; margin-top: 10px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--black); color: #fff; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 50; max-width: calc(100% - 32px); }
+.toast[hidden] { display: none; }
+.toast b { color: var(--gold); }
+.lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); }
+@media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+.flash { animation: flash 1s ease; }
+@keyframes flash { 30% { box-shadow: 0 0 0 4px rgba(211,166,40,.55); } }
+@media (prefers-reduced-motion: reduce) { .phone, table.pay tr, .ev { transition: none; animation: none; } .live[aria-pressed="true"] .pulse { animation: none; } }
+</style>
+</head>
+<body>
+<div class="demo-bar">Demo with example data. Nothing here is real, so try anything. <a href="../?type=HR%20%26%20Payroll#request">Get this for your company →</a></div>
+<header>
+  <div class="top">
+    <a href="../"><img src="../edel-logo-dark-360.webp" width="720" height="338" alt="Edel home"></a>
+    <div class="app">Demo Company PLC<small>HR &amp; Payroll · 12 employees</small></div>
+    <div class="sp"></div>
+    <button class="live" type="button" id="live" aria-pressed="true"><span class="pulse"></span>Live</button>
+    <button class="ghost" type="button" id="reset">Reset</button>
+    <a class="cta" href="../?type=HR%20%26%20Payroll#request">Request this</a>
+  </div>
+</header>
+<nav class="tabs" aria-label="Demo screens">
+  <div class="in" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-screen="payroll">Payroll</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="attendance">Attendance</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="leave">Leave<span class="badge" id="lv-count" hidden></span></button>
+    <button type="button" role="tab" aria-selected="false" data-screen="loans">Loans &amp; advances</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
+    <button type="button" role="tab" aria-selected="false" data-screen="people">Employees</button>
+  </div>
+</nav>
+
+<main>
+  <!-- PAYROLL -->
+  <section class="screen" id="s-payroll">
+    <div class="payhead">
+      <div><h2>Run <span id="period-am"></span> payroll in 3 clicks</h2><p class="muted small" id="period-greg"></p></div>
+      <button class="btn btn-line sm" type="button" id="pay-restart">Start this payroll again</button>
+    </div>
+    <div class="steps">
+      <div class="step active" id="st1"><span class="n">1</span><div><b>Import attendance</b><br><small>Days, absences and overtime from the fingerprint clock.</small></div><button class="btn btn-gold sm" type="button" id="do1">Import attendance</button></div>
+      <div class="step" id="st2"><span class="n">2</span><div><b>Calculate</b><br><small>Income tax, pension, loan recovery and net pay.</small></div><button class="btn btn-dark sm" type="button" id="do2" disabled>Calculate</button></div>
+      <div class="step" id="st3"><span class="n">3</span><div><b>Approve and pay</b><br><small>Owner approves; bank file and payslips go out.</small></div><button class="btn btn-green sm" type="button" id="do3" disabled>Approve payroll</button></div>
+    </div>
+    <div class="totals" id="totals"></div>
+    <div class="paywrap">
+      <div class="card">
+        <h3>Employees <small>Tap a name to see the payslip. You can change a salary or overtime.</small></h3>
+        <div class="tablewrap"><table class="pay" id="paytable"></table></div>
+        <p class="note">Example payroll. Rates and rules follow your company policy and current law; Edel keeps them up to date. Overtime at 1.5× is an example rate from your policy. Transport allowance shown as not taxed, per your contract or policy.</p>
+        <div id="bankbox"></div>
+      </div>
+      <div>
+        <div class="phone" id="phone" aria-live="polite"><div class="slip" id="slip"></div><div class="ph-cap">Payslip on the employee's phone</div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3>Happening now <small id="feed-state"></small></h3><div class="feed" id="feed"></div></div>
+  </section>
+
+  <!-- ATTENDANCE -->
+  <section class="screen" id="s-attendance" hidden>
+    <p class="hint">Today's roll call from <b>Clock: Main gate (fingerprint)</b>. Mark a reason for an absence or issue a warning.</p>
+    <div class="kpis" id="att-kpis"></div>
+    <div class="legend"><span class="s-present">Present</span><span class="s-late">Late</span><span class="s-absent">Absent</span><span class="s-leave">On leave</span></div>
+    <div class="grid g2" style="grid-template-columns:2fr 1fr">
+      <div class="board" id="board"></div>
+      <div class="card"><h3>Needs HR attention</h3><div id="attention"></div></div>
+    </div>
+  </section>
+
+  <!-- LEAVE -->
+  <section class="screen" id="s-leave" hidden>
+    <div class="grid g2">
+      <div class="card"><h3>Leave requests <small id="lv-total"></small></h3><div id="lv-list"></div></div>
+      <div class="card"><h3>Leave balances <small>Days left this year</small></h3><div id="lv-bal"></div><p class="note">Balances follow your leave policy. Example numbers.</p></div>
+    </div>
+  </section>
+
+  <!-- LOANS -->
+  <section class="screen" id="s-loans" hidden>
+    <div class="card" style="margin-bottom:14px"><h3>New salary advance</h3>
+      <form class="inline" id="adv-form">
+        <label>Employee<select id="adv-emp"></select></label>
+        <label>Amount (ETB)<input id="adv-amt" type="number" min="500" step="500" value="6000"></label>
+        <label>Months to repay<select id="adv-months"><option>1</option><option>2</option><option selected>3</option><option>6</option></select></label>
+        <button class="btn btn-gold" type="submit">Send for approval</button>
+      </form>
+    </div>
+    <div class="card"><h3>Loans and advances <small id="ln-total"></small></h3><div id="ln-list"></div><p class="note">Approved installments are taken from the next payroll automatically.</p></div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section class="screen" id="s-approvals" hidden>
+    <p class="hint">Your HR team asks, you decide, from anywhere.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Waiting for you</h3><div id="ap-list"></div></div>
+      <div class="card"><h3>Decided today</h3><div id="ap-done"></div></div>
+    </div>
+  </section>
+
+  <!-- EMPLOYEES -->
+  <section class="screen" id="s-people" hidden>
+    <div class="kpis" id="hr-kpis"></div>
+    <div class="grid g2" style="margin-bottom:14px">
+      <div class="card"><h3>Payroll cost, last 6 months <small>Gross + employer pension</small></h3><div class="bars" id="cost-bars"></div></div>
+      <div class="card"><h3>By department</h3><div id="by-dept"></div></div>
+    </div>
+    <div class="cards" id="ecards"></div>
+  </section>
+</main>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="lt" id="lt" aria-live="polite"></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const r2 = n => Math.round(n * 100) / 100;
+  const fm = n => Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const etb = n => "ETB " + fm(n);
+  const etb0 = n => "ETB " + Math.round(n).toLocaleString("en-US");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- calendar ---------- */
+  const ETH_MONTHS = ["መስከረም", "ጥቅምት", "ኅዳር", "ታኅሣሥ", "ጥር", "የካቲት", "መጋቢት", "ሚያዝያ", "ግንቦት", "ሰኔ", "ሐምሌ", "ነሐሴ", "ጳጉሜ"];
+  function toEth(d) {
+    const jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856;
+    const r = (jdn - E) % 1461, n = (r % 365) + 365 * Math.floor(r / 1460);
+    return { y: 4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+  }
+  const TODAY = new Date(); const ET = toEth(TODAY);
+  const PERIOD_AM = `${ETH_MONTHS[ET.m - 1]} ${ET.y}`;
+  const ethStr = d => { const e = toEth(d); return `${ETH_MONTHS[e.m - 1]} ${e.d}፣ ${e.y}`; };
+  const gregStr = d => d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+  /* ---------- rules (example policy; brackets as in force since 2025) ---------- */
+  const BANDS = [[2000, 0], [4000, .15], [7000, .20], [10000, .25], [14000, .30], [Infinity, .35]];
+  function incomeTax(t) { let tax = 0, low = 0; for (const [up, rate] of BANDS) { if (t > low) tax += (Math.min(t, up) - low) * rate; low = up; } return r2(tax); }
+  const EMP_PEN = .07, ER_PEN = .11, OT_RATE = 1.5, OT_DIVISOR = 208;
+
+  /* ---------- example company ---------- */
+  const BASE = [
+    { id: 1, n: "Abebe K.", dept: "Finance", role: "Chief accountant", basic: 38000, allow: 4000, transport: 1500, start: "2016-02-14", end: "", docs: ["Contract", "ID", "TIN"] },
+    { id: 2, n: "Hana T.", dept: "Front office", role: "Front office manager", basic: 22000, allow: 2000, transport: 1000, start: "2018-06-01", end: "", docs: ["Contract", "ID"] },
+    { id: 3, n: "Dawit M.", dept: "Sales", role: "Sales officer", basic: 14500, allow: 1500, transport: 1000, start: "2021-09-12", end: "2027-01-10", docs: ["Contract", "ID", "TIN"] },
+    { id: 4, n: "Sara L.", dept: "Front office", role: "Receptionist", basic: 9800, allow: 0, transport: 800, start: "2022-03-20", end: "2026-12-15", docs: ["Contract", "ID"] },
+    { id: 5, n: "Yonas B.", dept: "Kitchen", role: "Head chef", basic: 18000, allow: 1500, transport: 800, start: "2019-11-05", end: "", docs: ["Contract", "ID", "Health card"] },
+    { id: 6, n: "Meron A.", dept: "Kitchen", role: "Cook", basic: 8500, allow: 0, transport: 800, start: "2023-01-16", end: "", docs: ["Contract", "Health card"] },
+    { id: 7, n: "Samuel G.", dept: "Drivers", role: "Driver", basic: 9000, allow: 1200, transport: 0, start: "2020-07-07", end: "", docs: ["Contract", "ID", "Driving licence"] },
+    { id: 8, n: "Liya W.", dept: "Housekeeping", role: "Housekeeping supervisor", basic: 7500, allow: 500, transport: 600, start: "2021-04-11", end: "", docs: ["Contract", "ID"] },
+    { id: 9, n: "Tesfaye N.", dept: "Housekeeping", role: "Room attendant", basic: 5200, allow: 0, transport: 600, start: "2024-08-01", end: "2026-12-28", docs: ["ID"] },
+    { id: 10, n: "Ruth H.", dept: "Housekeeping", role: "Laundry attendant", basic: 4500, allow: 0, transport: 600, start: "2025-02-03", end: "", docs: ["Contract", "ID"] },
+    { id: 11, n: "Bethel Y.", dept: "Sales", role: "Sales assistant", basic: 6800, allow: 500, transport: 800, start: "2024-10-21", end: "", docs: ["Contract", "ID", "TIN"] },
+    { id: 12, n: "Kebede A.", dept: "Drivers", role: "Delivery driver", basic: 8200, allow: 1000, transport: 0, start: "2022-12-01", end: "", docs: ["Contract", "Driving licence"] }
+  ];
+  // what the clock gives for this period (days absent, overtime hours)
+  const CLOCK = { 1: [0, 0], 2: [0, 6], 3: [0, 12], 4: [2, 0], 5: [0, 18], 6: [1, 10], 7: [0, 22], 8: [0, 4], 9: [3, 0], 10: [0, 8], 11: [0, 0], 12: [0, 16] };
+  const LAST = { 1: [0, 0], 2: [0, 6], 3: [0, 4], 4: [0, 0], 5: [0, 12], 6: [0, 10], 7: [0, 14], 8: [0, 4], 9: [0, 0], 10: [0, 8], 11: [0, 0], 12: [0, 16] };
+
+  const STORE = "edel-demo-hr-v1";
+  let S;
+  function fresh() {
+    return {
+      emps: BASE.map(e => ({ ...e, absent: 0, ot: 0, leaveBal: 16 + (e.id % 5), status: "present", punch: "", reason: "", warnings: 0 })),
+      loans: [
+        { id: 1, emp: 3, what: "Salary advance", amount: 9000, inst: 1500, remaining: 6000, isNew: false },
+        { id: 2, emp: 7, what: "Salary advance", amount: 4500, inst: 1500, remaining: 4500, isNew: true },
+        { id: 3, emp: 9, what: "Emergency loan", amount: 3000, inst: 500, remaining: 2500, isNew: false }
+      ],
+      leaves: [
+        { id: 1, emp: 6, type: "Annual leave", days: 3, from: "next Monday", st: "pending" },
+        { id: 2, emp: 10, type: "Sick leave", days: 1, from: "today", st: "pending" }
+      ],
+      pending: [
+        { id: 1, k: "Advance", emp: 11, amount: 6000, months: 3, what: "Salary advance, 3 months" },
+        { id: 2, k: "Overtime", emp: 5, hours: 6, what: "Weekend overtime for the kitchen, 6 hours" }
+      ],
+      decided: [], feed: [], step: 0, approved: false, sel: 1, seq: { loan: 3, leave: 2, ap: 2 }
+    };
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+  function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && s.emps && s.emps.length === BASE.length) return s; } catch (e) {} return null; }
+  S = load() || fresh();
+  const E = id => S.emps.find(e => e.id === id);
+
+  /* ---------- roll call (today) ---------- */
+  function seedRoll() {
+    const plan = { 4: ["late", "08:24"], 6: ["late", "08:41"], 9: ["absent", ""], 10: ["leave", ""] };
+    S.emps.forEach((e, i) => { const p = plan[e.id]; if (p) { e.status = p[0]; e.punch = p[1]; } else { e.status = "present"; e.punch = "07:" + String(38 + (i * 3) % 20).padStart(2, "0"); } });
+  }
+  if (!S.emps.some(e => e.punch)) seedRoll();
+
+  /* ---------- payroll maths ---------- */
+  function loanFor(id) { return r2(S.loans.filter(l => l.emp === id && l.remaining > 0).reduce((t, l) => t + Math.min(l.inst, l.remaining), 0)); }
+  function calc(e, absent, ot, withLoans = true) {
+    const days = 30 - absent;
+    const earned = r2(e.basic * days / 30);
+    const otPay = r2(ot * (e.basic / OT_DIVISOR) * OT_RATE);
+    const taxable = r2(earned + e.allow + otPay);
+    const gross = r2(taxable + e.transport);
+    const tax = incomeTax(taxable);
+    const ep = r2(earned * EMP_PEN), rp = r2(earned * ER_PEN);
+    const loan = withLoans ? loanFor(e.id) : 0;
+    const net = r2(gross - tax - ep - loan);
+    return { days, earned, otPay, taxable, gross, tax, ep, rp, loan, net, cost: r2(gross + rp) };
+  }
+  function cur(e) { return (S.approved && S.snap && S.snap[e.id]) ? S.snap[e.id] : calc(e, e.absent, e.ot); }
+  function lastNet(e) { const [a, o] = LAST[e.id]; const base = calc(e, a, o, false); const prevLoan = e.id === 3 ? 1500 : e.id === 9 ? 500 : 0; return r2(base.net - prevLoan); }
+  function reasons(e, c) {
+    const out = [], [la, lo] = LAST[e.id];
+    if (e.absent > la) out.push(`${e.absent - la} day${e.absent - la > 1 ? "s" : ""} absent`);
+    if (e.ot !== lo) out.push(`overtime ${e.ot > lo ? "+" : ""}${e.ot - lo} h`);
+    if ((S.approved && S.snapNew ? S.snapNew.includes(e.id) : S.loans.some(l => l.emp === e.id && l.isNew))) out.push("new loan");
+    if (e.basic !== BASE.find(b => b.id === e.id).basic) out.push("salary changed");
+    return out;
+  }
+
+  /* ---------- feed / toasts ---------- */
+  const hhmm = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  function logEvent(icon, text, pop) { S.feed.unshift({ icon, text, t: hhmm() }); S.feed = S.feed.slice(0, 25); renderFeed(); if (pop) liveToast(`${icon} ${esc(text)}`); }
+  function liveToast(html) { const d = document.createElement("div"); d.innerHTML = html; $("lt").prepend(d); setTimeout(() => d.remove(), 4000); while ($("lt").children.length > 3) $("lt").lastChild.remove(); }
+  let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3200); }
+  function renderFeed() {
+    $("feed-state").textContent = liveOn ? "● live" : "paused";
+    $("feed").innerHTML = S.feed.length ? S.feed.map(e => `<div class="ev"><span class="i">${e.icon}</span><span>${esc(e.text)}</span><small>${e.t}</small></div>`).join("") : `<div class="empty">Clock punches, leave requests and approvals appear here.</div>`;
+  }
+  function flash(id) { const el = $(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+
+  /* ---------- payroll screen ---------- */
+  $("period-am").textContent = PERIOD_AM;
+  $("period-am").className = "am";
+  $("period-greg").textContent = `Salary period ${PERIOD_AM} (30 days, Ethiopian calendar) · today ${gregStr(TODAY)}`;
+  function setSteps() {
+    ["st1", "st2", "st3"].forEach((id, i) => { const el = $(id); el.classList.toggle("done", S.step > i); el.classList.toggle("active", S.step === i); });
+    $("do1").disabled = S.step !== 0; $("do2").disabled = S.step !== 1; $("do3").disabled = S.step !== 2;
+    $("do3").textContent = S.approved ? "Approved ✓" : "Approve payroll";
+  }
+  function renderPay(animateRow) {
+    const calculated = S.step >= 2;
+    const rows = S.emps.map(e => ({ e, c: cur(e) }));
+    const head = `<thead><tr><th>Employee</th><th>Basic salary</th><th>Days</th><th>Overtime h</th><th>Gross</th><th>Income tax</th><th>Pension 7%</th><th>Loan</th><th>Net pay</th><th>Employer 11%</th><th>vs last month</th></tr></thead>`;
+    const body = rows.map(({ e, c }) => {
+      const imported = S.step >= 1;
+      const why = calculated ? reasons(e, c) : [];
+      const diff = calculated ? r2(c.net - lastNet(e)) : 0;
+      const cls = [e.id === S.sel ? "sel" : "", calculated && why.length ? "changed" : "", S.approved ? "ok" : "", animateRow === e.id ? "pop" : ""].join(" ");
+      const v = x => calculated ? fm(x) : "—";
+      return `<tr class="${cls}" data-row="${e.id}">
+        <td class="name"><b>${esc(e.n)}</b><small>${esc(e.dept)}</small></td>
+        <td><input class="sal" data-id="${e.id}" inputmode="decimal" aria-label="Basic salary for ${esc(e.n)}" value="${e.basic}" ${S.approved ? "disabled" : ""}></td>
+        <td class="num">${imported ? c.days : "—"}</td>
+        <td>${imported ? `<input class="ot" data-id="${e.id}" inputmode="decimal" aria-label="Overtime hours for ${esc(e.n)}" value="${e.ot}" ${S.approved ? "disabled" : ""}>` : "—"}</td>
+        <td class="num">${v(c.gross)}</td><td class="num">${v(c.tax)}</td><td class="num">${v(c.ep)}</td><td class="num">${calculated ? (c.loan ? fm(c.loan) : "—") : "—"}</td>
+        <td class="num"><b>${v(c.net)}</b></td><td class="num">${v(c.rp)}</td>
+        <td class="vs num">${calculated ? `${diff >= 0 ? "+" : ""}${fm(diff)}${why.length ? `<small>${esc(why.join(", "))}</small>` : ""}` : "—"}</td></tr>`;
+    }).join("");
+    const T = k => r2(rows.reduce((t, x) => t + x.c[k], 0));
+    const foot = calculated ? `<tfoot><tr><td>Total · ${rows.length} people</td><td class="num">${fm(rows.reduce((t, x) => t + x.e.basic, 0))}</td><td></td><td class="num">${rows.reduce((t, x) => t + x.e.ot, 0)}</td><td class="num">${fm(T("gross"))}</td><td class="num">${fm(T("tax"))}</td><td class="num">${fm(T("ep"))}</td><td class="num">${fm(T("loan"))}</td><td class="num">${fm(T("net"))}</td><td class="num">${fm(T("rp"))}</td><td></td></tr></tfoot>` : "";
+    $("paytable").innerHTML = head + `<tbody>${body}</tbody>` + foot;
+    const tot = [["Gross pay", T("gross")], ["Income tax", T("tax")], ["Employee pension", T("ep")], ["Employer pension", T("rp")], ["Net to bank", T("net")], ["Cost to company", T("cost")]];
+    $("totals").innerHTML = tot.map(([l, v], i) => `<div class="${i === 5 ? "cost" : ""}"><small>${l}</small><b class="num">${calculated ? etb0(v) : "—"}</b></div>`).join("");
+    renderSlip();
+    renderBank(rows);
+  }
+  function renderSlip() {
+    const e = E(S.sel), c = cur(e), show = S.step >= 2;
+    $("phone").classList.toggle("show", show);
+    if (!show) { $("slip").innerHTML = ""; return; }
+    $("slip").innerHTML = `<div class="hd"><div><b>${esc(e.n)}</b><small>${esc(e.role)} · ${esc(e.dept)}</small></div><div style="text-align:right"><small class="am">${PERIOD_AM}</small><small>${gregStr(TODAY)}</small></div></div>
+      <div class="r"><span>Basic earned (${c.days}/30 days)</span><span class="num">${fm(c.earned)}</span></div>
+      ${e.allow ? `<div class="r"><span>Allowance (taxed)</span><span class="num">${fm(e.allow)}</span></div>` : ""}
+      ${c.otPay ? `<div class="r"><span>Overtime ${e.ot} h</span><span class="num">${fm(c.otPay)}</span></div>` : ""}
+      ${e.transport ? `<div class="r"><span>Transport (not taxed)</span><span class="num">${fm(e.transport)}</span></div>` : ""}
+      <div class="r" style="font-weight:700;border-top:1px solid var(--line)"><span>Gross</span><span class="num">${fm(c.gross)}</span></div>
+      <div class="r minus"><span>Income tax</span><span class="num">−${fm(c.tax)}</span></div>
+      <div class="r minus"><span>Pension 7%</span><span class="num">−${fm(c.ep)}</span></div>
+      ${c.loan ? `<div class="r minus"><span>Loan recovery</span><span class="num">−${fm(c.loan)}</span></div>` : ""}
+      <div class="net"><span>Net pay</span><span class="num">ETB ${fm(c.net)}</span></div>
+      <div class="r small muted" style="margin-top:6px"><span>Employer pension 11%</span><span class="num">${fm(c.rp)}</span></div>
+      ${S.approved ? `<div class="tag t-green" style="margin-top:6px">Approved · paid by bank</div>` : `<div class="tag t-amber" style="margin-top:6px">Waiting for owner approval</div>`}`;
+  }
+  function bankCsv(rows) {
+    const lines = ["Employee,Account (example),Net pay ETB,Reference"];
+    rows.forEach(({ e, c }) => lines.push(`"${e.n.replace(/"/g, '""')}",1000****${String(1000 + e.id * 37).slice(-4)},${c.net.toFixed(2)},Salary ${PERIOD_AM}`));
+    lines.push(`"TOTAL",,${r2(rows.reduce((t, x) => t + x.c.net, 0)).toFixed(2)},`);
+    return lines.join("\r\n");
+  }
+  function renderBank(rows) {
+    if (!S.approved) { $("bankbox").innerHTML = ""; return; }
+    $("bankbox").innerHTML = `<div class="hint" style="margin:12px 0 0;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span>✅ <b>Bank file ready</b> · ${rows.length} transfers · ${etb(r2(rows.reduce((t, x) => t + x.c.net, 0)))} · signed by the owner</span><span style="display:flex;gap:8px"><button class="btn btn-line sm" type="button" id="bank-prev">Preview</button><button class="btn btn-dark sm" type="button" id="bank-dl">Download bank file (CSV)</button></span></div>`;
+    $("bank-prev").onclick = () => openSheet(`<h2>Bank payroll file</h2><p class="muted small">Example account numbers. In Edel this file is signed by the approver and sent to Finance.</p><pre>${esc(bankCsv(rows))}</pre><div class="actions"><button class="btn btn-line" data-close>Close</button></div>`);
+    $("bank-dl").onclick = () => { const blob = new Blob(["﻿" + bankCsv(rows)], { type: "text/csv" }); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `edel-demo-bank-file-${ET.y}-${ET.m}.csv`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); };
+  }
+  $("do1").addEventListener("click", () => {
+    S.step = 1; setSteps();
+    const ids = S.emps.map(e => e.id); let i = 0;
+    const next = () => {
+      if (i >= ids.length) { logEvent("⏱️", `Attendance imported from the fingerprint clock for ${ids.length} people`); save(); return; }
+      const e = E(ids[i]); [e.absent, e.ot] = CLOCK[e.id]; renderPay(e.id); i++;
+      reduce ? next() : setTimeout(next, 90);
+    };
+    next();
+  });
+  $("do2").addEventListener("click", () => { S.step = 2; setSteps(); renderPay(); flash("totals"); logEvent("🧮", "Payroll calculated: tax, pension and loan recovery"); save(); });
+  $("do3").addEventListener("click", () => {
+    S.snapNew = S.loans.filter(l => l.isNew).map(l => l.emp); S.snap = {}; S.emps.forEach(e => { S.snap[e.id] = calc(e, e.absent, e.ot); });
+    S.step = 3; S.approved = true;
+    S.loans.forEach(l => { if (l.remaining > 0) { l.remaining = r2(l.remaining - Math.min(l.inst, l.remaining)); l.isNew = false; } });
+    // keep the payroll view on this period's figures: recompute shown loans from what was recovered
+    approvedSnapshot = S.emps.map(e => e.id);
+    setSteps(); renderPay(); renderLoans();
+    logEvent("✅", `You approved the ${PERIOD_AM} payroll · bank file ready`, true); save();
+  });
+  let approvedSnapshot = null;
+  $("pay-restart").addEventListener("click", () => {
+    const keepLoans = JSON.parse(JSON.stringify(S.loans));
+    S.step = 0; S.approved = false; S.snap = null; S.snapNew = null; S.emps.forEach(e => { e.absent = 0; e.ot = 0; }); setSteps(); renderPay(); save();
+    toast("New payroll run started"); void keepLoans;
+  });
+  $("paytable").addEventListener("click", e => { if (e.target.closest("input")) return; const tr = e.target.closest("[data-row]"); if (!tr) return; S.sel = Number(tr.dataset.row); renderPay(); save(); });
+  $("paytable").addEventListener("change", ev => {
+    const inp = ev.target; if (!inp.matches("input")) return;
+    const v = Number(String(inp.value).replace(/[,\s]/g, ""));
+    const e = E(Number(inp.dataset.id));
+    if (!isFinite(v) || v < 0 || (inp.classList.contains("sal") && v > 1000000) || (inp.classList.contains("ot") && v > 120)) { inp.classList.add("bad"); inp.setAttribute("aria-invalid", "true"); return; }
+    if (inp.classList.contains("sal")) e.basic = Math.round(v); else e.ot = Math.round(v * 10) / 10;
+    S.sel = e.id; renderPay(e.id); save();
+    toast(`${esc(e.n)} updated. Everything recalculated.`);
+  });
+
+  /* ---------- attendance ---------- */
+  const ST = { present: ["Present", "t-green"], late: ["Late", "t-amber"], absent: ["Absent", "t-red"], leave: ["On leave", "t-blue"] };
+  function renderAttendance() {
+    const c = k => S.emps.filter(e => e.status === k).length;
+    $("att-kpis").innerHTML = [["Present", c("present")], ["Late", c("late")], ["Absent", c("absent")], ["On leave", c("leave")]].map(([l, v]) => `<div><small>${l}</small><b>${v}</b></div>`).join("");
+    $("board").innerHTML = S.emps.map(e => `<div class="emp s-${e.status}"><b>${esc(e.n)}</b><small>${esc(e.dept)} · ${e.id % 3 === 0 ? "Afternoon" : "Morning"} shift</small>
+      <small>${e.punch ? `In ${e.punch} · Clock: Main gate (fingerprint)` : e.status === "leave" ? "Approved leave" : "No punch yet"}</small>
+      <span><span class="tag ${ST[e.status][1]}">${ST[e.status][0]}</span>${e.reason ? ` <span class="tag t-grey">${esc(e.reason)}</span>` : ""}${e.warnings ? ` <span class="tag t-red">${e.warnings} warning${e.warnings > 1 ? "s" : ""}</span>` : ""}</span>
+      <div class="acts">${e.status === "absent" ? `<button type="button" data-reason="${e.id}">Mark reason</button>` : ""}${e.status === "late" || e.status === "absent" ? `<button type="button" data-warn="${e.id}">Issue warning</button>` : ""}</div></div>`).join("");
+    const attn = [];
+    S.emps.forEach(e => {
+      if (e.status === "absent" && !e.reason) attn.push(`<div class="row"><span>${esc(e.n)} absent, no reason given</span><span class="tag t-red">Today</span></div>`);
+      if (e.status === "late") attn.push(`<div class="row"><span>${esc(e.n)} late (${e.punch})</span><span class="tag t-amber">Today</span></div>`);
+      if (e.end) { const days = Math.round((new Date(e.end) - TODAY) / 86400000); if (days < 60) attn.push(`<div class="row"><span>${esc(e.n)}: contract ends ${gregStr(new Date(e.end))}</span><span class="tag ${days < 30 ? "t-red" : "t-amber"}">${days} days</span></div>`); }
+      if (!e.docs.includes("Contract")) attn.push(`<div class="row"><span>${esc(e.n)}: no signed contract on file</span><span class="tag t-amber">Documents</span></div>`);
+    });
+    $("attention").innerHTML = attn.join("") || `<div class="empty">Nothing needs attention.</div>`;
+  }
+  $("board").addEventListener("click", ev => {
+    const r = ev.target.closest("[data-reason]"), w = ev.target.closest("[data-warn]");
+    if (r) { const e = E(Number(r.dataset.reason)); openSheet(`<h2>Absence reason · ${esc(e.n)}</h2><select id="rs" style="margin-top:12px"><option>Sick (called in)</option><option>Family emergency</option><option>No call, no show</option><option>Other</option></select><div class="actions"><button class="btn btn-gold" id="rs-save">Save</button><button class="btn btn-line" data-close>Cancel</button></div>`, () => $("rs-save").addEventListener("click", () => { e.reason = $("rs").value; logEvent("📝", `Absence reason for ${e.n}: ${e.reason}`); closeSheet(); renderAttendance(); save(); })); }
+    if (w) { const e = E(Number(w.dataset.warn)); e.warnings++; logEvent("⚠️", `Warning issued to ${e.n} (${ST[e.status][0].toLowerCase()})`); renderAttendance(); save(); toast(`Warning issued to <b>${esc(e.n)}</b>`); }
+  });
+
+  /* ---------- leave ---------- */
+  function renderLeave() {
+    const pend = S.leaves.filter(l => l.st === "pending");
+    $("lv-count").textContent = pend.length; $("lv-count").hidden = !pend.length;
+    $("lv-total").textContent = pend.length ? `${pend.length} waiting` : "";
+    $("lv-list").innerHTML = S.leaves.slice().reverse().map(l => { const e = E(l.emp); return `<div class="item" data-lv="${l.id}"><div><b>${esc(e.n)}</b> · ${esc(l.type)}<br><span class="muted small">${l.days} day${l.days > 1 ? "s" : ""} from ${esc(l.from)} · ${e.leaveBal} days left</span></div>
+      <div class="btns">${l.st === "pending" ? `<button type="button" class="ok-b" data-lok="${l.id}">Approve</button><button type="button" class="no-b" data-lno="${l.id}" aria-label="Reject">✕</button>` : `<span class="tag ${l.st === "approved" ? "t-green" : "t-red"}">${l.st}</span>`}</div></div>`; }).join("") || `<div class="empty">No leave requests.</div>`;
+    $("lv-bal").innerHTML = S.emps.map(e => `<div class="row"><span>${esc(e.n)} <span class="muted small">· ${esc(e.dept)}</span></span><b class="num">${e.leaveBal}</b></div>`).join("");
+  }
+  $("lv-list").addEventListener("click", ev => {
+    const ok = ev.target.closest("[data-lok]"), no = ev.target.closest("[data-lno]"); if (!ok && !no) return;
+    const l = S.leaves.find(x => x.id === Number((ok || no).dataset.lok || (ok || no).dataset.lno)); const e = E(l.emp);
+    if (ok) { l.st = "approved"; e.leaveBal = Math.max(0, e.leaveBal - l.days); if (l.from === "today") { e.status = "leave"; e.punch = ""; } logEvent("🌴", `Leave approved for ${e.n}: ${l.days} day${l.days > 1 ? "s" : ""}`); toast(`Approved. ${esc(e.n)} has <b>${e.leaveBal} days</b> left.`); }
+    else { l.st = "rejected"; logEvent("✕", `Leave rejected for ${e.n}`); toast("Rejected. The employee is told."); }
+    save(); renderLeave(); renderAttendance(); renderPeople();
+  });
+
+  /* ---------- loans ---------- */
+  $("adv-emp").innerHTML = S.emps.map(e => `<option value="${e.id}">${esc(e.n)}</option>`).join("");
+  function renderLoans() {
+    const act = S.loans.filter(l => l.remaining > 0);
+    $("ln-total").textContent = `${etb0(act.reduce((t, l) => t + l.remaining, 0))} outstanding`;
+    $("ln-list").innerHTML = S.loans.slice().reverse().map(l => { const e = E(l.emp), paid = l.amount - l.remaining; return `<div class="item"><div><b>${esc(e.n)}</b> · ${esc(l.what)} ${l.isNew ? `<span class="tag t-amber">New · starts this payroll</span>` : ""}<br><span class="muted small">${etb0(l.amount)} · ${etb0(l.inst)} a month · ${etb0(l.remaining)} left</span><div class="meter"><i style="width:${l.amount ? paid / l.amount * 100 : 0}%"></i></div></div><span class="tag ${l.remaining > 0 ? "t-blue" : "t-green"}">${l.remaining > 0 ? "Recovering" : "Paid off"}</span></div>`; }).join("");
+  }
+  $("adv-form").addEventListener("submit", ev => {
+    ev.preventDefault();
+    const amt = Number($("adv-amt").value), months = Number($("adv-months").value), e = E(Number($("adv-emp").value));
+    if (!isFinite(amt) || amt < 500 || amt > 200000) { toast("Enter an amount between 500 and 200,000."); return; }
+    S.pending.push({ id: ++S.seq.ap, k: "Advance", emp: e.id, amount: Math.round(amt), months, what: `Salary advance, ${months} month${months > 1 ? "s" : ""}` });
+    logEvent("📝", `${e.n} asks for an advance of ${etb0(amt)}`); save(); renderApprovals(); toast("Sent to <b>Approvals</b>.");
+  });
+
+  /* ---------- approvals ---------- */
+  function renderApprovals() {
+    const n = S.pending.length; $("ap-count").textContent = n; $("ap-count").hidden = !n;
+    $("ap-list").innerHTML = n ? S.pending.map(p => { const e = E(p.emp); return `<div class="item" data-ap="${p.id}"><div><span class="tag t-amber">${p.k}</span> <b>${esc(e.n)}</b><br><span class="muted small">${esc(p.what)}${p.amount ? " · " + etb0(p.amount) : ""}</span></div><div class="btns"><button type="button" class="ok-b" data-ok="${p.id}">Approve</button><button type="button" class="no-b" data-no="${p.id}" aria-label="Reject">✕</button></div></div>`; }).join("") : `<div class="empty">All done.</div>`;
+    $("ap-done").innerHTML = S.decided.length ? S.decided.slice().reverse().map(p => `<div class="row"><span>${esc(E(p.emp).n)} · ${esc(p.what)}<br><span class="muted small">${p.ok ? "approved" : "rejected"} ${p.t}</span></span><span class="tag ${p.ok ? "t-green" : "t-red"}">${p.ok ? "Yes" : "No"}</span></div>`).join("") : `<div class="empty">Nothing decided yet.</div>`;
+  }
+  $("ap-list").addEventListener("click", ev => {
+    const b = ev.target.closest("[data-ok],[data-no]"); if (!b) return;
+    const ok = !!b.dataset.ok, id = Number(b.dataset.ok || b.dataset.no), p = S.pending.find(x => x.id === id); if (!p) return;
+    b.closest(".item").classList.add("gone");
+    setTimeout(() => {
+      S.pending = S.pending.filter(x => x.id !== id); S.decided.push({ ...p, ok, t: hhmm() });
+      const e = E(p.emp);
+      if (ok && p.k === "Advance") { const inst = r2(p.amount / p.months); S.loans.push({ id: ++S.seq.loan, emp: e.id, what: "Salary advance", amount: p.amount, inst, remaining: p.amount, isNew: true });
+        if (S.approved) { S.step = 0; S.approved = false; S.snap = null; S.snapNew = null; S.emps.forEach(x => { x.absent = 0; x.ot = 0; }); }
+        toast(`Approved. ${etb0(inst)} a month comes off ${esc(e.n)}'s pay from this payroll.`); }
+      else if (ok && p.k === "Overtime") { toast("Approved. The hours count in this payroll once clocked."); }
+      else toast("Rejected. HR is told.");
+      logEvent(ok ? "✅" : "✕", `${ok ? "You approved" : "You rejected"}: ${e.n}, ${p.what}`);
+      save(); renderApprovals(); renderLoans(); setSteps(); renderPay();
+    }, 260);
+  });
+
+  /* ---------- employees / dashboard ---------- */
+  function renderPeople() {
+    const rows = S.emps.map(e => cur(e));
+    const cost = r2(rows.reduce((t, c) => t + c.cost, 0));
+    const absentRate = Math.round(S.emps.filter(e => e.status === "absent").length / S.emps.length * 100);
+    $("hr-kpis").innerHTML = [["Headcount", S.emps.length], ["Payroll cost this month", S.step >= 2 ? etb0(cost) : "Run payroll"], ["Absent today", absentRate + "%"], ["Overtime hours", S.emps.reduce((t, e) => t + e.ot, 0)]].map(([l, v]) => `<div><small>${l}</small><b>${v}</b></div>`).join("");
+    const base = S.emps.map(e => calc(e, LAST[e.id][0], LAST[e.id][1], false)).reduce((t, c) => t + c.cost, 0);
+    const hist = [0.93, 0.95, 0.94, 0.97, 1].map(f => base * f).concat([S.step >= 2 ? cost : base]);
+    const max = Math.max(...hist);
+    $("cost-bars").innerHTML = hist.map((v, i) => { const d = new Date(TODAY); d.setMonth(d.getMonth() - (5 - i)); const e = toEth(d); return `<div class="${i === 5 ? "cur" : ""}"><small>${Math.round(v / 1000)}k</small><span class="tr"><span class="b" style="height:${v / max * 100}%"></span></span><small class="am">${ETH_MONTHS[e.m - 1].slice(0, 3)}</small></div>`; }).join("");
+    const by = {}; S.emps.forEach((e, i) => { by[e.dept] = by[e.dept] || { n: 0, cost: 0 }; by[e.dept].n++; by[e.dept].cost += rows[i].cost; });
+    const totalCost = Object.values(by).reduce((t, d) => t + d.cost, 0);
+    $("by-dept").innerHTML = Object.entries(by).sort((a, b) => b[1].cost - a[1].cost).map(([d, v]) => `<div class="row"><span>${esc(d)} <span class="muted small">· ${v.n} people</span></span><b class="num">${etb0(v.cost)}</b></div><div class="meter"><i style="width:${v.cost / totalCost * 100}%"></i></div>`).join("");
+    $("ecards").innerHTML = S.emps.map(e => { const days = e.end ? Math.round((new Date(e.end) - TODAY) / 86400000) : null; return `<div class="ecard"><div class="top2"><span class="av">${esc(e.n[0])}</span><div><b>${esc(e.n)}</b><br><span class="muted small">${esc(e.role)} · ${esc(e.dept)}</span></div></div>
+      <span class="small muted">Since ${gregStr(new Date(e.start))} · ${e.leaveBal} leave days left</span>
+      ${e.end ? `<span class="tag ${days < 30 ? "t-red" : days < 60 ? "t-amber" : "t-grey"}">Contract ends ${gregStr(new Date(e.end))}${days < 60 ? ` · ${days} days` : ""}</span>` : `<span class="tag t-green">Permanent</span>`}
+      <div class="docs">${e.docs.map(d => `<span class="tag t-grey">📄 ${esc(d)}</span>`).join("")}${e.docs.includes("Contract") ? "" : `<span class="tag t-red">Contract missing</span>`}</div></div>`; }).join("");
+  }
+
+  /* ---------- sheet ---------- */
+  function openSheet(html, after) { $("sheet").innerHTML = html; $("sheet-bg").hidden = false; $("sheet").querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeSheet)); after && after(); const f = $("sheet").querySelector("button,select,input"); f && f.focus(); }
+  function closeSheet() { $("sheet-bg").hidden = true; }
+  $("sheet-bg").addEventListener("click", e => { if (e.target === $("sheet-bg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+  /* ---------- tabs ---------- */
+  const tabs = [...document.querySelectorAll("[data-screen]")];
+  function show(name) { tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name)); ["payroll", "attendance", "leave", "loans", "approvals", "people"].forEach(n => $("s-" + n).hidden = n !== name); window.scrollTo({ top: 0 }); }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
+
+  /* ---------- live ---------- */
+  let liveOn = true, timer = null; const R = Math.random;
+  const pick = a => a[Math.floor(R() * a.length)];
+  function tick() {
+    if (document.hidden) return;
+    const x = R();
+    if (x < 0.45) {
+      const e = pick(S.emps.filter(z => z.status === "present" || z.status === "late"));
+      if (e) logEvent("👆", `${e.n} clocked ${R() < .5 ? "out for lunch" : "back in"} · Main gate (fingerprint)`, true);
+    } else if (x < 0.65) {
+      logEvent("📱", `${pick(S.emps).n} opened their payslip on the phone`, false);
+    } else if (x < 0.78) {
+      const e = S.emps.find(z => z.status === "absent" && !z.punch);
+      if (e && R() < .5) { e.status = "late"; e.punch = hhmm(); logEvent("⏰", `${e.n} arrived late at ${e.punch}`, true); renderAttendance(); }
+    } else if (x < 0.98) {
+      if (S.leaves.filter(l => l.st === "pending").length < 3 && R() < .35) { const e = pick(S.emps); S.leaves.push({ id: ++S.seq.leave, emp: e.id, type: pick(["Annual leave", "Sick leave"]), days: pick([1, 2, 3]), from: "next week", st: "pending" }); logEvent("🌴", `${e.n} asked for leave`, true); renderLeave(); }
+    } else if (S.pending.length < 3) {
+      const e = pick(S.emps), amt = pick([3000, 5000, 8000]);
+      S.pending.push({ id: ++S.seq.ap, k: "Advance", emp: e.id, amount: amt, months: 2, what: "Salary advance, 2 months" });
+      logEvent("📝", `${e.n} asks for an advance of ${etb0(amt)}`, true); renderApprovals();
+    }
+    save();
+  }
+  function setLive(on) { liveOn = on; $("live").setAttribute("aria-pressed", on); clearInterval(timer); if (on) timer = setInterval(tick, 6000); renderFeed(); }
+  $("live").addEventListener("click", () => { setLive(!liveOn); toast(liveOn ? "Live on" : "Live paused"); });
+  $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} S = fresh(); seedRoll(); $("lt").innerHTML = ""; renderAll(); show("payroll"); toast("Demo reset"); });
+
+  function renderAll() { setSteps(); renderPay(); renderAttendance(); renderLeave(); renderLoans(); renderApprovals(); renderPeople(); renderFeed(); }
+  renderAll();
+  setLive(!reduce);
+})();
+</script>
+</body>
+</html>

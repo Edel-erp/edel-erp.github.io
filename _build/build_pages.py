@@ -17,6 +17,7 @@ INDUSTRY_LINKS = [
     ("import-export-software-ethiopia", "Import & export", "Shipments, landed cost"),
     ("manufacturing-erp-ethiopia", "Manufacturing", "Recipes, runs, cost per unit"),
     ("farm-management-software-ethiopia", "Farms", "Fields, harvest, workers"),
+    ("hr-payroll-software-ethiopia", "HR & Payroll", "Payroll, attendance, leave"),
 ]
 FREE_LINKS = [
     ("e-invoicing-ethiopia", "E-invoicing guide"),
@@ -125,9 +126,29 @@ def chrome_bottom():
 
 
 # ------------------------------------------------------------------ industries
-TYPES = {'hotel': 'Hotel', 'beer': 'Beer distribution', 'tours': 'Tours & travel', 'import': 'Import & export', 'manufacturing': 'Manufacturing', 'farms': 'Farm'}
+TYPES = {'hr': 'HR & Payroll', 'hotel': 'Hotel', 'beer': 'Beer distribution', 'tours': 'Tours & travel', 'import': 'Import & export', 'manufacturing': 'Manufacturing', 'farms': 'Farm'}
 
 PAGES = [
+
+ dict(path="hr-payroll-software-ethiopia", demo="hr", name="HR & Payroll", label="HR and payroll", live=True,
+  title="HR & Payroll Software in Ethiopia: Attendance, Tax, Pension | Edel",
+  desc="HR and payroll software for Ethiopian companies: fingerprint attendance, daily roll call, leave, loans and advances, Ethiopian income tax and pension, owner approval and bank payment files.",
+  h1="HR and payroll software for Ethiopian companies",
+  am="የሰው ሀብት እና የደመወዝ ክፍያ ሶፍትዌር",
+  lede="From the fingerprint clock to the bank file. Edel brings attendance, leave, advances, Ethiopian income tax and pension into one payroll run that the owner approves from anywhere.",
+  intro="Payroll in a spreadsheet works until someone edits a formula, an employee starts mid-month, or the auditor asks how a figure was calculated. Edel keeps attendance, leave and advances with each employee, works out tax and pension on every run, and keeps the history so any month can be explained.",
+  feats=[("Payroll in the Ethiopian calendar", "Salary periods by Ethiopian month, with income tax and pension worked out."),
+         ("Fingerprint attendance", "Punches from fingerprint and face clocks flow straight into payroll."),
+         ("Daily roll call", "Who came, who was late and who was absent, by shift, with warnings."),
+         ("Leave requests", "Staff request leave, managers approve, and balances update."),
+         ("Loans and advances", "Approve an advance once and it is recovered from pay automatically."),
+         ("Service charge sharing", "Share collected service charge among staff, fairly and on record."),
+         ("Owner approval and bank file", "The owner approves the payroll and the bank gets the payment file."),
+         ("HR dashboard", "Headcount, payroll cost, absence and overtime on one screen.")],
+  demo_points=["Run a month's payroll in three clicks", "Approve a leave request and see the roll call change", "Give an advance and watch it come off next month's pay"],
+  faq=[("Does Edel work out Ethiopian income tax and pension?", "Yes. Every payroll run applies the monthly income tax brackets and the employee and employer pension rates, and Edel updates them when the law changes."),
+       ("Can it read our fingerprint machine?", "Yes. Punches from supported fingerprint and face time clocks are pulled into attendance, so days worked and overtime come straight from the clock."),
+       ("Can it handle salary advances and loans?", "Yes. An approved advance or loan is set up once with its monthly installment and is recovered from each payroll until it is paid off.")]),
  dict(path="hotel-software-ethiopia", demo="hotel", name="Hotels", live=True,
   title="Hotel Management Software in Ethiopia | Edel ERP",
   desc="Hotel and lodge software for Ethiopia: rooms, front desk, restaurant and bar, stores and daily reports, with Ministry of Revenues approved e-invoices. Amharic and English.",
@@ -263,7 +284,7 @@ def industry_page(p):
     faq = "\n".join(f'        <details{" open" if i == 0 else ""}><summary>{e(q)}</summary><p>{e(a)}</p></details>' for i, (q, a) in enumerate(p["faq"]))
     related = "".join(f'<a href="../{path}/">{e(n)}<small>{e(sub)}</small></a>' for path, n, sub in INDUSTRY_LINKS if path != p["path"])
     tag = '<span class="kicker live">● In use today at Ethiopian businesses</span>' if p["live"] else '<span class="kicker">Set up for your business</span>'
-    wa_text = f"Hello Edel, I'd like to know more about Edel for {p['name'].lower()}."
+    wa_text = f"Hello Edel, I'd like to know more about Edel for {p.get('label', p['name'].lower())}."
     return head(p["title"], p["desc"], p["path"], ld) + chrome_top() + f'''<main>
   <div class="wrap crumbs"><a href="../">Edel</a><span>›</span><a href="../#erp">Industries</a><span>›</span>{e(p["name"])}</div>
   <section class="page-hero">
@@ -281,7 +302,7 @@ def industry_page(p):
 
   <section class="band soft">
     <div class="wrap">
-      <h2>What Edel does for {e(p["name"].lower())}</h2>
+      <h2>What Edel does for {e(p.get("label", p["name"].lower()))}</h2>
       <p class="intro">{e(p["intro"])}</p>
       <ol class="features">
 {feats}
@@ -309,7 +330,7 @@ def industry_page(p):
           <p>The demo runs with example data, right in your browser. No sign-up.</p>
           <ul>{pts}</ul>
         </div>
-        <div class="btns"><a class="btn btn-gold" href="../demo/{p["demo"]}.html">Open the {e(p["name"].lower())} demo →</a></div>
+        <div class="btns"><a class="btn btn-gold" href="../demo/{p["demo"]}.html">Open the {e(p.get("label", p["name"].lower()))} demo →</a></div>
       </div>
     </div>
   </section>

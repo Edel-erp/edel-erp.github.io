@@ -593,6 +593,38 @@ input::placeholder { color: #6F6B62; }
 footer { background: #050506; }
 
 @media (prefers-reduced-motion: reduce) { .orbit, .status .on::before, .qrbox::after { animation: none; } .tilt { transition: none; } }
+
+/* HR & Payroll section */
+.hr-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+@media (max-width: 900px) { .hr-grid { grid-template-columns: 1fr; } }
+.hr-steps { list-style: none; padding: 0; margin: 26px 0 18px; display: grid; gap: 12px; counter-reset: s; }
+.hr-steps li { counter-increment: s; display: grid; grid-template-columns: 38px 1fr; gap: 2px 12px; }
+.hr-steps li::before { content: counter(s); grid-row: span 2; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 700 15px var(--display); color: #111; background: var(--gold-grad); }
+.hr-steps b { font-family: var(--display); font-size: 17px; }
+.hr-steps span { color: var(--muted); font-size: 15.5px; }
+.pay-card { background: var(--glass), #0D0D0F; border: 1px solid rgba(211,166,40,.28); border-radius: 24px; padding: 20px; box-shadow: 0 40px 90px -40px rgba(211,166,40,.45); display: grid; gap: 14px; }
+.pay-head { display: flex; justify-content: space-between; align-items: center; }
+.pay-head small { display: block; color: var(--muted); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.pay-head b { font: 700 20px "Noto Sans Ethiopic", var(--display); }
+.pay-state { font: 700 12.5px var(--body); padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.07); color: #DDD8CC; border: 1px solid rgba(255,255,255,.12); transition: all .3s; }
+.pay-state.ok { background: rgba(74,222,128,.14); color: #4ADE80; border-color: rgba(74,222,128,.4); }
+.pay-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pay-steps span { text-align: center; font: 600 12px var(--body); padding: 7px 4px; border-radius: 10px; background: rgba(255,255,255,.04); color: #8F8A80; border: 1px solid rgba(255,255,255,.06); transition: all .3s; }
+.pay-steps span.on { background: rgba(211,166,40,.16); color: #F2D27A; border-color: rgba(211,166,40,.45); }
+.pay-steps span.done { color: #4ADE80; border-color: rgba(74,222,128,.3); }
+.pay-table { display: grid; font-size: 13.5px; }
+.pay-row { display: grid; grid-template-columns: 1.6fr .6fr 1fr 1fr 1.1fr; gap: 8px; padding: 9px 4px; border-top: 1px solid rgba(255,255,255,.06); align-items: center; font-variant-numeric: tabular-nums; transition: background .4s; }
+.pay-row span:nth-child(n+2) { text-align: right; }
+.pay-row small { display: block; color: #8F8A80; font-size: 11.5px; }
+.pay-th { border-top: 0; color: #8F8A80; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
+.pay-tot { font-weight: 700; color: #fff; border-top: 1px solid rgba(211,166,40,.35); }
+.pay-row.fill { background: rgba(211,166,40,.06); }
+.pay-row.ok { background: rgba(74,222,128,.07); }
+.pay-foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 14px; color: #DDD8CC; }
+.pay-foot .bank { color: #4ADE80; font-weight: 700; opacity: 0; transition: opacity .4s; }
+.pay-foot .bank.show { opacity: 1; }
+.pay-note { color: #8F8A80; font-size: 12px; }
+@media (max-width: 480px) { .pay-row { grid-template-columns: 1.4fr .5fr .9fr .9fr 1fr; font-size: 12px; gap: 4px; } }
 </style>
 </head>
 <body>
@@ -603,6 +635,7 @@ footer { background: #050506; }
     <nav aria-label="Main" id="main-nav">
       <a href="e-invoicing-ethiopia/">E-invoicing guide</a>
       <a href="#erp">ERP</a>
+      <a href="#hr">HR &amp; Payroll</a>
       <a href="#anywhere">Dashboards</a>
       <a href="#about">About</a>
       <a href="#request">Contact</a>
@@ -909,10 +942,41 @@ footer { background: #050506; }
     </div>
   </section>
 
+  <section class="band" id="hr">
+    <div class="wrap hr-grid">
+      <div>
+        <span class="eyebrow">04 · HR &amp; Payroll</span>
+        <h2 class="reveal">Payroll in three clicks</h2>
+        <p class="intro">Attendance from your fingerprint clock, Ethiopian income tax and pension, loans and advances, and the bank file, all in one run. The owner approves from anywhere.</p>
+        <ol class="hr-steps">
+          <li><b>Import attendance</b><span>Days worked, absences and overtime come straight from the clock.</span></li>
+          <li><b>Calculate</b><span>Income tax, 7% and 11% pension, loan recoveries and net pay, worked out for every employee.</span></li>
+          <li><b>Approve and pay</b><span>The owner approves, the bank gets the payment file and staff get their payslips.</span></li>
+        </ol>
+        <div class="chipset hr-chips"><span>Fingerprint clocks</span><span>Daily roll call</span><span>Leave</span><span>Advances</span><span>Service charge</span><span>Ethiopian calendar</span></div>
+        <div class="cta" style="margin-top:26px">
+          <a class="btn btn-gold" href="demo/hr.html">Try the payroll demo →</a>
+          <a class="btn btn-line" href="hr-payroll-software-ethiopia/">Everything in HR &amp; Payroll</a>
+        </div>
+      </div>
+      <div class="pay-card reveal" aria-label="Example payroll run">
+        <div class="pay-head"><div><small>Payroll · example</small><b id="pay-period">—</b></div><span class="pay-state" id="pay-state">Ready</span></div>
+        <div class="pay-steps" aria-hidden="true"><span data-s="0">1 · Attendance</span><span data-s="1">2 · Calculate</span><span data-s="2">3 · Approve</span></div>
+        <div class="pay-table" role="table">
+          <div class="pay-row pay-th" role="row"><span role="columnheader">Employee</span><span role="columnheader">Days</span><span role="columnheader">Tax</span><span role="columnheader">Pension</span><span role="columnheader">Net</span></div>
+          <div id="pay-rows"></div>
+          <div class="pay-row pay-tot" role="row"><span role="cell">Total</span><span role="cell"></span><span role="cell" id="pt-tax">—</span><span role="cell" id="pt-pen">—</span><span role="cell" id="pt-net">—</span></div>
+        </div>
+        <div class="pay-foot"><span id="pay-cost">Cost to company —</span><span class="bank" id="pay-bank">Bank file ready ✓</span></div>
+        <p class="pay-note">Example numbers. Tax uses the monthly brackets in force since 2025; rates follow your company policy.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="band anywhere" id="anywhere">
     <div class="wrap any-grid">
       <div class="reveal">
-        <span class="eyebrow">04 · Dashboards</span>
+        <span class="eyebrow">05 · Dashboards</span>
       <h2>Follow your business from anywhere</h2>
         <p class="intro">Every day, see how your business is doing: sales, cash, stock and staff. On your phone or laptop, from Addis Ababa or anywhere in the world.</p>
         <ul class="ticks">
@@ -948,7 +1012,7 @@ footer { background: #050506; }
 
   <section class="band soft" id="about">
     <div class="wrap about">
-      <div><span class="eyebrow">05 · Who we are</span>
+      <div><span class="eyebrow">06 · Who we are</span>
       <h2>Who is Edel</h2></div>
       <div>
         <p>Edel Trading PLC is an Ethiopian software company based in Addis Ababa. We build e-invoicing and ERP systems for Ethiopian businesses.</p>
@@ -960,7 +1024,7 @@ footer { background: #050506; }
   <section class="band" id="request">
     <div class="wrap request">
       <div>
-        <span class="eyebrow">06 · Get started</span>
+        <span class="eyebrow">07 · Get started</span>
       <h2>Request e-invoice</h2>
         <p class="intro">Send us your details and our team will contact you.</p>
         <div class="contact">
@@ -979,7 +1043,7 @@ footer { background: #050506; }
           <select id="f-type">
             <option>Hotel</option><option>Beer distribution</option><option>Import &amp; export</option>
             <option>Manufacturing</option><option>Farm</option><option>Tours &amp; travel</option>
-            <option>Shop or supermarket</option><option>Restaurant or café</option><option>Other</option>
+            <option>Shop or supermarket</option><option>Restaurant or café</option><option>HR &amp; Payroll</option><option>Other</option>
           </select></div>
         <div class="field full"><label for="f-reach">How should we reach you?</label>
           <select id="f-reach"><option>WhatsApp message</option><option>Call me in the morning</option><option>Call me in the afternoon</option><option>Call me in the evening</option></select></div>
@@ -997,7 +1061,7 @@ footer { background: #050506; }
   <div class="wrap">
     <div class="foot-cols">
       <div><img src="edel-logo-dark-360.webp" srcset="edel-logo-dark-360.webp 360w, edel-logo-dark.webp 720w" sizes="90px" width="720" height="338" alt="Edel Trading PLC" loading="lazy"><p>E-invoicing and ERP for Ethiopian businesses · <span lang="am">ኤሌክትሮኒክ ደረሰኝ</span></p></div>
-      <div><h4>Industries</h4><ul><li><a href="hotel-software-ethiopia/">Hotels</a></li><li><a href="beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="farm-management-software-ethiopia/">Farms</a></li></ul></div>
+      <div><h4>Industries</h4><ul><li><a href="hotel-software-ethiopia/">Hotels</a></li><li><a href="beer-distribution-software-ethiopia/">Beer distribution</a></li><li><a href="tour-company-software-ethiopia/">Tours &amp; travel</a></li><li><a href="import-export-software-ethiopia/">Import &amp; export</a></li><li><a href="manufacturing-erp-ethiopia/">Manufacturing</a></li><li><a href="farm-management-software-ethiopia/">Farms</a></li><li><a href="hr-payroll-software-ethiopia/">HR &amp; Payroll</a></li></ul></div>
       <div><h4>Free tools and guides</h4><ul><li><a href="e-invoicing-ethiopia/">E-invoicing guide</a></li><li><a href="e-invoicing-checker/">Does e-invoicing apply to me?</a></li><li><a href="vat-calculator-ethiopia/">VAT calculator (15%)</a></li><li><a href="invoice-template-ethiopia/">Free invoice template</a></li></ul></div>
       <div><h4>Contact</h4><ul><li><a href="tel:+251911251837">+251 911 251837</a></li><li><a href="https://wa.me/251960369445?text=Hello%20Edel%2C%20I%27d%20like%20to%20know%20more%20about%20e-invoicing%20for%20my%20business." target="_blank" rel="noopener">WhatsApp +251 960 369445</a></li><li>Addis Ababa, Ethiopia</li></ul></div>
     </div>
@@ -1311,6 +1375,69 @@ document.documentElement.classList.add("js");
   if (q.length && !reduce) { var k = 0; setInterval(function () {
     if (k < q.length) { q[k].classList.add("done"); q[k].textContent = "✓"; k++; }
     else { q.forEach(function (el, i) { el.classList.remove("done"); el.textContent = "#" + (418 + i); }); k = 0; } }, 1100); }
+})();
+
+(function () {
+  var rowsEl = document.getElementById("pay-rows"); if (!rowsEl) return;
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Monthly brackets in force since 2025: [upper limit, rate]
+  var BANDS = [[2000, 0], [4000, .15], [7000, .20], [10000, .25], [14000, .30], [Infinity, .35]];
+  function tax(t) { var lo = 0, out = 0; BANDS.forEach(function (b) { if (t > lo) out += (Math.min(t, b[0]) - lo) * b[1]; lo = b[0]; }); return Math.round(out * 100) / 100; }
+  var STAFF = [
+    { n: "Hana T.", d: "Front office", basic: 9000, days: 30, ot: 0 },
+    { n: "Abebe K.", d: "Kitchen", basic: 6500, days: 30, ot: 8 },
+    { n: "Sara L.", d: "Sales", basic: 15000, days: 28, ot: 0 },
+    { n: "Dawit M.", d: "Driver", basic: 5200, days: 30, ot: 8 }
+  ];
+  var f0 = function (n) { return Math.round(n).toLocaleString("en-US"); };
+  STAFF.forEach(function (s) {
+    s.earned = s.basic * s.days / 30; s.otPay = s.ot * (s.basic / 208) * 1.5; s.gross = s.earned + s.otPay;
+    s.tax = tax(s.gross); s.pen = s.earned * .07; s.epen = s.earned * .11; s.net = s.gross - s.tax - s.pen;
+  });
+  rowsEl.innerHTML = STAFF.map(function (s, i) {
+    return '<div class="pay-row" role="row" data-i="' + i + '"><span role="cell">' + s.n + '<small>' + s.d + '</small></span><span role="cell" class="c-days">—</span><span role="cell" class="c-tax">—</span><span role="cell" class="c-pen">—</span><span role="cell" class="c-net">—</span></div>';
+  }).join("");
+  var rows = rowsEl.querySelectorAll(".pay-row"), steps = document.querySelectorAll(".pay-steps span");
+  var st = document.getElementById("pay-state"), bank = document.getElementById("pay-bank");
+  var T = STAFF.reduce(function (a, s) { a.tax += s.tax; a.pen += s.pen; a.net += s.net; a.cost += s.gross + s.epen; return a; }, { tax: 0, pen: 0, net: 0, cost: 0 });
+  // period in the Ethiopian calendar
+  var d = new Date(), M = ["መስከረም","ጥቅምት","ኅዳር","ታኅሣሥ","ጥር","የካቲት","መጋቢት","ሚያዝያ","ግንቦት","ሰኔ","ሐምሌ","ነሐሴ","ጳጉሜ"];
+  var jdn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 2440588, E = 1723856, r = (jdn - E) % 1461, nn = (r % 365) + 365 * Math.floor(r / 1460);
+  document.getElementById("pay-period").textContent = M[Math.min(12, Math.floor(nn / 30))] + " " + (4 * Math.floor((jdn - E) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460));
+  function setStep(k) { steps.forEach(function (s, j) { s.classList.toggle("on", j === k); s.classList.toggle("done", j < k); }); }
+  function reset() {
+    rows.forEach(function (rw) { rw.classList.remove("fill", "ok"); rw.querySelectorAll(".c-days,.c-tax,.c-pen,.c-net").forEach(function (c) { c.textContent = "—"; }); });
+    ["pt-tax", "pt-pen", "pt-net"].forEach(function (id) { document.getElementById(id).textContent = "—"; });
+    document.getElementById("pay-cost").textContent = "Cost to company —"; bank.classList.remove("show");
+    st.textContent = "Ready"; st.classList.remove("ok"); setStep(-1);
+  }
+  function fillAll() {
+    rows.forEach(function (rw, i) { var s = STAFF[i]; rw.querySelector(".c-days").textContent = s.days + (s.ot ? " +" + s.ot + "h" : "");
+      rw.querySelector(".c-tax").textContent = f0(s.tax); rw.querySelector(".c-pen").textContent = f0(s.pen); rw.querySelector(".c-net").textContent = f0(s.net); rw.classList.add("ok"); });
+    document.getElementById("pt-tax").textContent = f0(T.tax); document.getElementById("pt-pen").textContent = f0(T.pen); document.getElementById("pt-net").textContent = f0(T.net);
+    document.getElementById("pay-cost").textContent = "Cost to company ETB " + f0(T.cost); bank.classList.add("show"); st.textContent = "Approved ✓"; st.classList.add("ok"); setStep(3);
+  }
+  if (reduce) { fillAll(); return; }
+  var timers = [];
+  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+  function run() {
+    reset();
+    at(600, function () { setStep(0); st.textContent = "Importing attendance…"; });
+    rows.forEach(function (rw, i) { at(900 + i * 350, function () { var s = STAFF[i]; rw.classList.add("fill"); rw.querySelector(".c-days").textContent = s.days + (s.ot ? " +" + s.ot + "h" : ""); }); });
+    at(2600, function () { setStep(1); st.textContent = "Calculating…"; });
+    rows.forEach(function (rw, i) { at(2900 + i * 380, function () { var s = STAFF[i]; rw.querySelector(".c-tax").textContent = f0(s.tax); rw.querySelector(".c-pen").textContent = f0(s.pen); rw.querySelector(".c-net").textContent = f0(s.net); }); });
+    at(4600, function () { document.getElementById("pt-tax").textContent = f0(T.tax); document.getElementById("pt-pen").textContent = f0(T.pen); document.getElementById("pt-net").textContent = f0(T.net); document.getElementById("pay-cost").textContent = "Cost to company ETB " + f0(T.cost); });
+    at(5400, function () { setStep(2); st.textContent = "Waiting for owner…"; });
+    at(6600, function () { rows.forEach(function (rw) { rw.classList.remove("fill"); rw.classList.add("ok"); }); bank.classList.add("show"); st.textContent = "Approved ✓"; st.classList.add("ok"); setStep(3); });
+    at(11500, run);
+  }
+  var started = false;
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) {
+    if (es[0].isIntersecting && !started) { started = true; run(); }
+    else if (!es[0].isIntersecting && started) { started = false; timers.forEach(clearTimeout); timers = []; fillAll(); }
+  }, { threshold: .35 }).observe(document.querySelector(".pay-card"));
+  else fillAll();
+  window.__edelPayroll = { STAFF: STAFF, T: T, tax: tax };
 })();
 </script>
 </body>
