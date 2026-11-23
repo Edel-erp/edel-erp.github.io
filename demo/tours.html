@@ -190,6 +190,47 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
 .lt { position: fixed; right: 16px; top: 128px; z-index: 30; display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
 .lt div { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35); animation: up .25s ease; }
 @media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
+/* live map */
+.mapbox { height: 420px; border-radius: 12px; overflow: hidden; background: #E9E6DD; position: relative; z-index: 0; }
+.mapbox.mini { height: 230px; cursor: pointer; }
+@media (max-width: 640px) { .mapbox { height: 320px; } .mapbox.mini { height: 200px; } }
+.map-wrap { display: grid; grid-template-columns: 1.6fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .map-wrap { grid-template-columns: 1fr; } }
+.map-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.mm-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.map-fallback { display: grid; place-items: center; height: 100%; padding: 20px; text-align: center; color: var(--muted); font-size: 14px; }
+.car-icon, .hub-icon, .dest-icon { background: none; border: 0; }
+.car-pin { position: relative; display: inline-flex; align-items: center; gap: 5px; background: #0E0F10; color: #fff; font: 700 11.5px/1 var(--body); padding: 5px 9px 5px 6px; border-radius: 999px; border: 2px solid var(--gold); white-space: nowrap; box-shadow: 0 6px 14px -4px rgba(0,0,0,.45); transform: translate(-50%, -50%); cursor: pointer; }
+.car-pin .dot { width: 8px; height: 8px; border-radius: 50%; background: #5FD58C; box-shadow: 0 0 0 3px rgba(95,213,140,.25); }
+.car-pin.back .dot { background: #F2C94C; }
+.car-pin.late { border-color: #E5484D; }
+.car-pin.late .dot { background: #E5484D; }
+.car-pin.late::after { content: ""; position: absolute; inset: -7px; border-radius: 999px; border: 2px solid #E5484D; animation: ping 1.4s ease-out infinite; }
+@keyframes ping { from { opacity: .9; transform: scale(.9); } to { opacity: 0; transform: scale(1.35); } }
+.mini .car-pin { font-size: 10px; padding: 3px 7px 3px 4px; }
+.hub-pin { display: inline-block; transform: translate(-50%, -50%); background: var(--gold); color: var(--black); font: 700 11px/1 var(--body); padding: 6px 9px; border-radius: 8px; white-space: nowrap; box-shadow: 0 6px 14px -6px rgba(0,0,0,.45); }
+.dest-pin { display: inline-flex; align-items: center; gap: 5px; transform: translate(-6px, -50%); font: 600 11px/1 var(--body); color: var(--ink); white-space: nowrap; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+.dest-pin::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 3px solid var(--gold-deep); flex: none; }
+.ml-row { width: 100%; text-align: left; border: 0; background: none; border-top: 1px solid #F0EEE8; padding: 10px 0; display: grid; gap: 5px; }
+.ml-row:first-child { border-top: 0; }
+.ml-row:hover b { color: var(--gold-deep); }
+.ml-row .bar { height: 6px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+.ml-row .bar i { display: block; height: 100%; background: var(--gold); border-radius: 999px; transition: width .8s ease; }
+.ml-row.late .bar i { background: #E5484D; }
+.ml-row small { color: var(--muted); font-size: 12.5px; }
+.leaflet-popup-content { font: 13.5px/1.45 var(--body); margin: 12px 14px; min-width: 210px; }
+.pop h4 { font: 700 15px var(--display); margin: 0 0 6px; }
+.pop .r { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-top: 1px solid #F0EEE8; }
+.pop .r:first-of-type { border-top: 0; }
+.pop .r span { color: var(--muted); }
+.pop .b { display: flex; gap: 6px; margin-top: 10px; }
+.pop .b a, .pop .b button { flex: 1; text-align: center; border-radius: 999px; padding: 8px 10px; font: 700 12.5px var(--body); text-decoration: none; border: 0; cursor: pointer; }
+.pop .b a { background: var(--black); color: #fff !important; }
+.pop .b button { background: var(--gold); color: var(--black); }
+.pop .late-t { color: #B3261E; font-weight: 700; margin-bottom: 6px; }
+@media (prefers-reduced-motion: reduce) { .car-pin.late::after { animation: none; } }
 .hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
 
 /* tours additions */
@@ -256,6 +297,8 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
 .tank .fill { height: 12px; background: var(--bg); border-radius: 999px; overflow: hidden; margin: 6px 0; }
 .tank .fill i { display: block; height: 100%; background: var(--gold); }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
 </head>
 <body>
 
@@ -273,6 +316,7 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
 <nav class="tabs" aria-label="Demo screens">
   <div class="in" role="tablist">
     <button type="button" role="tab" aria-selected="true" data-screen="dash">Owner Dashboard</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="map">Live map</button>
     <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
     <button type="button" role="tab" aria-selected="false" data-screen="bookings">Bookings</button>
     <button type="button" role="tab" aria-selected="false" data-screen="dispatch">Dispatch &amp; Fleet</button>
@@ -310,6 +354,12 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
       </div>
     </div>
 
+    <div class="card" id="c-livemap" style="margin-top:14px">
+      <h3>Cars on the road <small id="mm-count"></small></h3>
+      <div class="mapbox mini" id="mini-map" role="button" tabindex="0" aria-label="Open the live map"></div>
+      <div class="mm-foot"><span class="muted small">Positions are example GPS data</span><button type="button" class="btn btn-dark" id="open-map">Open live map →</button></div>
+    </div>
+
     <div class="grid g2" style="margin-top:14px">
       <div class="card" id="c-trend">
         <h3>Revenue trend <small id="trend-lbl">tap a day</small></h3>
@@ -340,6 +390,28 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
         <h3>On credit <small id="v-credit-total"></small></h3>
         <div id="v-credit"></div>
         <p class="muted small" style="margin-top:8px">Agency and company bookings to be paid later. Not counted in revenue until paid.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE MAP -->
+  <section class="screen" id="s-map" hidden>
+    <p class="hint">Every car on a trip, moving live. Tap a car for the driver, the customer and the trip.</p>
+    <div class="map-wrap">
+      <div class="card">
+        <div class="map-tools">
+          <div class="seg" role="group" aria-label="Map area" id="map-zoom" style="margin:0">
+            <button type="button" aria-pressed="true" data-z="local">Arba Minch area</button>
+            <button type="button" aria-pressed="false" data-z="all">All trips</button>
+          </div>
+          <div class="legend"><span><i style="background:#5FD58C"></i>Going out</span><span><i style="background:#F2C94C"></i>Coming back</span><span><i style="background:#E5484D"></i>Out too long</span></div>
+        </div>
+        <div class="mapbox" id="big-map"></div>
+        <p class="muted small" style="margin-top:8px">Positions are example GPS data, sped up: 1 second on the map is 2 minutes of driving. Map © OpenStreetMap contributors.</p>
+      </div>
+      <div class="card">
+        <h3>On the road <small id="ml-count"></small></h3>
+        <div id="map-list"></div>
       </div>
     </div>
   </section>
@@ -547,7 +619,8 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
   const tabs = [...document.querySelectorAll("[data-screen]")];
   function show(name) {
     tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
-    ["dash", "approvals", "bookings", "dispatch"].forEach(n => $("s-" + n).hidden = n !== name);
+    ["dash", "map", "approvals", "bookings", "dispatch"].forEach(n => $("s-" + n).hidden = n !== name);
+    if (name === "map" || name === "dash") setTimeout(() => mapShown(name), 0);
     if (name === "dash") { renderDash(); if (lastFlash) { flash(lastFlash); lastFlash = null; } }
     if (name === "approvals") renderApprovals();
     if (name === "bookings") renderBookings();
@@ -885,6 +958,144 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
         toast(`${etb(L * FUEL[s.fuel])} fuel cost posted to ${plate}.`); }));
   });
 
+  /* ---------- live map ---------- */
+  const PL = { base: [6.020, 37.560], town: [6.030, 37.550], airport: [6.039, 37.590], dorze: [6.245, 37.570], konso: [5.250, 37.480],
+    nechsar: [5.950, 37.620], jinka: [5.780, 36.570], turmi: [4.970, 36.490], hawassa: [7.050, 38.480], shash: [7.200, 38.600], addis: [9.030, 38.740] };
+  const PATHS = { airport: ["base", "town", "airport"], city: ["base", "town", [6.045, 37.575], "airport"], dorze: ["base", "town", [6.13, 37.56], "dorze"],
+    nechsar: ["base", "airport", "nechsar"], konso: ["base", "town", [5.62, 37.47], "konso"], hawassa: ["addis", "shash", "hawassa"], omo: ["base", "town", "konso", "turmi", "jinka"] };
+  const DEST = { airport: "Arba Minch airport", city: "Arba Minch town", dorze: "Dorze village", nechsar: "Nech Sar National Park", konso: "Konso", hawassa: "Hawassa", omo: "Jinka" };
+  const PLACE_NAMES = { base: "Base · Arba Minch", addis: "Addis Ababa", konso: "Konso", jinka: "Jinka", turmi: "Turmi", dorze: "Dorze", nechsar: "Nech Sar", hawassa: "Hawassa", airport: "Airport" };
+  const pt = w => typeof w === "string" ? PL[w] : w;
+  const fwd = r => PATHS[r].map(pt);
+  const trip = r => { const f = fwd(r); return f.concat(f.slice(0, -1).reverse()); };
+  const segLen = (a, b) => Math.hypot(a[0] - b[0], (a[1] - b[1]) * Math.cos(a[0] * Math.PI / 180));
+  function along(pts, p) {
+    const L = []; let tot = 0; for (let i = 1; i < pts.length; i++) { const d = segLen(pts[i - 1], pts[i]); L.push(d); tot += d; }
+    let want = Math.max(0, Math.min(1, p)) * tot;
+    for (let i = 0; i < L.length; i++) { if (want <= L[i] || i === L.length - 1) { const t = L[i] ? Math.min(1, want / L[i]) : 0; const a = pts[i], b = pts[i + 1]; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; } want -= L[i]; }
+    return pts[pts.length - 1];
+  }
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const TIMELAPSE = 120;     // 1 second on the map = 2 minutes of driving
+  const drift = {};            // extra example progress while the page is open, so cars visibly move
+  let lastTick = Date.now();
+  function carState(b) {
+    const dur = RT[b.route].h * 3600000, f = (Date.now() - b.outAt) / dur, late = f >= 1;
+    const p = late ? 0.97 : Math.min(0.97, f + (drift[b.no] || 0));
+    const plate = b.veh, h = [...plate].reduce((a, c) => a + c.charCodeAt(0), 0);
+    const atDest = Math.abs(p - 0.5) < 0.035;
+    const speed = late ? 0 : atDest ? 0 : (b.route === "airport" || b.route === "city" ? 30 : 45) + h % 30;
+    return { p, late, back: p > 0.5, atDest, speed, km: Math.round(RT[b.route].km * p), ll: along(trip(b.route), p), due: new Date(b.outAt + dur) };
+  }
+  const driverPhone = d => "+251 911 4" + String(10000 + DRIVERS.indexOf(d) * 1373).slice(-5);
+  function popupHtml(b, c) {
+    const days = Math.round((c.due - new Date()) / 86400000);
+    return `<div class="pop">${c.late ? `<div class="late-t">⚠ Out too long. Expected back ${hhmm(c.due)}</div>` : ""}<h4>${esc(b.veh)} · ${esc(b.drv)}</h4>
+      <div class="r"><span>Customer</span><b>${esc(b.cust)}</b></div>
+      <div class="r"><span>Trip</span><b>${esc(RT[b.route].n)}</b></div>
+      <div class="r"><span>Passengers</span><b>${b.pax}${b.guide ? " + guide" : ""}</b></div>
+      <div class="r"><span>Out since</span><b>${hhmm(new Date(b.outAt))}</b></div>
+      <div class="r"><span>Expected back</span><b>${days >= 1 ? "in " + days + " day" + (days > 1 ? "s" : "") : hhmm(c.due)}</b></div>
+      <div class="r"><span>Km so far</span><b>${num(c.km)} km</b></div>
+      <div class="r"><span>Now</span><b>${c.late ? "Not back yet" : c.atDest ? "At " + esc(DEST[b.route]) : (c.back ? "Coming back · " : "Going to " + esc(DEST[b.route]) + " · ") + (c.back ? c.speed + " km/h" : c.speed + " km/h")}</b></div>
+      <div class="b"><a href="tel:${driverPhone(b.drv).replace(/\s/g, "")}">Call driver</a><button type="button" data-openbk="${esc(b.no)}">Open booking</button></div></div>`;
+  }
+  const maps = {};            // id -> { map, cars: { no: {m, line, dest} }, hubs: [] }
+  function makeMap(id, mini) {
+    if (maps[id] || !window.L) return maps[id];
+    const el = $(id); if (!el || el.offsetParent === null) return null;
+    const map = L.map(el, { zoomControl: !mini, attributionControl: true, scrollWheelZoom: false, dragging: !mini && !L.Browser.mobile, doubleClickZoom: !mini, touchZoom: !mini, boxZoom: !mini, keyboard: !mini, tap: !mini });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+    if (!mini && L.Browser.mobile) map.once("click", () => map.dragging.enable());
+    map.fitBounds(L.latLngBounds([PL.base, PL.dorze, PL.konso, PL.nechsar, PL.airport]), { padding: [24, 24] });
+    if (mini) el.classList.add("mini");
+    maps[id] = { map, mini, cars: {}, hubs: [], area: "local" };
+    if (mini) { el.addEventListener("click", () => show("map")); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); show("map"); } }); }
+    else map.on("popupopen", e => { const btn = e.popup.getElement().querySelector("[data-openbk]"); btn && btn.addEventListener("click", () => { const no = btn.dataset.openbk; map.closePopup(); show("bookings"); openBooking(no); }); });
+    return maps[id];
+  }
+  function glide(m, to) {
+    const from = m.getLatLng(); if (RM || (Math.abs(from.lat - to[0]) < 1e-7 && Math.abs(from.lng - to[1]) < 1e-7)) { m.setLatLng(to); return; }
+    const t0 = performance.now(), D = 780;   // shorter than the 1 s update, so each glide finishes
+    const step = t => { const k = Math.min(1, (t - t0) / D), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      if (m._glide !== t0) return; m.setLatLng([from.lat + (to[0] - from.lat) * e, from.lng + (to[1] - from.lng) * e]); if (k < 1) requestAnimationFrame(step); };
+    m._glide = t0; requestAnimationFrame(step);
+    setTimeout(() => { if (m._glide === t0) { m._glide = 0; m.setLatLng(to); } }, D + 60);   // lands even if animation frames are paused
+  }
+  const carIcon = (b, c, mini) => L.divIcon({ className: "car-icon", iconSize: null, html: `<div class="car-pin${c.late ? " late" : c.back ? " back" : ""}"><span class="dot"></span>${esc(b.veh)}</div>` });
+  function syncMap(M, outs) {
+    const seen = {};
+    outs.forEach(({ b, c }) => {
+      seen[b.no] = 1; let o = M.cars[b.no];
+      if (!o) {
+        o = M.cars[b.no] = {
+          m: L.marker(c.ll, { icon: carIcon(b, c, M.mini), keyboard: !M.mini, title: b.veh, zIndexOffset: 1000 }).addTo(M.map),
+          line: L.polyline(fwd(b.route), { color: "#A67F12", weight: M.mini ? 2 : 3, dashArray: "6 8", opacity: .75 }).addTo(M.map),
+          dest: M.mini ? null : L.marker(fwd(b.route).slice(-1)[0], { icon: L.divIcon({ className: "dest-icon", iconSize: null, html: `<div class="dest-pin">${esc(DEST[b.route])}</div>` }), interactive: false }).addTo(M.map),
+          cls: ""
+        };
+        if (!M.mini) o.m.bindPopup(() => popupHtml(b, carState(b)), { maxWidth: 280 });
+      }
+      const cls = c.late ? "late" : c.back ? "back" : "out";
+      if (cls !== o.cls) { o.m.setIcon(carIcon(b, c, M.mini)); o.cls = cls; }
+      glide(o.m, c.ll);
+      if (!M.mini && o.m.isPopupOpen()) o.m.getPopup().setContent(popupHtml(b, c));
+    });
+    Object.keys(M.cars).forEach(no => { if (!seen[no]) { const o = M.cars[no]; M.map.removeLayer(o.m); M.map.removeLayer(o.line); o.dest && M.map.removeLayer(o.dest); delete M.cars[no]; } });
+    // cars at base
+    M.hubs.forEach(h => M.map.removeLayer(h)); M.hubs = [];
+    const atBase = S.vehicles.filter(v => v.status !== "out").length;
+    M.hubs.push(L.marker(PL.base, { icon: L.divIcon({ className: "hub-icon", iconSize: null, html: `<div class="hub-pin">Base · ${atBase} car${atBase === 1 ? "" : "s"} in</div>` }), interactive: false, zIndexOffset: -100 }).addTo(M.map));
+  }
+  function renderMapList(outs) {
+    $("ml-count").textContent = outs.length ? outs.length + " car" + (outs.length > 1 ? "s" : "") : "";
+    $("map-list").innerHTML = outs.length ? outs.map(({ b, c }) => `<button type="button" class="ml-row${c.late ? " late" : ""}" data-fly="${esc(b.no)}">
+      <span style="display:flex;justify-content:space-between;gap:8px"><b>${esc(b.veh)} · ${esc(b.drv)}</b><small>${c.late ? "⚠ late" : c.atDest ? "at destination" : c.back ? "coming back" : "going out"}</small></span>
+      <small>${esc(RT[b.route].n)} · ${esc(b.cust)}</small>
+      <span class="bar"><i style="width:${Math.round(c.p * 100)}%"></i></span>
+      <small>${num(c.km)} of ${num(RT[b.route].km)} km · out since ${hhmm(new Date(b.outAt))}</small></button>`).join("")
+      : `<div class="empty">All cars are in. Dispatch a trip and it appears here.</div>`;
+  }
+  $("map-list").addEventListener("click", e => {
+    const r = e.target.closest("[data-fly]"); if (!r) return;
+    const M = maps["big-map"], o = M && M.cars[r.dataset.fly]; if (!o) return;
+    const ll = o.m.getLatLng(); RM ? M.map.setView(ll, 12) : M.map.flyTo(ll, 12, { duration: .9 });
+    setTimeout(() => o.m.openPopup(), RM ? 0 : 950);
+    if (innerWidth < 860) $("big-map").scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
+  });
+  document.querySelectorAll("#map-zoom [data-z]").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll("#map-zoom [data-z]").forEach(x => x.setAttribute("aria-pressed", x === btn));
+    const M = maps["big-map"]; if (!M) return; M.area = btn.dataset.z; fitArea(M);
+  }));
+  function fitArea(M) {
+    if (M.area === "all") { M.map.fitBounds(L.latLngBounds(Object.values(PL)), { padding: [24, 24], animate: !RM }); return; }
+    const local = S.today.bookings.filter(b => b.out === "out" && b.veh && !["omo", "hawassa"].includes(b.route)).map(b => carState(b).ll);
+    M.map.fitBounds(L.latLngBounds(local.concat([PL.base, PL.airport, PL.town])), { padding: [36, 36], maxZoom: 13, animate: !RM });
+  }
+  function fallback(id) {
+    const el = $(id); if (!el || el.dataset.fb) return; el.dataset.fb = 1;
+    el.innerHTML = `<div class="map-fallback">The map could not load right now (no internet?).<br>The cars on the road are listed ${id === "big-map" ? "next to the map" : "under Cars out now"}.</div>`;
+  }
+  function mapTick() {
+    const now = Date.now(), dt = (now - lastTick) / 1000; lastTick = now;
+    const outs = S.today.bookings.filter(b => b.out === "out" && b.veh);
+    if (liveOn) outs.forEach(b => { drift[b.no] = (drift[b.no] || 0) + dt * TIMELAPSE / (RT[b.route].h * 3600); });
+    const list = outs.map(b => ({ b, c: carState(b) }));
+    $("mm-count").textContent = `${list.length} out · ${S.vehicles.length - list.length} at base`;
+    const onMap = !$("s-map").hidden, onDash = !$("s-dash").hidden;
+    if (onMap) renderMapList(list);
+    if (!window.L) { if (onMap) fallback("big-map"); if (onDash) fallback("mini-map"); return; }
+    if (onMap) { const M = makeMap("big-map", false); if (M) { syncMap(M, list); if (!M.fitted) { fitArea(M); M.fitted = true; } } }
+    if (onDash) { const M = makeMap("mini-map", true); if (M) { syncMap(M, list); if (!M.fitted && list.length) { M.map.fitBounds(L.latLngBounds(list.map(x => x.c.ll).concat([PL.base])), { padding: [28, 28], maxZoom: 11 }); M.fitted = true; } } }
+  }
+  function mapShown(name) {
+    const M = maps[name === "map" ? "big-map" : "mini-map"]; if (M) M.map.invalidateSize();
+    if (name === "map") renderMapList(S.today.bookings.filter(b => b.out === "out" && b.veh).map(b => ({ b, c: carState(b) })));
+    mapTick();
+  }
+  $("open-map").addEventListener("click", () => show("map"));
+  setInterval(() => { if (!document.hidden) mapTick(); }, 1000);
+
   /* ---------- live ---------- */
   let liveOn = true, liveTimer = null;
   const R = Math.random;
@@ -936,6 +1147,7 @@ select { font: inherit; padding: 8px 10px; border: 1.5px solid var(--line); bord
   $("reset").addEventListener("click", () => { try { localStorage.removeItem(STORE); } catch (e) {} S = freshState(); $("lt").innerHTML = ""; setPeriod("day"); viewOffset = 0; show("dash"); toast("Demo reset"); });
 
   renderDash();
+  setTimeout(mapTick, 0);
   setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
 })();
 </script>

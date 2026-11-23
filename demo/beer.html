@@ -8,6 +8,7 @@
 <link rel="canonical" href="https://edel-erp.github.io/demo/beer.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap">
 <style>
 :root {
@@ -195,6 +196,50 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
 .lt div.w { border-left-color: var(--red); }
 @media (max-width: 560px) { .lt { top: auto; bottom: 16px; } }
 .hint { background: var(--gold-soft); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+
+/* live map */
+.map-wrap { display: grid; grid-template-columns: 1fr 300px; gap: 14px; align-items: start; }
+@media (max-width: 860px) { .map-wrap { grid-template-columns: 1fr; } }
+.map-box { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #EEF0F2; }
+#bigmap { height: 420px; }
+#minimap { height: 230px; }
+@media (max-width: 560px) { #bigmap { height: 320px; } #minimap { height: 200px; } }
+.map-tag { position: absolute; right: 10px; top: 10px; z-index: 500; background: rgba(14,15,16,.85); color: #fff; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; pointer-events: none; }
+.map-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #5FD58C; animation: mtPulse 1.6s infinite; }
+.map-tag.off::before { background: #9C9EA2; animation: none; }
+@keyframes mtPulse { 50% { opacity: .3; } }
+.tk { display: inline-flex; align-items: center; gap: 5px; background: #0E0F10; color: #fff; border: 2px solid var(--c); border-radius: 999px; padding: 3px 8px 3px 5px; font: 700 11.5px/1 var(--body); white-space: nowrap; box-shadow: 0 6px 14px -6px rgba(0,0,0,.6); transform: translate(-50%, -50%); }
+.tk i { width: 16px; height: 16px; border-radius: 50%; background: var(--c); display: grid; place-items: center; font-style: normal; font-size: 10px; }
+.wh { display: inline-flex; align-items: center; gap: 5px; background: var(--gold); color: #0E0F10; border-radius: 8px; padding: 4px 8px; font: 700 11.5px/1 var(--body); white-space: nowrap; transform: translate(-50%, -50%); box-shadow: 0 6px 14px -6px rgba(0,0,0,.5); }
+.op { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; background: #9C9EA2; box-shadow: 0 2px 6px rgba(0,0,0,.35); transform: translate(-50%, -50%); position: relative; }
+.op.done { background: var(--gold); }
+.op.owe { background: var(--red); }
+.op.pulse::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 3px solid var(--gold); animation: opPulse 1.2s ease-out 2; }
+@keyframes opPulse { from { transform: scale(1); opacity: 1; } to { transform: scale(3.2); opacity: 0; } }
+.leaflet-div-icon.clear { background: none; border: 0; }
+.leaflet-popup-content { margin: 12px 14px; font: 13.5px/1.45 var(--body); min-width: 210px; }
+.leaflet-popup-content h4 { font: 700 15px var(--display); margin-bottom: 2px; }
+.leaflet-popup-content .r { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-top: 1px solid #F0EEE8; }
+.leaflet-popup-content .r:first-of-type { border-top: 0; }
+.leaflet-popup-content .pb { display: flex; gap: 6px; margin-top: 8px; }
+.leaflet-popup-content .pb a, .leaflet-popup-content .pb button { flex: 1; text-align: center; border-radius: 999px; padding: 7px 8px; font: 700 12.5px var(--body); text-decoration: none; border: 0; cursor: pointer; }
+.pb .call { background: var(--green); color: #fff !important; }
+.pb .open { background: #0E0F10; color: #fff; }
+.legend-m { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); margin: 10px 2px 0; align-items: center; }
+.legend-m span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-m i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; border: 2px solid #fff; box-shadow: 0 0 0 1px #D0CEC8; }
+.mlist { display: grid; gap: 8px; }
+.mt { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 11px 12px; text-align: left; width: 100%; font: inherit; cursor: pointer; border-left: 5px solid var(--c); transition: transform .12s, box-shadow .12s; }
+.mt:hover { transform: translateY(-1px); box-shadow: 0 10px 20px -14px rgba(0,0,0,.4); }
+.mt .top { display: flex; justify-content: space-between; gap: 8px; }
+.mt b { font-family: var(--display); }
+.mt small { color: var(--muted); font-size: 12.5px; display: block; }
+.mt .sb { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.mt .sb i { display: block; height: 100%; background: var(--c); border-radius: 999px; transition: width .6s; }
+.mt.idle { opacity: .6; }
+.map-fallback { padding: 18px; color: var(--muted); }
+.mini-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+@media (prefers-reduced-motion: reduce) { .map-tag::before, .op.pulse::after { animation: none; } }
 </style>
 </head>
 <body>
@@ -213,6 +258,7 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
 <nav class="tabs" aria-label="Demo screens">
   <div class="in" role="tablist">
     <button type="button" role="tab" aria-selected="true" data-screen="summary">Day Summary</button>
+    <button type="button" role="tab" aria-selected="false" data-screen="map">Live map</button>
     <button type="button" role="tab" aria-selected="false" data-screen="approvals">Approvals<span class="badge" id="ap-count" hidden></span></button>
     <button type="button" role="tab" aria-selected="false" data-screen="trucks">Trucks</button>
     <button type="button" role="tab" aria-selected="false" data-screen="stock">Stock</button>
@@ -247,6 +293,12 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
         <div id="v-cash"></div>
         <div class="gap" id="v-gap"></div>
       </div>
+    </div>
+
+    <div class="card" id="c-map" style="margin-top:14px">
+      <h3>Trucks on the road <small id="v-onroad"></small></h3>
+      <div class="map-box"><div id="minimap" role="img" aria-label="Map of trucks on the road in Addis Ababa"></div><span class="map-tag" id="mini-tag">Live demo</span></div>
+      <div class="mini-foot"><span class="muted small">Positions are example GPS data.</span><button class="btn btn-dark" type="button" id="open-map">Open live map →</button></div>
     </div>
 
     <div class="grid g2" style="margin-top:14px">
@@ -289,6 +341,18 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
         <h3>Expenses approved <small id="v-exp-total"></small></h3>
         <div id="v-explist"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- LIVE MAP -->
+  <section class="screen" id="s-map" hidden>
+    <p class="hint">Every truck on the road, live. Tap a truck to see what it carries and the cash it holds; tap an outlet to see what it got today. Turn on <b>Live</b> to watch deliveries happen.</p>
+    <div class="map-wrap">
+      <div>
+        <div class="map-box"><div id="bigmap" role="application" aria-label="Live map of trucks and outlets in Addis Ababa"></div><span class="map-tag" id="big-tag">Live demo</span></div>
+        <div class="legend-m"><span><i style="background:#9C9EA2"></i>Not visited yet</span><span><i style="background:var(--gold)"></i>Delivered today</span><span><i style="background:var(--red)"></i>Owes empties or credit</span><span class="muted">Positions are example GPS data.</span></div>
+      </div>
+      <div class="card"><h3>Trucks <small id="v-onroad2"></small></h3><div class="mlist" id="mlist"></div></div>
     </div>
   </section>
 
@@ -346,6 +410,7 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
 <div class="toast" id="toast" role="status" hidden></div>
 <div class="lt" id="lt" aria-live="polite"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="anonymous"></script>
 <script>
 (() => {
   /* ---------- helpers ---------- */
@@ -548,7 +613,7 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
   let tt; function toast(html) { $("toast").innerHTML = html; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3200); }
 
   /* ---------- screens ---------- */
-  const SCREENS = ["summary", "approvals", "trucks", "stock"];
+  const SCREENS = ["summary", "map", "approvals", "trucks", "stock"];
   const tabs = [...document.querySelectorAll("[data-screen]")];
   function show(name) {
     tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.screen === name));
@@ -557,6 +622,7 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
     if (name === "approvals") renderApprovals();
     if (name === "trucks") renderTrucks();
     if (name === "stock") renderStock();
+    if (name === "map") mapShown();
     window.scrollTo({ top: 0 });
   }
   tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.screen)));
@@ -960,8 +1026,181 @@ label.f { display: block; font-weight: 700; font-size: 13px; margin: 12px 0 5px;
 
   $("reset").addEventListener("click", () => {
     try { localStorage.removeItem(STORE); } catch (e) {}
-    freshState(); $("lt").innerHTML = ""; save(); show("summary"); toast("Demo reset");
+    freshState(); $("lt").innerHTML = ""; save(); mapReset(); show("summary"); toast("Demo reset");
   });
+
+  /* ---------- live map (example GPS) ---------- */
+  const WH = [8.905, 38.765];
+  const AREA = { Bole: [8.995, 38.790], Megenagna: [9.020, 38.800], Piassa: [9.035, 38.752], Mercato: [9.030, 38.735], Kazanchis: [9.015, 38.770],
+    CMC: [9.020, 38.850], Sarbet: [8.995, 38.735], Gerji: [8.995, 38.820], Saris: [8.950, 38.760], Kotebe: [9.030, 38.860], Lebu: [8.950, 38.700], Ayat: [9.030, 38.880] };
+  const OUT_AREA = { "Bole Bar & Restaurant": "Bole", "Selam Café": "Saris", "Mercato Shop": "Mercato", "Piassa Grocery": "Piassa", "Kazanchis Lounge": "Kazanchis",
+    "Sarbet Hotel": "Sarbet", "CMC Supermarket": "CMC", "Gerji Bar": "Gerji", "Megenagna Kiosk": "Megenagna", "Ayat Bar & Grill": "Ayat", "Lideta Butchery & Bar": "Lebu", "Summit Mini Market": "Kotebe" };
+  const OPOS = OUTLETS.map(o => AREA[OUT_AREA[o]] || WH);
+  const COLORS = ["#D3A628", "#2B6CB0", "#1F8A4C", "#C0561B", "#8E44AD"];
+  const SPEED = [28, 24, 31, 22, 26];
+  const km = (a, b) => { const dy = (a[0] - b[0]) * 111, dx = (a[1] - b[1]) * 111 * Math.cos(a[0] * Math.PI / 180); return Math.sqrt(dx * dx + dy * dy); };
+  const ease = p => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let M = null, bigMap = null, miniMap = null, mk = { big: {}, mini: {} }, rafId = null, lastT = 0, openPop = null;
+
+  function planRoute(ti, r) {
+    const home = AREA[TRUCKS[ti].area] || WH;
+    const near = OUTLETS.map((o, i) => i).sort((a, b) => km(OPOS[a], home) - km(OPOS[b], home)).slice(0, 6);
+    const n = 4 + Math.floor(r() * 3), stops = near.slice(0, n);
+    stops.sort((a, b) => Math.atan2(OPOS[a][0] - home[0], OPOS[a][1] - home[1]) - Math.atan2(OPOS[b][0] - home[0], OPOS[b][1] - home[1]));
+    const pts = [WH].concat(stops.map(i => OPOS[i]), [WH]);
+    const durs = pts.slice(1).map((p, i) => Math.max(26, Math.min(70, 18 + km(pts[i], p) * 4)));
+    return { stops, pts, durs };
+  }
+  function mapReset() {
+    const r = rng(dayKey(TODAY) + 77);
+    M = { routes: TRUCKS.map((_, ti) => { const rt = planRoute(ti, r); rt.seg = Math.floor(r() * (rt.pts.length - 2)); rt.p = r() * 0.8; return rt; }) };
+    if (bigMap || miniMap) { ["big", "mini"].forEach(k => { const m = k === "big" ? bigMap : miniMap; if (!m) return; Object.values(mk[k]).forEach(x => x && x.remove && x.remove()); mk[k] = {}; drawStatic(m, k); }); }
+    drawTrucks(); renderMapList();
+  }
+  const onRoad = ti => sumQ(S.trucks[ti].load) > 0;
+  function posOf(ti) {
+    const rt = M.routes[ti]; if (!onRoad(ti)) return WH;
+    const a = rt.pts[rt.seg], b = rt.pts[rt.seg + 1], e = ease(Math.min(1, rt.p));
+    return [a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e];
+  }
+  function outletStats(oi) {
+    const name = OUTLETS[oi], ss = S.today.sales.filter(x => x.outlet === name);
+    const crates = ss.reduce((t, x) => t + x.crates, 0), owed = ss.reduce((t, x) => t + x.crates - x.empties, 0);
+    const credit = ss.filter(x => x.method === "Credit").reduce((t, x) => t + x.gross, 0), paid = ss.filter(x => x.method !== "Credit").reduce((t, x) => t + x.gross, 0);
+    return { crates, owed, credit, paid, n: ss.length };
+  }
+  const opClass = st => st.credit > 0 || st.owed > 12 ? "owe" : st.crates > 0 ? "done" : "";
+  const opIcon = (oi, pulse) => L.divIcon({ className: "leaflet-div-icon clear", html: `<div class="op ${opClass(outletStats(oi))}${pulse ? " pulse" : ""}"></div>`, iconSize: [0, 0] });
+  const tkIcon = ti => L.divIcon({ className: "leaflet-div-icon clear", html: `<div class="tk" style="--c:${COLORS[ti]}"><i>🚚</i>T${ti + 1}</div>`, iconSize: [0, 0] });
+
+  function outletPopup(oi) {
+    const st = outletStats(oi);
+    return `<h4>${esc(OUTLETS[oi])}</h4><span class="muted small">${OUT_AREA[OUTLETS[oi]]}, Addis Ababa</span>
+      <div style="margin-top:6px"><div class="r"><span>Crates delivered today</span><b>${st.crates}</b></div><div class="r"><span>Invoices today</span><b>${st.n}</b></div>
+      <div class="r"><span>Empties still owed</span><b style="color:${st.owed > 12 ? "var(--red)" : "inherit"}">${st.owed}</b></div>
+      <div class="r"><span>Paid today</span><b>${etb(st.paid)}</b></div><div class="r"><span>On credit</span><b style="color:${st.credit ? "var(--red)" : "inherit"}">${etb(st.credit)}</b></div></div>`;
+  }
+  function truckPopup(ti) {
+    const t = S.trucks[ti], rt = M.routes[ti], road = onRoad(ti);
+    const done = road ? Math.min(rt.seg, rt.stops.length) : rt.stops.length, next = road && rt.seg < rt.stops.length ? OUTLETS[rt.stops[rt.seg]] : "Warehouse";
+    return `<h4>${TRUCKS[ti].n} · ${esc(TRUCKS[ti].seller)}</h4><span class="muted small">${road ? `On the road · ${SPEED[ti]} km/h (example)` : "At the warehouse"}</span>
+      <div style="margin-top:6px"><div class="r"><span>Crates loaded</span><b>${sumQ(t.loaded)}</b></div><div class="r"><span>Sold</span><b>${sumQ(t.sold)}</b></div>
+      <div class="r"><span>Still on truck</span><b>${sumQ(t.load)}</b></div><div class="r"><span>Cash collected today</span><b>${etb(t.cashToday)}</b></div>
+      <div class="r"><span>Next stop</span><b>${esc(next)}</b></div><div class="r"><span>Stops done</span><b>${done} / ${rt.stops.length}</b></div></div>
+      <div class="pb"><a class="call" href="tel:+25191100000${ti + 1}">📞 Call seller</a><button type="button" class="open" data-open-truck="${ti}">Open truck</button></div>`;
+  }
+  function drawStatic(m, k) {
+    mk[k].wh = L.marker(WH, { icon: L.divIcon({ className: "leaflet-div-icon clear", html: '<div class="wh">🏭 Warehouse · Kality</div>', iconSize: [0, 0] }), keyboard: false, zIndexOffset: -100 }).addTo(m);
+    OUTLETS.forEach((o, oi) => {
+      const x = L.marker(OPOS[oi], { icon: opIcon(oi), title: o, keyboard: k === "big" }).addTo(m);
+      if (k === "big") x.bindPopup(() => outletPopup(oi));
+      mk[k]["o" + oi] = x;
+    });
+    TRUCKS.forEach((_, ti) => {
+      mk[k]["r" + ti] = L.polyline(M.routes[ti].pts, { color: COLORS[ti], weight: k === "big" ? 3 : 2, opacity: .75, dashArray: "6 8" }).addTo(m);
+      const t = L.marker(posOf(ti), { icon: tkIcon(ti), title: TRUCKS[ti].n, zIndexOffset: 500, keyboard: k === "big" }).addTo(m);
+      if (k === "big") t.bindPopup(() => truckPopup(ti), { autoPan: false });
+      mk[k]["t" + ti] = t;
+    });
+  }
+  function makeMap(el, k, interactive) {
+    const m = L.map(el, { scrollWheelZoom: false, zoomControl: interactive, dragging: interactive, touchZoom: interactive, doubleClickZoom: interactive, boxZoom: false, keyboard: interactive, attributionControl: true });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(m);
+    m.fitBounds(L.latLngBounds(OPOS.concat([WH])), { padding: [24, 24] });
+    drawStatic(m, k);
+    return m;
+  }
+  function drawTrucks() {
+    if (!M) return;
+    ["big", "mini"].forEach(k => TRUCKS.forEach((_, ti) => {
+      const t = mk[k]["t" + ti], r = mk[k]["r" + ti]; if (!t) return;
+      t.setLatLng(posOf(ti)); t.setOpacity(onRoad(ti) ? 1 : 0.45);
+      if (r) { r.setLatLngs(M.routes[ti].pts); r.setStyle({ opacity: onRoad(ti) ? .75 : .15 }); }
+    }));
+  }
+  function refreshOutlets(pulseIdx) {
+    ["big", "mini"].forEach(k => OUTLETS.forEach((_, oi) => { const x = mk[k]["o" + oi]; if (x) x.setIcon(opIcon(oi, oi === pulseIdx)); }));
+  }
+  function renderMapList() {
+    const n = TRUCKS.filter((_, ti) => onRoad(ti)).length;
+    if ($("v-onroad")) $("v-onroad").textContent = `${n} of ${TRUCKS.length} on the road`;
+    if ($("v-onroad2")) $("v-onroad2").textContent = `${n} on the road`;
+    if (!$("mlist") || !M) return;
+    $("mlist").innerHTML = TRUCKS.map((T, ti) => {
+      const rt = M.routes[ti], road = onRoad(ti), done = road ? Math.min(rt.seg, rt.stops.length) : rt.stops.length;
+      const next = road && rt.seg < rt.stops.length ? OUTLETS[rt.stops[rt.seg]] : "Back at warehouse";
+      return `<button type="button" class="mt${road ? "" : " idle"}" style="--c:${COLORS[ti]}" data-fly="${ti}"><div class="top"><b>${T.n}</b><span class="muted small">${done}/${rt.stops.length} stops</span></div>
+        <small>${esc(T.seller)} · ${sumQ(S.trucks[ti].load)} crates on board</small><small>Next: ${esc(next)}</small><div class="sb"><i style="width:${done / rt.stops.length * 100}%"></i></div></button>`;
+    }).join("");
+  }
+  function arrive(ti) {
+    const rt = M.routes[ti];
+    if (rt.seg >= rt.stops.length) { // back at the warehouse: plan a new round if there is beer on board
+      rt.seg = 0; rt.p = 0; const nr = planRoute(ti, Math.random); rt.stops = nr.stops; rt.pts = nr.pts; rt.durs = nr.durs;
+      logEvent("🏭", `${TRUCKS[ti].n} is back at the warehouse and heads out again`, 0, false); return;
+    }
+    const oi = rt.stops[rt.seg], t = S.trucks[ti], lines = randomLines(Math.random, t.load);
+    rt.seg += 1; rt.p = 0;
+    if (!lines.length) return;
+    const c = lines.reduce((a, l) => a + l.q, 0), m = randomMethod(Math.random);
+    const sale = recordSale(ti, OUTLETS[oi], lines, m, Math.round(c * (0.7 + Math.random() * 0.3)));
+    if (!sale) return;
+    logEvent("📍", `${TRUCKS[ti].n} delivered ${sale.crates} crates to ${OUTLETS[oi]} · ${m}`, sale.gross, true);
+    lastFlash = ["c-money", "c-trucks", "c-cash", "c-empties", "c-products", "c-map"].concat(m === "Credit" ? ["c-credit"] : m === "Cash" ? ["c-sellers"] : []);
+    save(); refreshOutlets(oi); renderMapList();
+    if (!$("s-summary").hidden && viewOffset === 0) renderSummary(true);
+    if (!$("s-trucks").hidden) renderTrucks();
+    if (!$("s-stock").hidden) renderStock();
+  }
+  function stepMap(dt) {
+    if (!M || !liveOn || document.hidden) return;
+    TRUCKS.forEach((_, ti) => {
+      if (!onRoad(ti)) return;
+      const rt = M.routes[ti]; rt.p += dt / rt.durs[Math.min(rt.seg, rt.durs.length - 1)];
+      if (rt.p >= 1) { rt.p = 1; arrive(ti); }
+    });
+  }
+  function loop(now) {
+    const dt = lastT ? Math.min(0.25, (now - lastT) / 1000) : 0; lastT = now;
+    stepMap(dt); drawTrucks();
+    rafId = requestAnimationFrame(loop);
+  }
+  function setTags() { ["mini-tag", "big-tag"].forEach(id => { const e = $(id); if (e) { e.classList.toggle("off", !liveOn); e.textContent = liveOn ? "Live demo" : "Demo paused"; } }); }
+  function mapShown() {
+    if (!window.L) return;
+    if (!bigMap) bigMap = makeMap("bigmap", "big", true);
+    setTimeout(() => { bigMap.invalidateSize(); drawTrucks(); }, 60);
+    renderMapList(); setTags();
+  }
+  $("open-map").addEventListener("click", () => show("map"));
+  $("mlist").addEventListener("click", e => {
+    const b = e.target.closest("[data-fly]"); if (!b || !bigMap) return;
+    const ti = Number(b.dataset.fly), t = mk.big["t" + ti];
+    bigMap.flyTo(t.getLatLng(), 14, { duration: reduceMotion ? 0 : 0.8 });
+    setTimeout(() => t.openPopup(), reduceMotion ? 0 : 850);
+    if (innerWidth < 860) $("bigmap").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+  });
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-open-truck]"); if (!b) return;
+    const ti = Number(b.dataset.openTruck); show("trucks");
+    const el = $("truck-" + ti); if (el) { el.scrollIntoView({ block: "center" }); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+  });
+  $("live").addEventListener("click", setTags);
+
+  if (window.L) {
+    mapReset();
+    miniMap = makeMap("minimap", "mini", false);
+    miniMap.on("click", () => show("map"));
+    renderMapList(); setTags();
+    if (reduceMotion) setInterval(() => { stepMap(2); drawTrucks(); }, 2000);
+    else rafId = requestAnimationFrame(loop);
+  } else {
+    M = { routes: TRUCKS.map((_, ti) => { const rt = planRoute(ti, rng(ti + 1)); rt.seg = 0; rt.p = 0; return rt; }) };
+    const msg = '<div class="map-fallback">The map could not load (no internet connection?). Here is where every truck stands.</div>';
+    $("minimap").outerHTML = msg; $("bigmap").outerHTML = msg;
+    renderMapList();
+  }
 
   renderSummary(); renderBadge();
   setLive(!matchMedia("(prefers-reduced-motion: reduce)").matches);
